@@ -1,0 +1,16 @@
+.git
+.gitignore
+
+# Environment — NEXT_PUBLIC_* di-inline saat build, tidak boleh dari host.
+.env
+.env.*
+!.env.example
+
+node_modules
+.next
+out
+npm-debug.log*
+
+# Dipakai hanya di docker compose (context = repo root).
+Dockerfile
+.dockerignore

@@ -1,0 +1,2 @@
+ALTER TABLE madrasah_users
+ADD COLUMN IF NOT EXISTS izinkan_guru_pengganti BOOLEAN DEFAULT FALSE;

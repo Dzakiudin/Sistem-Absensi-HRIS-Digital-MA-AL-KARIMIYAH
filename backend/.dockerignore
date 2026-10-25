@@ -1,0 +1,21 @@
+.git
+.gitignore
+.env
+.env.*
+*.log
+*.exe
+app.exe
+seed.exe
+
+# Binary & cache Go
+bin/
+build/
+vendor/
+
+# Foto absensi lokal tidak ikut ter-copy ke image (runtime pakai volume).
+storage/
+
+# Dokumentasi & tooling yang tidak dipakai saat runtime
+README.md
+Dockerfile
+.dockerignore

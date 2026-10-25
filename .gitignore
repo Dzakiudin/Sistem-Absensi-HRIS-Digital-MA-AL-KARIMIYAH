@@ -1,0 +1,71 @@
+# Internal prompt files
+PROMPT.md
+
+# Go backend
+backend/bin/
+backend/build/
+backend/*.exe
+*.exe
+*.exe~
+backend/paspapan-api
+
+# Environment files
+.env
+backend/.env
+frontend/.env.local
+frontend/.env*.local
+
+# Deployment — isi folder ini (sertifikat + dump database) tidak boleh di-commit.
+# Isinya di-ignore per-file, bukan per-folder, supaya .gitkeep-nya tetap ke-track.
+/backups/*
+!/backups/.gitkeep
+/nginx/certbot/conf/*
+!/nginx/certbot/conf/.gitkeep
+/nginx/certbot/www/*
+!/nginx/certbot/www/.gitkeep
+
+# Dependencies
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+
+# Go
+backend/vendor/
+
+# Storage / uploads
+# Folder WAJIB ikut ke clone (ada .gitkeep-nya): docker compose bind-mount
+# ./backend/storage ke /app/storage, dan Docker akan membuatnya root:root
+# kalau hilang -> container non-root tidak bisa menulis.
+# Git tidak bisa re-include file di dalam folder yang sudah ter-ignore,
+# jadi tiap folder di waived satu per satu.
+backend/storage/*
+!/backend/storage/.gitkeep
+!backend/storage/uploads/
+backend/storage/uploads/*
+!/backend/storage/uploads/.gitkeep
+!backend/storage/uploads/foto/
+backend/storage/uploads/foto/*
+!/backend/storage/uploads/foto/.gitkeep
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Folder "%APPDATA%" yang tidak sengaja tercipta di root repo.
+# Ini artefak tool lokal (9router/mitm), bukan bagian dari proyek.
+/%APPDATA%/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# Logs
+*.log
+
+# PostgreSQL Portable (local dev only)
+.pgsql/
+postgres.zip
+
+# Graphify cache
+graphify-out/cache/

@@ -1,0 +1,20 @@
+{
+  "name": "Portal Presensi Guru MA Al Karimiyah",
+  "short_name": "Presensi Guru",
+  "description": "Portal absensi dan presensi guru MA Al Karimiyah",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#047857",
+  "orientation": "portrait-primary",
+  "lang": "id-ID",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
