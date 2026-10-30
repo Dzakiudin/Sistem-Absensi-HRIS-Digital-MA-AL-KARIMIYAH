@@ -4398,6 +4398,132 @@ function bukaRekapSiswaDashboard(prefix) {
   gantiTab("kepala-siswa");
 }
 
+function renderGrafikStatistikSiswa(perHari, mulai) {
+  const rowsByDate = new Map(
+    perHari.map((row) => [row.tanggal, row]),
+  );
+  const days = Array.from({ length: 30 }, (_, index) => {
+    const date = new Date(mulai);
+    date.setDate(date.getDate() + index);
+    const tanggal =
+      String(date.getDate()).padStart(2, "0") +
+      "/" +
+      String(date.getMonth() + 1).padStart(2, "0") +
+      "/" +
+      date.getFullYear();
+    const row = rowsByDate.get(tanggal) || {};
+    return {
+      date,
+      tanggal,
+      statuses: [
+        { label: "Hadir", key: "hadir", color: "#059669" },
+        { label: "Izin", key: "izin", color: "#d97706" },
+        { label: "Sakit", key: "sakit", color: "#0284c7" },
+        { label: "Alpa", key: "alpa", color: "#e11d48" },
+        { label: "Terlambat", key: "telat", color: "#7c3aed" },
+      ].map((status) => ({
+        ...status,
+        value: Math.max(0, Number(row[status.key]) || 0),
+      })),
+    };
+  });
+  const maxTotal = Math.max(
+    0,
+    ...days.map((day) =>
+      day.statuses.reduce((total, status) => total + status.value, 0),
+    ),
+  );
+  const step = maxTotal ? Math.ceil(maxTotal / 4) : 1;
+  const chartMax = step * 4;
+  const ticks = Array.from({ length: 5 }, (_, index) =>
+    (chartMax - step * index).toLocaleString("id-ID"),
+  );
+  const dateLabel = (date) =>
+    `${date.getDate()} ${new Intl.DateTimeFormat("id-ID", {
+      month: "short",
+    }).format(date)}`;
+  const dateFullLabel = (date) =>
+    `${new Intl.DateTimeFormat("id-ID", { weekday: "long" }).format(date)}, ${String(date.getDate()).padStart(2, "0")}/${String(date.getMonth() + 1).padStart(2, "0")}/${date.getFullYear()}`;
+  const tickIndexes = [0, 5, 10, 15, 20, 25, 29];
+  const bars = days
+    .map((day) => {
+      const total = day.statuses.reduce(
+        (sum, status) => sum + status.value,
+        0,
+      );
+      const hadir = day.statuses.find((status) => status.key === "hadir").value;
+      const telat = day.statuses.find((status) => status.key === "telat").value;
+      const totalKehadiran = hadir + telat;
+      const persenKehadiran = total
+        ? Math.round((totalKehadiran / total) * 100)
+        : 0;
+      const detail = day.statuses
+        .map((status) => `${status.label} ${status.value.toLocaleString("id-ID")}`)
+        .join(", ");
+      const tipData = JSON.stringify({
+        title: dateFullLabel(day.date),
+        items: [
+          ...day.statuses.map((status) => ({
+            label: status.label,
+            value: `${status.value.toLocaleString("id-ID")} presensi`,
+            color: status.color,
+          })),
+          {
+            label: "Total Kehadiran",
+            value: `${persenKehadiran}% (${totalKehadiran.toLocaleString("id-ID")}/${total.toLocaleString("id-ID")})`,
+            color: "#059669",
+          },
+        ],
+      }).replace(/"/g, "&quot;");
+      const segments = day.statuses
+        .map(
+          (status) =>
+            `<span class="kepala-student-chart-segment" style="height:${((status.value / chartMax) * 100).toFixed(2)}%;background:${status.color};"></span>`,
+        )
+        .join("");
+      return `<div class="kepala-student-chart-bar" role="img" tabindex="0" data-tip="${tipData}" onmouseenter="handleBarHover(event, this)" onmousemove="moveChartTooltip(event)" onmouseleave="hideChartTooltip()" onfocus="handleBarHover(event, this)" ontouchstart="handleBarHover(event, this)" aria-label="${dateLabel(day.date)}, total ${total.toLocaleString("id-ID")} presensi: ${esc(detail)}" title="${dateLabel(day.date)} · ${esc(detail)}">
+        <div class="kepala-student-chart-stack">${segments}</div>
+      </div>`;
+    })
+    .join("");
+  const dateTicks = tickIndexes
+    .map(
+      (index) =>
+        `<span style="left:${((index / (days.length - 1)) * 100).toFixed(2)}%;">${dateLabel(days[index].date)}</span>`,
+    )
+    .join("");
+  const legend = [
+    { label: "Hadir", color: "#059669" },
+    { label: "Izin", color: "#d97706" },
+    { label: "Sakit", color: "#0284c7" },
+    { label: "Alpa", color: "#e11d48" },
+    { label: "Terlambat", color: "#7c3aed" },
+  ]
+    .map(
+      (item) =>
+        `<span><i style="background:${item.color};"></i>${item.label}</span>`,
+    )
+    .join("");
+  const chart =
+    maxTotal > 0
+      ? `<div class="kepala-student-chart-layout">
+          <div class="kepala-student-chart-y-axis" aria-hidden="true">${ticks.map((tick) => `<span>${tick}</span>`).join("")}</div>
+          <div class="kepala-student-chart-main">
+            <div class="kepala-student-chart-plot" role="group" aria-label="Grafik batang bertumpuk kehadiran siswa per hari">${bars}</div>
+            <div class="kepala-student-chart-x-axis" aria-hidden="true">${dateTicks}</div>
+          </div>
+        </div>
+        <div class="kepala-student-chart-legend">${legend}</div>`
+      : '<div class="kepala-student-chart-empty">Belum ada data kehadiran pada periode ini.</div>';
+  return `<section class="kepala-student-trend" aria-label="Grafik statistik kehadiran siswa 30 hari terakhir">
+    <div class="kepala-student-trend-heading">
+      <strong>Tren Kehadiran Harian</strong>
+      <span>Jumlah presensi per hari</span>
+    </div>
+    ${chart}
+  </section>`;
+}
+
 async function muatStatistikSiswa(prefix) {
   const bodyId = prefix + "StatistikSiswaBody";
   const body = document.getElementById(bodyId);
@@ -4460,6 +4586,8 @@ async function muatStatistikSiswa(prefix) {
     .join("");
 
   const perKelas = Array.isArray(data.perKelas) ? data.perKelas : [];
+  const perHari = Array.isArray(data.perHari) ? data.perHari : [];
+  const grafik = renderGrafikStatistikSiswa(perHari, mulai);
   const classCards = perKelas
     .map((kelas) => {
       const hadir = Number(kelas.hadir) || 0;
@@ -4483,6 +4611,7 @@ async function muatStatistikSiswa(prefix) {
     .join("");
 
   body.innerHTML = `<div class="kepala-student-stat-grid">${stat}</div>
+    ${grafik}
     <div class="kepala-student-class-heading">
       <strong>Rincian Per Rombel</strong>
       <span>${perKelas.length} rombel terdata</span>
