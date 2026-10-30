@@ -1106,6 +1106,58 @@ function bukaRekapSiswaDashboard(prefix) {
   gantiTab("kepala-siswa");
 }
 
+function renderPieStatistikSiswa(ring) {
+  const statuses = [
+    { label: "Hadir", key: "hadir", color: "#059669" },
+    { label: "Terlambat", key: "telat", color: "#7c3aed" },
+    { label: "Izin", key: "izin", color: "#d97706" },
+    { label: "Sakit", key: "sakit", color: "#0284c7" },
+    { label: "Alpa", key: "alpa", color: "#e11d48" },
+  ].map((status) => ({
+    ...status,
+    value: Math.max(0, Number(ring[status.key]) || 0),
+  }));
+  const total = statuses.reduce((sum, status) => sum + status.value, 0);
+  let accumulated = 0;
+  const slices = statuses.map((status) => {
+    const start = accumulated;
+    accumulated += total ? (status.value / total) * 100 : 0;
+    return `${status.color} ${start.toFixed(2)}% ${accumulated.toFixed(2)}%`;
+  });
+  const legend = statuses
+    .map((status) => {
+      const percent = total
+        ? Math.round((status.value / total) * 100)
+        : 0;
+      return `<div class="kepala-student-pie-row">
+        <span class="kepala-student-pie-label">
+          <i style="background:${status.color};"></i>
+          <span>${status.label}</span>
+        </span>
+        <strong>${status.value.toLocaleString("id-ID")}</strong>
+        <span class="kepala-student-pie-percent">${percent}%</span>
+      </div>`;
+    })
+    .join("");
+  const percentHadir = Math.max(0, Number(ring.persenHadir) || 0);
+
+  return `<section class="kepala-student-pie" aria-label="Komposisi status presensi siswa 30 hari terakhir">
+    <div class="kepala-student-trend-heading">
+      <strong>Komposisi Status Presensi</strong>
+      <span>${total.toLocaleString("id-ID")} total presensi</span>
+    </div>
+    <div class="kepala-student-pie-content">
+      <div class="kepala-student-pie-chart" role="img" aria-label="${percentHadir}% hadir dari ${total.toLocaleString("id-ID")} total presensi" style="background:${total ? `conic-gradient(${slices.join(",")})` : "#e2e8f0"};">
+        <div class="kepala-student-pie-center">
+          <strong>${percentHadir}%</strong>
+          <span>HADIR</span>
+        </div>
+      </div>
+      <div class="kepala-student-pie-legend">${legend}</div>
+    </div>
+  </section>`;
+}
+
 function renderGrafikStatistikSiswa(perHari, mulai) {
   const rowsByDate = new Map(
     perHari.map((row) => [row.tanggal, row]),
@@ -1295,6 +1347,7 @@ async function muatStatistikSiswa(prefix) {
 
   const perKelas = Array.isArray(data.perKelas) ? data.perKelas : [];
   const perHari = Array.isArray(data.perHari) ? data.perHari : [];
+  const pie = renderPieStatistikSiswa(ring);
   const grafik = renderGrafikStatistikSiswa(perHari, mulai);
   const classCards = perKelas
     .map((kelas) => {
@@ -1319,7 +1372,7 @@ async function muatStatistikSiswa(prefix) {
     .join("");
 
   body.innerHTML = `<div class="kepala-student-stat-grid">${stat}</div>
-    ${grafik}
+    <div class="kepala-student-visuals">${grafik}${pie}</div>
     <div class="kepala-student-class-heading">
       <strong>Rincian Per Rombel</strong>
       <span>${perKelas.length} rombel terdata</span>

@@ -14228,9 +14228,27 @@ textarea:focus-visible {
   border-color: #254536;
 }
 
+#adminSection .kepala-student-visuals,
+#kepalaSection .kepala-student-visuals {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(250px, 0.8fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+#adminSection .kepala-student-pie,
+#kepalaSection .kepala-student-pie {
+  min-width: 0;
+  padding: 12px;
+  background: #f5f6ff;
+  border: 1px solid #e6eaf2;
+  border-radius: 12px;
+}
+
 #adminSection .kepala-student-trend,
 #kepalaSection .kepala-student-trend {
-  margin: 0 0 16px;
+  min-width: 0;
+  margin: 0;
   padding: 12px;
   background: #f5f6ff;
   border: 1px solid #e6eaf2;
@@ -14256,6 +14274,112 @@ textarea:focus-visible {
 #kepalaSection .kepala-student-trend-heading > span {
   color: #718096;
   font-size: 9px;
+}
+
+#adminSection .kepala-student-pie-content,
+#kepalaSection .kepala-student-pie-content {
+  display: grid;
+  grid-template-columns: minmax(110px, 0.9fr) minmax(0, 1.1fr);
+  align-items: center;
+  gap: 12px;
+}
+
+#adminSection .kepala-student-pie-chart,
+#kepalaSection .kepala-student-pie-chart {
+  position: relative;
+  display: grid;
+  width: min(100%, 164px);
+  aspect-ratio: 1;
+  place-items: center;
+  justify-self: center;
+  border-radius: 50%;
+}
+
+#adminSection .kepala-student-pie-center,
+#kepalaSection .kepala-student-pie-center {
+  display: flex;
+  width: 68%;
+  height: 68%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px #edf0f5;
+}
+
+#adminSection .kepala-student-pie-center > strong,
+#kepalaSection .kepala-student-pie-center > strong {
+  color: #101b17;
+  font-family: "Plus Jakarta Sans", var(--font-display);
+  font-size: clamp(20px, 2.4vw, 29px);
+  line-height: 1.1;
+}
+
+#adminSection .kepala-student-pie-center > span,
+#kepalaSection .kepala-student-pie-center > span {
+  margin-top: 3px;
+  color: #64748b;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+#adminSection .kepala-student-pie-legend,
+#kepalaSection .kepala-student-pie-legend {
+  display: grid;
+  min-width: 0;
+  gap: 6px;
+}
+
+#adminSection .kepala-student-pie-row,
+#kepalaSection .kepala-student-pie-row {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 8px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid #e6eaf2;
+  border-radius: 9px;
+}
+
+#adminSection .kepala-student-pie-label,
+#kepalaSection .kepala-student-pie-label {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 7px;
+  color: #526078;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+#adminSection .kepala-student-pie-label > i,
+#kepalaSection .kepala-student-pie-label > i {
+  width: 9px;
+  height: 9px;
+  flex: 0 0 9px;
+  border-radius: 50%;
+}
+
+#adminSection .kepala-student-pie-row > strong,
+#kepalaSection .kepala-student-pie-row > strong {
+  color: #101b17;
+  font-size: 10px;
+}
+
+#adminSection .kepala-student-pie-percent,
+#kepalaSection .kepala-student-pie-percent {
+  min-width: 34px;
+  padding: 3px 5px;
+  color: #047857;
+  background: #ecfdf5;
+  border-radius: 6px;
+  font-size: 9px;
+  font-weight: 700;
+  text-align: center;
 }
 
 #adminSection .kepala-student-chart-layout,
@@ -14389,6 +14513,37 @@ textarea:focus-visible {
 .dark #kepalaSection .kepala-student-trend {
   background: #12221b;
   border-color: #254536;
+}
+
+.dark #adminSection .kepala-student-pie,
+.dark #kepalaSection .kepala-student-pie {
+  background: #12221b;
+  border-color: #254536;
+}
+
+.dark #adminSection .kepala-student-pie-center,
+.dark #kepalaSection .kepala-student-pie-center {
+  background: #0d1e17;
+  box-shadow: inset 0 0 0 1px #254536;
+}
+
+.dark #adminSection .kepala-student-pie-center > strong,
+.dark #kepalaSection .kepala-student-pie-center > strong,
+.dark #adminSection .kepala-student-pie-row > strong,
+.dark #kepalaSection .kepala-student-pie-row > strong {
+  color: #e5eee9;
+}
+
+.dark #adminSection .kepala-student-pie-row,
+.dark #kepalaSection .kepala-student-pie-row {
+  background: #0d1e17;
+  border-color: #254536;
+}
+
+.dark #adminSection .kepala-student-pie-percent,
+.dark #kepalaSection .kepala-student-pie-percent {
+  color: #b0f0d6;
+  background: #173c2c;
 }
 
 .dark #adminSection .kepala-student-trend-heading strong,
@@ -14665,6 +14820,29 @@ textarea:focus-visible {
   #adminSection .main-content-wrap,
   #kepalaSection .main-content-wrap {
     padding-top: 16px;
+  }
+
+  #adminSection .kepala-student-visuals,
+  #kepalaSection .kepala-student-visuals {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  #adminSection .kepala-student-pie,
+  #kepalaSection .kepala-student-pie {
+    padding: 10px;
+  }
+
+  #adminSection .kepala-student-pie-content,
+  #kepalaSection .kepala-student-pie-content {
+    grid-template-columns: minmax(105px, 0.8fr) minmax(0, 1.2fr);
+    gap: 9px;
+  }
+
+  #adminSection .kepala-student-pie-row,
+  #kepalaSection .kepala-student-pie-row {
+    gap: 6px;
+    padding: 6px;
   }
 
   #kepalaSection .kepala-approval-panel > .toolbar-header {
