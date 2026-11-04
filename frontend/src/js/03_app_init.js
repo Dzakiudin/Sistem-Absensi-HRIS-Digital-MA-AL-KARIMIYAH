@@ -318,17 +318,43 @@ function attachStaticListeners() {
   on("btnGunakanLokasiSaatIni", "click", gunakanLokasiSaatIni);
 
   on("adminFilterApply", "click", () => muatDataAbsensiAdmin());
+  on("adminCardBelumPresensi", "click", () =>
+    bukaLogBelumPresensi("admin"),
+  );
+  on("adminCardBelumPresensi", "keydown", (event) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      bukaLogBelumPresensi("admin");
+    }
+  });
   on("adminExportCSV", "click", () => {
     const status =
       (document.getElementById("adminFilterStatus") || {}).value || "";
-    const data = saringStatusAbsensi(window.__adminAbsensiCache || [], status);
+    const data = saringStatusAbsensi(
+      window.__adminAbsensiCache || [],
+      status,
+      window.__adminAbsensiBelumCache || [],
+    );
     unduhAbsensiExcel(data, "Rekap Absensi Guru", "admin");
   });
   on("kepalaFilterApply", "click", () => muatDataAbsensiKepala());
+  on("kepalaCardBelumPresensi", "click", () =>
+    bukaLogBelumPresensi("kepala"),
+  );
+  on("kepalaCardBelumPresensi", "keydown", (event) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      bukaLogBelumPresensi("kepala");
+    }
+  });
   on("kepalaExportCSV", "click", () => {
     const status =
       (document.getElementById("kepalaFilterStatus") || {}).value || "";
-    const data = saringStatusAbsensi(window.__kepalaAbsensiCache || [], status);
+    const data = saringStatusAbsensi(
+      window.__kepalaAbsensiCache || [],
+      status,
+      window.__kepalaAbsensiBelumCache || [],
+    );
     unduhAbsensiExcel(data, "Rekap Absensi Guru", "kepala");
   });
 

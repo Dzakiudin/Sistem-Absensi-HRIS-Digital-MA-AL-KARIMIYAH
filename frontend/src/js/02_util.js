@@ -147,6 +147,8 @@ function badgeStatus(s) {
   if (s === "Sakit") return `<span class="badge warn">Sakit</span>`;
   if (s === "Cuti") return `<span class="badge muted">Cuti</span>`;
   if (s === "Alpa") return `<span class="badge danger">Alpa</span>`;
+  if (s === "Belum Presensi")
+    return `<span class="badge warn">Belum Presensi</span>`;
   if (s === "Terlambat") return `<span class="badge danger">Terlambat</span>`;
   if (s === "Pulang Cepat")
     return `<span class="badge warn">Pulang Cepat</span>`;

@@ -376,9 +376,10 @@ function resetFilterKepala() {
 }
 
 // 5. Status Dropdown Filter (Admin & Kepala)
-function saringStatusAbsensi(cache, status) {
+function saringStatusAbsensi(cache, status, barisBelumPresensi) {
   if (!status || status === "Semua" || status === "") return cache || [];
   const s = status.toLowerCase();
+  if (s === "belum presensi") return barisBelumPresensi || [];
   return (cache || []).filter((r) => {
     const w = (r.statusWaktu || "").toLowerCase();
     const j = (r.jenisAbsen || "").toLowerCase();
@@ -397,24 +398,70 @@ function saringStatusAbsensi(cache, status) {
   });
 }
 
-function filterStatusAdmin(status) {
+async function filterStatusAdmin(status) {
+  const requestId =
+    (window.__adminStatusFilterRequest =
+      (window.__adminStatusFilterRequest || 0) + 1);
   const sel = document.getElementById("adminFilterStatus");
   const val = status !== undefined ? status : sel ? sel.value : "";
   if (sel && status !== undefined && sel.value !== status) {
     sel.value = status === "Semua" ? "" : status;
   }
   const cache = window.__adminAbsensiCache || [];
-  renderTabelAbsensi(saringStatusAbsensi(cache, val), "adminAbsensiBody");
+  try {
+    const belum =
+      String(val).toLowerCase() === "belum presensi"
+        ? await bangunBarisBelumPresensi(
+            cache,
+            document.getElementById("adminFilterMulai").value,
+            document.getElementById("adminFilterAkhir").value,
+            document.getElementById("adminFilterGuru").value,
+          )
+        : [];
+    if (requestId !== window.__adminStatusFilterRequest) return [];
+    window.__adminAbsensiBelumCache = belum;
+    const filtered = saringStatusAbsensi(cache, val, belum);
+    renderTabelAbsensi(filtered, "adminAbsensiBody");
+    return filtered;
+  } catch (err) {
+    if (requestId !== window.__adminStatusFilterRequest) return [];
+    showToast(err.message, "error");
+    renderTabelAbsensi([], "adminAbsensiBody");
+    return [];
+  }
 }
 
-function filterStatusKepala(status) {
+async function filterStatusKepala(status) {
+  const requestId =
+    (window.__kepalaStatusFilterRequest =
+      (window.__kepalaStatusFilterRequest || 0) + 1);
   const sel = document.getElementById("kepalaFilterStatus");
   const val = status !== undefined ? status : sel ? sel.value : "";
   if (sel && status !== undefined && sel.value !== status) {
     sel.value = status === "Semua" ? "" : status;
   }
   const cache = window.__kepalaAbsensiCache || [];
-  renderTabelAbsensi(saringStatusAbsensi(cache, val), "kepalaAbsensiBody");
+  try {
+    const belum =
+      String(val).toLowerCase() === "belum presensi"
+        ? await bangunBarisBelumPresensi(
+            cache,
+            document.getElementById("kepalaFilterMulai").value,
+            document.getElementById("kepalaFilterAkhir").value,
+            document.getElementById("kepalaFilterGuru").value,
+          )
+        : [];
+    if (requestId !== window.__kepalaStatusFilterRequest) return [];
+    window.__kepalaAbsensiBelumCache = belum;
+    const filtered = saringStatusAbsensi(cache, val, belum);
+    renderTabelAbsensi(filtered, "kepalaAbsensiBody");
+    return filtered;
+  } catch (err) {
+    if (requestId !== window.__kepalaStatusFilterRequest) return [];
+    showToast(err.message, "error");
+    renderTabelAbsensi([], "kepalaAbsensiBody");
+    return [];
+  }
 }
 
 // 6. Export Rekap CSV

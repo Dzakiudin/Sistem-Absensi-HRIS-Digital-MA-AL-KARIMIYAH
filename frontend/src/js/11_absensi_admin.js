@@ -23,7 +23,7 @@ function renderTabelAbsensi(rows, tbodyId) {
       <td data-label="Mapel">${esc(r.mataPelajaran)}</td>
       <td data-label="Kelas">${r.kelas && r.kelas !== "-" ? esc(r.kelas) : "-"}</td>
       <td data-label="Jam Ke">${r.jamKe && r.jamKe !== "-" ? esc(r.jamKe) : "-"}</td>
-      <td data-label="Jenis">${badgeJenis(r.jenisAbsen)}</td>
+      <td data-label="Jenis">${r.syntheticBelumPresensi ? "-" : badgeJenis(r.jenisAbsen)}</td>
       <td data-label="Status">
         <div class="status-mini">
           <div class="status-mini-row">
@@ -52,7 +52,7 @@ function renderTabelAbsensi(rows, tbodyId) {
           ` : ""}
         </div>
       </td>
-      <td data-label="Lokasi">${badgeLokasi(r.statusLokasi)}<br><span class="muted-text">${r.jarak} m</span>${r.latitude && r.longitude ? `<a href="${tautanMaps(r.latitude, r.longitude)}" target="_blank" rel="noopener" class="maps-link">${icon("pin")}Peta</a>` : ""}</td>
+      <td data-label="Lokasi">${r.syntheticBelumPresensi ? "-" : `${badgeLokasi(r.statusLokasi)}<br><span class="muted-text">${r.jarak} m</span>${r.latitude && r.longitude ? `<a href="${tautanMaps(r.latitude, r.longitude)}" target="_blank" rel="noopener" class="maps-link">${icon("pin")}Peta</a>` : ""}`}</td>
     </tr>
   `,
     )
@@ -82,6 +82,8 @@ async function isiFilterGuruDropdown(selectId) {
 }
 
 async function muatDataAbsensiAdmin() {
+  window.__adminStatusFilterRequest =
+    (window.__adminStatusFilterRequest || 0) + 1;
   const mulai = document.getElementById("adminFilterMulai").value;
   const akhir = document.getElementById("adminFilterAkhir").value;
   const guru = document.getElementById("adminFilterGuru").value;
@@ -108,6 +110,8 @@ async function muatDataAbsensiAdmin() {
 }
 
 async function muatDataAbsensiKepala() {
+  window.__kepalaStatusFilterRequest =
+    (window.__kepalaStatusFilterRequest || 0) + 1;
   const mulai = document.getElementById("kepalaFilterMulai").value;
   const akhir = document.getElementById("kepalaFilterAkhir").value;
   const guru = document.getElementById("kepalaFilterGuru").value;
@@ -131,6 +135,134 @@ async function muatDataAbsensiKepala() {
   } catch (err) {
     showToast(err.message, "error");
   }
+}
+
+async function bangunBarisBelumPresensi(rows, mulai, akhir, guru) {
+  if (!Array.isArray(daftarGuruCache) || daftarGuruCache.length === 0) {
+    const guruRes = await runServer("getDaftarGuru", currentUser.username);
+    if (!guruRes || !guruRes.success) {
+      throw new Error((guruRes && guruRes.message) || "Gagal memuat daftar guru.");
+    }
+    daftarGuruCache = guruRes.data || [];
+  }
+
+  const statRes = await runServer(
+    "getStatistikHariIni",
+    currentUser.username,
+  );
+  if (!statRes || !statRes.success) {
+    throw new Error(
+      (statRes && statRes.message) || "Gagal memuat jadwal guru.",
+    );
+  }
+
+  const parseTanggal = (tanggal) => {
+    const nilai = String(tanggal || "");
+    if (/^\d{4}-\d{2}-\d{2}$/.test(nilai)) return nilai;
+    const bagian = nilai.split("/");
+    return bagian.length === 3
+      ? `${bagian[2]}-${bagian[1].padStart(2, "0")}-${bagian[0].padStart(2, "0")}`
+      : "";
+  };
+  const tanggalMulai = mulai || akhir || todayInputValue();
+  const tanggalAkhir = akhir || mulai || todayInputValue();
+  const tanggalAwalDate = new Date(`${tanggalMulai}T12:00:00`);
+  const tanggalAkhirDate = new Date(`${tanggalAkhir}T12:00:00`);
+  if (
+    Number.isNaN(tanggalAwalDate.getTime()) ||
+    Number.isNaN(tanggalAkhirDate.getTime()) ||
+    tanggalMulai > tanggalAkhir
+  ) {
+    throw new Error("Rentang tanggal belum valid.");
+  }
+
+  const hariIndo = [
+    "Minggu",
+    "Senin",
+    "Selasa",
+    "Rabu",
+    "Kamis",
+    "Jumat",
+    "Sabtu",
+  ];
+  const jadwalGuru = statRes.data && statRes.data.jadwalGuru;
+  const jadwalTersedia =
+    jadwalGuru && typeof jadwalGuru === "object" ? jadwalGuru : null;
+  const tercatat = new Set(
+    (rows || []).map((row) => {
+      const username = String(row.username || "").toLowerCase();
+      const tanggal = parseTanggal(row.tanggal);
+      return username && tanggal ? `${username}|${tanggal}` : "";
+    }),
+  );
+  const daftarGuru = daftarGuruCache.filter(
+    (item) => !guru || String(item.username).toLowerCase() === guru.toLowerCase(),
+  );
+  const belumPresensi = [];
+  const hariIni = todayInputValue();
+
+  for (
+    const tanggal = new Date(tanggalMulai + "T12:00:00");
+    tanggal <= tanggalAkhirDate;
+    tanggal.setDate(tanggal.getDate() + 1)
+  ) {
+    const tanggalIso = `${tanggal.getFullYear()}-${String(tanggal.getMonth() + 1).padStart(2, "0")}-${String(tanggal.getDate()).padStart(2, "0")}`;
+    if (tanggalIso > hariIni) continue;
+    const hari = hariIndo[tanggal.getDay()].toLowerCase();
+
+    daftarGuru.forEach((item) => {
+      const username = String(item.username || "");
+      const usernameKey = username.toLowerCase();
+      const hariJadwal = jadwalTersedia
+        ? jadwalTersedia[usernameKey]
+        : null;
+      const terjadwal = Array.isArray(hariJadwal)
+        ? hariJadwal.some(
+            (namaHari) => String(namaHari).trim().toLowerCase() === hari,
+          )
+        : !jadwalTersedia;
+      if (tanggalIso !== hariIni && !terjadwal) return;
+      if (tercatat.has(`${usernameKey}|${tanggalIso}`)) return;
+
+      const [tahun, bulan, tanggalHari] = tanggalIso.split("-");
+      belumPresensi.push({
+        username,
+        namaGuru: item.namaLengkap,
+        tanggal: `${tanggalHari}/${bulan}/${tahun}`,
+        jam: "-",
+        mataPelajaran: "-",
+        kelas: "-",
+        jamKe: "-",
+        jenisAbsen: "-",
+        statusWaktu: "Belum Presensi",
+        statusLokasi: "-",
+        syntheticBelumPresensi: true,
+      });
+    });
+  }
+
+  return belumPresensi.sort((a, b) => {
+    const tanggalA = parseTanggal(a.tanggal);
+    const tanggalB = parseTanggal(b.tanggal);
+    return (
+      tanggalB.localeCompare(tanggalA) ||
+      String(a.namaGuru).localeCompare(String(b.namaGuru), "id")
+    );
+  });
+}
+
+function bukaLogBelumPresensi(role) {
+  const prefix = role === "admin" ? "admin" : "kepala";
+  const filterMulai = document.getElementById(prefix + "FilterMulai");
+  const filterAkhir = document.getElementById(prefix + "FilterAkhir");
+  const filterGuru = document.getElementById(prefix + "FilterGuru");
+  const filterStatus = document.getElementById(prefix + "FilterStatus");
+  const hariIni = todayInputValue();
+  if (filterMulai) filterMulai.value = hariIni;
+  if (filterAkhir) filterAkhir.value = hariIni;
+  if (filterGuru) filterGuru.value = "";
+  if (filterStatus) filterStatus.value = "Belum Presensi";
+  gantiTab(prefix + "-absensi");
 }
 
 /* =============================================================

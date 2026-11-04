@@ -6761,6 +6761,15 @@ select.input:focus {
   box-shadow: var(--shadow-card-hover);
 }
 
+.stat-card-clickable {
+  cursor: pointer;
+}
+
+.stat-card-clickable:focus-visible {
+  outline: 3px solid var(--brand-emerald-600);
+  outline-offset: 3px;
+}
+
 .stat-card::before {
   height: 3px;
   background: linear-gradient(90deg, #059669, #6ee7b7);
