@@ -221,7 +221,7 @@ async function bangunBarisBelumPresensi(rows, mulai, akhir, guru) {
             (namaHari) => String(namaHari).trim().toLowerCase() === hari,
           )
         : !jadwalTersedia;
-      if (tanggalIso !== hariIni && !terjadwal) return;
+      if (!terjadwal) return;
       if (tercatat.has(`${usernameKey}|${tanggalIso}`)) return;
 
       const [tahun, bulan, tanggalHari] = tanggalIso.split("-");
