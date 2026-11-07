@@ -10572,10 +10572,6 @@ async function tampilRekapSiswa(
   window.__rekapCache = groups;
   el.innerHTML =
     '<section class="kepala-rekap-aggregation">' +
-    '<div class="kepala-rekap-aggregation-heading"><div><h3>Agregasi Kehadiran Kelas</h3><p>Ringkasan komposisi &amp; diagram status kehadiran berdasarkan filter yang dipilih.</p></div><span>' +
-    groups.length +
-    " rombel" +
-    "</span></div>" +
     '<div class="kepala-rekap-aggregation-grid">' +
     groups
       .map(function (g) {
