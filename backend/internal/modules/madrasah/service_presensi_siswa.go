@@ -219,7 +219,7 @@ func (s *Service) CatatAbsensiSiswa(ctx context.Context, payload map[string]inte
 
 func (s *Service) GetRekapPresensiSiswa(ctx context.Context, requestedBy string, payload map[string]interface{}) (map[string]interface{}, error) {
 	role := s.roleUser(ctx, requestedBy)
-	if requestedBy == "" || (role != "admin" && role != "kepala" && role != "guru") {
+	if requestedBy == "" || (role != "admin" && role != "kepala" && role != "guru" && !s.isGuruBK(ctx, requestedBy)) {
 		return map[string]interface{}{"success": false, "message": "Akses ditolak"}, nil
 	}
 
@@ -403,7 +403,7 @@ func (s *Service) GetRiwayatPresensiTanggal(ctx context.Context, requestedBy, ta
 
 func (s *Service) GetStatistikKehadiranSiswa(ctx context.Context, requestedBy string, payload map[string]interface{}) (map[string]interface{}, error) {
 	role := s.roleUser(ctx, requestedBy)
-	if requestedBy == "" || (role != "admin" && role != "kepala") {
+	if requestedBy == "" || (role != "admin" && role != "kepala" && !s.isGuruBK(ctx, requestedBy)) {
 		return map[string]interface{}{"success": false, "message": "Akses ditolak"}, nil
 	}
 
