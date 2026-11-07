@@ -84,6 +84,29 @@ function updateGuruMarquee() {
 window.addEventListener("resize", updateGuruMarquee);
 window.addEventListener("orientationchange", updateGuruMarquee);
 
+function isGuruBK(user) {
+  const u = user || currentUser;
+  if (!u) return false;
+  if (u.isGuruBK === true) return true;
+  if (String(u.role || "").toLowerCase() === "bk") return true;
+  const mp = String(u.mataPelajaran || "")
+    .toLowerCase()
+    .trim();
+  if (!mp || mp === "-") return false;
+  if (
+    mp === "bk" ||
+    mp === "koord bk" ||
+    mp === "koordinator bk" ||
+    mp === "guru bk" ||
+    mp.includes("bimbingan") ||
+    mp.includes("konseling")
+  ) {
+    return true;
+  }
+  const tokens = mp.split(/[\s,/\-.()]+/);
+  return tokens.includes("bk");
+}
+
 function masukKeDashboard() {
   if (!currentUser) return;
   document
@@ -98,7 +121,12 @@ function masukKeDashboard() {
           .charAt(0)
           .toUpperCase()),
     );
-  if (currentUser.role === "guru" || currentUser.role === "staf") {
+  if (
+    currentUser.role === "guru" ||
+    currentUser.role === "staf" ||
+    currentUser.role === "bk"
+  ) {
+    const userIsBK = isGuruBK(currentUser);
     document.getElementById("guruSection").classList.remove("hidden");
     document
       .querySelectorAll('.guru-bottom-nav button[data-tab="honor"]')
@@ -106,8 +134,28 @@ function masukKeDashboard() {
         el.classList.remove("hidden");
         el.style.removeProperty("display");
       });
-    const rincian =
-      currentUser.role === "staf"
+    const navBK = document.getElementById("guruNavBtnBK");
+    if (navBK) {
+      navBK.classList.toggle("hidden", !userIsBK);
+      if (userIsBK) navBK.style.removeProperty("display");
+    }
+    document
+      .querySelectorAll("#guruSection .guru-bottom-nav")
+      .forEach((nav) => nav.classList.toggle("has-bk-tab", userIsBK));
+    const homeBKWidget = document.getElementById("guruHomeBKWidget");
+    if (homeBKWidget) {
+      homeBKWidget.classList.toggle("hidden", !userIsBK);
+    }
+
+    const mpRaw = String(currentUser.mataPelajaran || "").trim();
+    const isKoordBK = mpRaw.toLowerCase().includes("koord");
+    const labelBK = isKoordBK ? "Koordinator BK" : "Guru BK";
+    const labelBKDropdown = isKoordBK
+      ? "Koordinator BK · Bimbingan & Konseling"
+      : "Guru Bimbingan & Konseling (BK)";
+    const rincian = userIsBK
+      ? labelBK
+      : currentUser.role === "staf"
         ? "Tenaga Kependidikan / Staf"
         : [
             currentUser.mataPelajaran,
@@ -125,11 +173,19 @@ function masukKeDashboard() {
     const cloneMapel = document.getElementById("guruUserMapelClone");
     if (cloneMapel)
       cloneMapel.textContent = rincian || currentUser.mataPelajaran || "";
+    const roleLabelEl = document.getElementById("guruDropdownRoleLabel");
+    if (roleLabelEl) {
+      roleLabelEl.textContent = userIsBK
+        ? labelBKDropdown
+        : currentUser.role === "staf"
+          ? "Tenaga Kependidikan / Staf"
+          : "Guru Pengajar";
+    }
     const cloneName = document.querySelector(".js-user-name-clone");
     if (cloneName) cloneName.textContent = currentUser.namaLengkap;
     updateGuruMarquee();
     if (currentUser.role === "staf") {
-      // Sembunyikan elemen khusus mengajar di dashboard absensi
+      // Sembunyikan elemen khusus mengajar di dashboard absensi (muncul otomatis jika sudah konfirmasi guru pengganti)
       document
         .querySelectorAll(".guru-target-box")
         .forEach((el) => el.classList.add("hidden"));

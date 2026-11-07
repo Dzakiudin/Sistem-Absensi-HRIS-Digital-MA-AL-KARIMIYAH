@@ -295,6 +295,14 @@ func (h *Handler) HandleRPC(c *fiber.Ctx) error {
 		result, err = h.svc.GetSlipHonorBaru(ctx, args.Str(0), args.Str(1), args.Int(2), args.Int(3))
 	case "getRiwayatHonorPegawai":
 		result, err = h.svc.GetRiwayatHonorPegawai(ctx, args.Str(0), args.Str(1))
+	case "getDashboardBK":
+		result, err = h.svc.GetDashboardBK(ctx, args.Str(0), args.Map(1))
+	case "getCatatanBK":
+		result, err = h.svc.GetCatatanBK(ctx, args.Str(0), args.Map(1))
+	case "simpanCatatanBK":
+		result, err = h.svc.SimpanCatatanBK(ctx, args.Map(0))
+	case "hapusCatatanBK":
+		result, err = h.svc.HapusCatatanBK(ctx, args.Str(0), args.Raw(1))
 	default:
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"error": fmt.Sprintf("Unknown RPC method: %s", req.Fn),

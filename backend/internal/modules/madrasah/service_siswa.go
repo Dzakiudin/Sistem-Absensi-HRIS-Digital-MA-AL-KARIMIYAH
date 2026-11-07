@@ -20,7 +20,7 @@ var statusSiswaValid = map[string]bool{
 }
 
 func (s *Service) GetDaftarSiswa(ctx context.Context, requestedBy string, kelasId int, cari string, halaman int, perHalaman int) (map[string]interface{}, error) {
-	if !s.CheckAccess(ctx, requestedBy, "admin") {
+	if !s.CheckAccess(ctx, requestedBy, "admin") && !s.isGuruBK(ctx, requestedBy) {
 		return map[string]interface{}{"success": false, "message": "Akses ditolak"}, nil
 	}
 	cari = strings.TrimSpace(cari)

@@ -143,7 +143,7 @@
 <div id="guruSection" class="user-shell hidden">
   <!-- Topbar Portal Guru -->
   <header class="app-topbar">
-    <div class="topbar-inner" style="max-width: 480px">
+    <div class="topbar-inner">
       <div class="brand-cluster">
         <div class="brand-logo">
           <img src="/logo.png?v=20260929" alt="Logo" />
@@ -249,6 +249,7 @@
                 Nama Guru
               </div>
               <div
+                id="guruDropdownRoleLabel"
                 style="font-size: 12px; color: var(--slate); margin-top: 2px"
               >
                 Guru Pengajar
@@ -710,6 +711,28 @@
           </div>
         </div>
       </section>
+
+      <section
+        id="guruHomeBKWidget"
+        class="guru-bk-home-widget hidden"
+        aria-labelledby="guruHomeBKTitle"
+      >
+        <div class="guru-section-heading">
+          <h2 id="guruHomeBKTitle">Radar Layanan &amp; Pantauan BK</h2>
+          <button
+            type="button"
+            class="guru-text-action"
+            onclick="gantiTabGuru('bk')"
+          >
+            Buka Panel BK
+          </button>
+        </div>
+        <div id="guruHomeBKCard" class="guru-bk-home-card">
+          <div class="empty-state">
+            <div class="s">Memuat ringkasan pantauan siswa...</div>
+          </div>
+        </div>
+      </section>
     </div>
 
     <!-- TAB 2: JADWAL (halaman guru2.png) -->
@@ -959,6 +982,56 @@
       </div>
       <div id="guruPresensiSesiList"></div>
     </div>
+
+    <!-- TAB 6: PANTAUAN & LAYANAN BK (khusus Guru BK) -->
+    <div id="guruPanelBK" class="hidden">
+      <section class="guru-page-hero guru-bk-hero">
+        <div class="guru-page-hero-top">
+          <span class="guru-hero-pill" id="guruBKHeroPill">Bimbingan &amp; Konseling</span>
+          <span class="guru-hero-live"><span aria-hidden="true"></span><span id="guruBKLiveStatus" aria-live="polite">Memuat data BK...</span></span>
+        </div>
+        <h2>Pusat Pantauan &amp; Layanan BK</h2>
+        <p>Pemantauan siswa rawan presensi, direktori atensi khusus (yatim, domisili luar, kepulauan), diagram kelas, serta jurnal bimbingan.</p>
+        <div id="guruBKKpiGrid" class="guru-bk-kpi-grid"></div>
+      </section>
+
+      <div class="guru-bk-subnav" role="tablist" aria-label="Menu Layanan BK">
+        <button
+          type="button"
+          class="guru-bk-tab-btn active"
+          data-bk-tab="radar"
+          onclick="gantiSubTabBK('radar')"
+        >
+          <span>Radar Presensi</span>
+        </button>
+        <button
+          type="button"
+          class="guru-bk-tab-btn"
+          data-bk-tab="kelas"
+          onclick="gantiSubTabBK('kelas')"
+        >
+          <span>Diagram Kelas</span>
+        </button>
+        <button
+          type="button"
+          class="guru-bk-tab-btn"
+          data-bk-tab="direktori"
+          onclick="gantiSubTabBK('direktori')"
+        >
+          <span>Data Asuh</span>
+        </button>
+        <button
+          type="button"
+          class="guru-bk-tab-btn"
+          data-bk-tab="jurnal"
+          onclick="gantiSubTabBK('jurnal')"
+        >
+          <span>Jurnal BK</span>
+        </button>
+      </div>
+
+      <div id="guruBKContentArea" class="guru-bk-content-area"></div>
+    </div>
   </div>
 
   <!-- Fixed Bottom Navigation (Guru) -->
@@ -979,6 +1052,24 @@
         <polyline points="9 22 9 12 15 12 15 22"></polyline>
       </svg>
       <span>Beranda</span>
+    </button>
+    <button
+      type="button"
+      id="guruNavBtnBK"
+      class="guru-nav-btn hidden"
+      data-tab="bk"
+      onclick="gantiTabGuru('bk')"
+    >
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+        <path d="M9 12l2 2 4-4"></path>
+      </svg>
+      <span>Pantauan BK</span>
     </button>
     <button
       type="button"

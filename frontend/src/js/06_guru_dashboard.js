@@ -365,6 +365,13 @@ async function muatDashboardGuru() {
   if (!isStaf) {
     inisialisasiTargetJadwalGuru();
   }
+  if (
+    typeof isGuruBK === "function" &&
+    isGuruBK(currentUser) &&
+    typeof muatRingkasanBerandaBK === "function"
+  ) {
+    void muatRingkasanBerandaBK();
+  }
   void muatJadwalBerandaGuru();
   const area = document.getElementById("guruStatusArea");
   const liburBanner = document.getElementById("guruLiburBanner");
@@ -491,7 +498,14 @@ async function muatJadwalBerandaGuru() {
     });
 
     if (!sesiHariIni.length) {
-      card.innerHTML = `
+      const userBK = typeof isGuruBK === "function" && isGuruBK(currentUser);
+      card.innerHTML = userBK
+        ? `
+        <div class="guru-home-empty">
+          <span class="guru-home-empty-icon" aria-hidden="true">${icon("calendar")}</span>
+          <div><strong>Tidak ada jadwal guru pengganti hari ini</strong><p>Jika Anda ditugaskan menggantikan guru di kelas, sesi akan tampil otomatis di sini &amp; di tab Presensi.</p></div>
+        </div>`
+        : `
         <div class="guru-home-empty">
           <span class="guru-home-empty-icon" aria-hidden="true">${icon("calendar")}</span>
           <div><strong>Tidak ada jadwal hari ini</strong><p>Jadwal mengajar mingguan Anda dapat dilihat di tab Jadwal.</p></div>

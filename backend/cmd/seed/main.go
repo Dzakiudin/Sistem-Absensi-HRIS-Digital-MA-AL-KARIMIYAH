@@ -190,16 +190,19 @@ func main() {
 				username, password, role, nama_lengkap, mata_pelajaran, no_hp, status,
 				kelas, jam_ke, hari_aktif, status_sergu, mapel_aktif, kelas_aktif,
 				nip, gelar, status_kepegawaian, nik, tempat_lahir, tanggal_lahir,
-				jenis_kelamin, alamat, pendidikan, tahun_lulus, tahun_masuk, masa_kerja
+				jenis_kelamin, alamat, pendidikan, tahun_lulus, tahun_masuk, masa_kerja,
+				izinkan_guru_pengganti
 			) VALUES (
 				$1, $2, $3, $4, $5, '-', 'Aktif',
 				'-', '-', 'Senin,Selasa,Rabu,Kamis,Jumat,Sabtu', '', $6, '-',
 				'', $7, 'GTY', $8, $9, $10,
-				$11, $12, $13, $14, $15, $16
+				$11, $12, $13, $14, $15, $16,
+				$17
 			)
 		`, username, madrasah.HashPassword("KARIMAN01"), role, nama, mapel, mapel, gelar,
 			strings.TrimSpace(g.NIK), strings.TrimSpace(g.Tempat), g.TanggalLahir,
-			g.JK, g.Alamat, g.Pendidikan, g.TahunLulus, thnMasuk, g.MasaKerja)
+			g.JK, g.Alamat, g.Pendidikan, g.TahunLulus, thnMasuk, g.MasaKerja,
+			role == "guru")
 		if err != nil {
 			log.Printf("Warning inserting guru %s: %v", nama, err)
 			continue

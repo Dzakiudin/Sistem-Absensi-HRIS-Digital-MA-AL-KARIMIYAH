@@ -37,6 +37,7 @@ type Service struct {
 	rekap         RekapRepository
 	pengganti     PenggantiRepository
 	absensi       AbsensiRepository
+	bk            BKRepository
 
 	honorCacheTTL time.Duration
 
@@ -46,7 +47,7 @@ type Service struct {
 }
 
 func NewService(db *pgxpool.Pool) *Service {
-	return &Service{
+	svc := &Service{
 		db:            NewTransactor(db),
 		pengguna:      NewPenggunaRepository(db),
 		pengaturan:    NewPengaturanRepository(db),
@@ -64,7 +65,12 @@ func NewService(db *pgxpool.Pool) *Service {
 		rekap:         NewRekapRepository(db),
 		pengganti:     NewPenggantiRepository(db),
 		absensi:       NewAbsensiRepository(db),
+		bk:            NewBKRepository(db),
 	}
+	if svc.bk != nil {
+		_ = svc.bk.EnsureSchema(context.Background())
+	}
+	return svc
 }
 
 func (s *Service) SetCache(c cache.Store) {
@@ -172,6 +178,7 @@ func (s *Service) Login(ctx context.Context, username, password string) (map[str
 		_ = s.pengguna.PerbaruiPassword(ctx, p.Username, HashPassword(password))
 	}
 
+	isBK := isGuruBKMapel(p.MataPelajaran) || strings.EqualFold(p.Role, "bk")
 	return map[string]interface{}{
 		"success": true,
 		"user": map[string]interface{}{
@@ -182,7 +189,8 @@ func (s *Service) Login(ctx context.Context, username, password string) (map[str
 			"mataPelajaran":        p.MataPelajaran,
 			"kelas":                p.Kelas,
 			"jamKe":                p.JamKe,
-			"izinkanGuruPengganti": p.IzinkanPengganti,
+			"izinkanGuruPengganti": p.IzinkanPengganti || isBK,
+			"isGuruBK":             isBK,
 		},
 	}, nil
 }

@@ -260,7 +260,7 @@ func (s *Service) GetRekapPresensiSiswa(ctx context.Context, requestedBy string,
 
 	kelasTerlarang := false
 	waliID := 0
-	if role == "guru" {
+	if role == "guru" && !s.isGuruBK(ctx, requestedBy) {
 		uid, err := s.pengguna.IDByUsername(ctx, requestedBy)
 		if err != nil {
 			return nil, err
@@ -370,7 +370,7 @@ func (s *Service) GetRekapPresensiSiswa(ctx context.Context, requestedBy string,
 
 func (s *Service) GetRiwayatPresensiTanggal(ctx context.Context, requestedBy, tanggal string) (map[string]interface{}, error) {
 	role := s.roleUser(ctx, requestedBy)
-	if requestedBy == "" || (role != "admin" && role != "kepala") {
+	if requestedBy == "" || (role != "admin" && role != "kepala" && !s.isGuruBK(ctx, requestedBy)) {
 		return map[string]interface{}{"success": false, "message": "Akses ditolak"}, nil
 	}
 	tanggalT, err := parseTanggalIndo(tanggal)

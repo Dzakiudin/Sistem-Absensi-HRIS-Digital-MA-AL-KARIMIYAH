@@ -205,6 +205,9 @@ function gantiTab(tabId) {
 }
 
 function gantiTabGuru(tabId) {
+  if (tabId === "bk" && typeof isGuruBK === "function" && !isGuruBK(currentUser)) {
+    tabId = "absen";
+  }
   __tabGuruAktif = tabId;
   document
     .querySelectorAll(".guru-bottom-nav button")
@@ -224,20 +227,30 @@ function gantiTabGuru(tabId) {
   document
     .getElementById("guruPanelPresensi")
     .classList.toggle("hidden", tabId !== "presensi");
+  const panelBK = document.getElementById("guruPanelBK");
+  if (panelBK) panelBK.classList.toggle("hidden", tabId !== "bk");
   if (tabId === "absen") amankanMuatan("g-dash", () => muatDashboardGuru());
   if (tabId === "jadwal") amankanMuatan("g-jadwal", () => muatJadwalSaya());
   if (tabId === "riwayat") amankanMuatan("g-riwayat", () => muatRiwayatSaya());
   if (tabId === "honor") amankanMuatan("g-honor", () => muatRiwayatHonor());
   if (tabId === "presensi")
     amankanMuatan("g-presensi", () => muatPresensiGuru());
+  if (tabId === "bk" && typeof muatPanelGuruBK === "function")
+    amankanMuatan("g-bk", () => muatPanelGuruBK());
 }
 
 // Auto-refresh tab yang sedang aktif saat halaman kembali terlihat (me-refresh
 // data yang mungkin basi saat tab browser lama tidak aktif).
 function panggilUlangTabAktif() {
   if (!currentUser) return;
-  if (currentUser.role === "guru" || currentUser.role === "staf") {
-    if (currentUser.role === "staf") void perbaruiAksesPenggantiStaf();
+  if (
+    currentUser.role === "guru" ||
+    currentUser.role === "staf" ||
+    currentUser.role === "bk"
+  ) {
+    if (currentUser.role === "staf") {
+      void perbaruiAksesPenggantiStaf();
+    }
     if (__tabGuruAktif) gantiTabGuru(__tabGuruAktif);
   } else if (__tabAktif) {
     gantiTab(__tabAktif);

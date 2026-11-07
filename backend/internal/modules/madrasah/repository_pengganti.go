@@ -127,7 +127,10 @@ func (r *pgPenggantiRepository) DaftarGuruKecuali(ctx context.Context, username 
 		FROM madrasah_users
 		WHERE role IN ('guru','staf')
 		  AND status = 'Aktif'
-		  AND izinkan_guru_pengganti = TRUE
+		  AND (
+		    izinkan_guru_pengganti = TRUE
+		    OR LOWER(TRIM(mata_pelajaran)) IN ('bk', 'koord bk', 'koordinator bk', 'guru bk', 'bimbingan konseling')
+		  )
 		  AND username != $1
 		ORDER BY nama_lengkap ASC
 	`, username)

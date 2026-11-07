@@ -16,12 +16,12 @@ async function muatRekapSiswa() {
         .join("");
   } catch (e) {}
   el.innerHTML =
-    '<div class="card" style="padding:18px 20px;">' +
+    '<div class="card" style="padding:18px 20px;margin-bottom:14px;">' +
     '<h3 style="margin:0 0 14px 0;font-size:16px;font-weight:700;color:var(--ink);">Rekap Presensi Siswa</h3>' +
     '<div class="admin-rekap-fields" style="display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;">' +
-    '<div class="admin-rekap-field">' +
+    '<div class="admin-rekap-field" style="flex:1;min-width:160px;">' +
     __label("Kelas") +
-    '<select id="adminRekapKelas" style="padding:9px 11px;border:1px solid var(--line);border-radius:10px;font-size:13px;background:var(--parchment-alt);color:var(--ink);min-width:160px;">' +
+    '<select id="adminRekapKelas" style="width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:10px;font-size:13px;background:var(--parchment-alt);color:var(--ink);min-width:160px;">' +
     klOpts +
     "</select></div>" +
     '<div class="admin-rekap-field">' +
@@ -40,10 +40,15 @@ async function muatRekapSiswa() {
       "tampilRekapSiswa('#adminRekapHasil','adminRekapKelas','adminRekapAwal','adminRekapAkhir')",
     ) +
     __btnSekunder("Ekspor Excel", "eksporExcelSiswa()") +
+    __btnSekunder(
+      "Riwayat Harian",
+      "tampilRiwayatHarian('#adminRekapHasil','adminRekapAwal')",
+    ) +
+    __btnSekunder("Cetak", "cetakRekapSiswa()") +
     "</div>" +
     "</div>" +
-    '<div id="adminRekapHasil" style="margin-top:14px;"></div>' +
-    "</div>";
+    "</div>" +
+    '<div id="adminRekapHasil"></div>';
   tampilRekapSiswa(
     "#adminRekapHasil",
     "adminRekapKelas",
@@ -99,7 +104,7 @@ async function tampilRekapSiswa(
   window.__rekapCache = groups;
   el.innerHTML =
     '<section class="kepala-rekap-aggregation">' +
-    '<div class="kepala-rekap-aggregation-heading"><div><h3>Agregasi Kehadiran Kelas</h3><p>Ringkasan status kehadiran berdasarkan filter yang dipilih.</p></div><span>' +
+    '<div class="kepala-rekap-aggregation-heading"><div><h3>Agregasi Kehadiran Kelas</h3><p>Ringkasan komposisi &amp; diagram status kehadiran berdasarkan filter yang dipilih.</p></div><span>' +
     groups.length +
     " rombel" +
     "</span></div>" +
@@ -113,44 +118,292 @@ async function tampilRekapSiswa(
 }
 function toggleRekapDetail(id) {
   var el = document.getElementById("rekapDetail" + id);
-  if (el) el.classList.toggle("hidden");
+  var card = document.getElementById("rekapCard" + id);
+  var btn = document.getElementById("rekapBtn" + id);
+  if (!el) return;
+  var isHidden = el.classList.toggle("hidden");
+  if (card) card.classList.toggle("is-expanded", !isHidden);
+  if (btn) {
+    btn.innerHTML = isHidden ? "Detail Siswa +" : "Tutup Detail &minus;";
+    btn.setAttribute("aria-expanded", isHidden ? "false" : "true");
+  }
 }
 function __rekapKelasCard(g) {
   var n = (g.siswa || []).length;
+  var hVal = Math.max(0, Number(g.totalH) || 0);
+  var iVal = Math.max(0, Number(g.totalI) || 0);
+  var sVal = Math.max(0, Number(g.totalS) || 0);
+  var aVal = Math.max(0, Number(g.totalA) || 0);
+  var tVal = Math.max(0, Number(g.totalT) || 0);
+  var totalPresensi = hVal + iVal + sVal + aVal + tVal;
+  var pctHadir = totalPresensi > 0 ? Math.round((hVal / totalPresensi) * 100) : 0;
+  var pctEfektif =
+    totalPresensi > 0 ? Math.round(((hVal + tVal) / totalPresensi) * 100) : 0;
+
+  var statuses = [
+    {
+      label: "Hadir",
+      cls: "present",
+      value: hVal,
+      color: "#059669",
+      bg: "#ecfdf5",
+      textColor: "#047857",
+    },
+    {
+      label: "Telat",
+      cls: "late",
+      value: tVal,
+      color: "#7c3aed",
+      bg: "#f5f3ff",
+      textColor: "#6d28d9",
+    },
+    {
+      label: "Izin",
+      cls: "permission",
+      value: iVal,
+      color: "#d97706",
+      bg: "#fffbeb",
+      textColor: "#b45309",
+    },
+    {
+      label: "Sakit",
+      cls: "sick",
+      value: sVal,
+      color: "#0284c7",
+      bg: "#f0f9ff",
+      textColor: "#0369a1",
+    },
+    {
+      label: "Alfa",
+      cls: "absent",
+      value: aVal,
+      color: "#e11d48",
+      bg: "#fff1f2",
+      textColor: "#be123c",
+    },
+  ].map(function (st) {
+    var pct =
+      totalPresensi > 0 ? Math.round((st.value / totalPresensi) * 100) : 0;
+    var exactPct =
+      totalPresensi > 0 ? (st.value / totalPresensi) * 100 : 0;
+    return {
+      label: st.label,
+      cls: st.cls,
+      value: st.value,
+      color: st.color,
+      bg: st.bg,
+      textColor: st.textColor,
+      pct: pct,
+      exactPct: exactPct,
+    };
+  });
+
+  var cx = 80,
+    cy = 80,
+    r = 56,
+    c = 2 * Math.PI * r;
+  var acc = 0;
+  var slicesSvg = "";
+  statuses.forEach(function (st) {
+    if (st.value > 0 && totalPresensi > 0) {
+      var len = (st.value / totalPresensi) * c;
+      var offset = c * 0.25 - acc;
+      var tip = JSON.stringify({
+        title: "Kelas " + (g.kodeKelas || "-") + " · " + st.label,
+        items: [
+          {
+            label: "Jumlah " + st.label,
+            value: st.value.toLocaleString("id-ID") + " presensi",
+            color: st.color,
+          },
+          {
+            label: "Proporsi",
+            value:
+              st.pct + "% dari " + totalPresensi.toLocaleString("id-ID"),
+            color: st.color,
+          },
+        ],
+      }).replace(/"/g, "&quot;");
+      slicesSvg +=
+        '<circle class="kepala-class-donut-slice" cx="' +
+        cx +
+        '" cy="' +
+        cy +
+        '" r="' +
+        r +
+        '" fill="none" stroke="' +
+        st.color +
+        '" stroke-width="20" stroke-dasharray="' +
+        len.toFixed(2) +
+        " " +
+        (c - len).toFixed(2) +
+        '" stroke-dashoffset="' +
+        offset.toFixed(2) +
+        '" data-tip="' +
+        tip +
+        '" onmouseenter="handleBarHover(event, this)" onmousemove="moveChartTooltip(event)" onmouseleave="hideChartTooltip()" ontouchstart="handleBarHover(event, this)" />';
+      acc += len;
+    }
+  });
+
+  var rowsHtml = statuses
+    .map(function (st) {
+      var barW =
+        st.value > 0 ? Math.max(4, Math.min(100, Math.round(st.exactPct))) : 0;
+      var tip = JSON.stringify({
+        title: "Kelas " + (g.kodeKelas || "-") + " · " + st.label,
+        items: [
+          {
+            label: "Status " + st.label,
+            value: st.value.toLocaleString("id-ID") + " presensi",
+            color: st.color,
+          },
+          {
+            label: "Persentase",
+            value: st.pct + "%",
+            color: st.color,
+          },
+        ],
+      }).replace(/"/g, "&quot;");
+      return (
+        '<div class="kepala-class-stat-row is-' +
+        st.cls +
+        '" data-tip="' +
+        tip +
+        '" onmouseenter="handleBarHover(event, this)" onmousemove="moveChartTooltip(event)" onmouseleave="hideChartTooltip()" ontouchstart="handleBarHover(event, this)">' +
+        '<div class="kepala-class-stat-top">' +
+        '<span class="kepala-class-stat-label">' +
+        '<i style="background:' +
+        st.color +
+        ";box-shadow:0 0 0 3px " +
+        st.color +
+        '22;"></i>' +
+        "<span>" +
+        escH(st.label) +
+        "</span>" +
+        "</span>" +
+        '<div class="kepala-class-stat-values">' +
+        "<strong>" +
+        st.value.toLocaleString("id-ID") +
+        "</strong>" +
+        '<span class="kepala-class-stat-pct">' +
+        st.pct +
+        "%</span>" +
+        "</div>" +
+        "</div>" +
+        '<div class="kepala-class-stat-bar-track">' +
+        '<span class="kepala-class-stat-bar-fill" style="width:' +
+        barW +
+        "%;background:" +
+        st.color +
+        ';"></span>' +
+        "</div>" +
+        "</div>"
+      );
+    })
+    .join("");
+
+  var spectrumSegments = statuses
+    .filter(function (st) {
+      return st.value > 0;
+    })
+    .map(function (st) {
+      return (
+        '<span class="kepala-class-spectrum-seg" style="width:' +
+        st.exactPct.toFixed(2) +
+        "%;background:" +
+        st.color +
+        ';" title="' +
+        escH(st.label) +
+        ": " +
+        st.value.toLocaleString("id-ID") +
+        " (" +
+        st.pct +
+        '%)"></span>'
+      );
+    })
+    .join("");
+
   return (
-    '<div class="kepala-class-summary" style="border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:14px;background:var(--surface);">' +
-    '<div class="kepala-class-summary-head" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px;">' +
-    '<h3 style="margin:0;font-size:15px;color:var(--ink);font-weight:700;">Kelas ' +
+    '<div id="rekapCard' +
+    g.kelasId +
+    '" class="kepala-class-summary">' +
+    '<div class="kepala-class-summary-head">' +
+    '<div class="kepala-class-title-wrap">' +
+    '<span class="kepala-class-code-badge">' +
+    escH(g.kodeKelas || "-") +
+    "</span>" +
+    '<div class="kepala-class-title-meta">' +
+    "<h3>Kelas " +
     escH(g.kodeKelas) +
-    ' <span style="font-size:12px;color:var(--slate-light);">(' +
+    "</h3>" +
+    '<div class="kepala-class-sub-pills">' +
+    '<span class="kepala-class-sub-pill">' +
     n +
-    " siswa)</span></h3>" +
-    __btnSekunder(
-      "Detail Siswa +",
-      "toggleRekapDetail(" + g.kelasId + ")",
-      "padding:7px 12px;font-size:12px;",
-    ) +
+    " siswa</span>" +
+    '<span class="kepala-class-sub-dot">&bull;</span>' +
+    '<span class="kepala-class-sub-pill is-total">' +
+    totalPresensi.toLocaleString("id-ID") +
+    " total presensi</span>" +
     "</div>" +
-    '<div class="kepala-class-summary-stats">' +
-    '<div class="kepala-summary-stat is-present"><span>Hadir</span><strong>' +
-    (g.totalH || 0) +
-    "</strong></div>" +
-    '<div class="kepala-summary-stat is-permission"><span>Izin</span><strong>' +
-    (g.totalI || 0) +
-    "</strong></div>" +
-    '<div class="kepala-summary-stat is-sick"><span>Sakit</span><strong>' +
-    (g.totalS || 0) +
-    "</strong></div>" +
-    '<div class="kepala-summary-stat is-absent"><span>Alfa</span><strong>' +
-    (g.totalA || 0) +
-    "</strong></div>" +
-    '<div class="kepala-summary-stat is-late"><span>Telat</span><strong>' +
-    (g.totalT || 0) +
-    "</strong></div>" +
+    "</div>" +
+    "</div>" +
+    '<button type="button" id="rekapBtn' +
+    g.kelasId +
+    '" class="kepala-class-detail-btn" aria-expanded="false" onclick="toggleRekapDetail(' +
+    g.kelasId +
+    ')">Detail Siswa +</button>' +
+    "</div>" +
+    '<div class="kepala-class-diagram-body">' +
+    '<div class="kepala-class-donut-col">' +
+    '<div class="kepala-class-donut-box" role="img" aria-label="Kelas ' +
+    escH(g.kodeKelas) +
+    ": " +
+    pctHadir +
+    "% hadir dari " +
+    totalPresensi.toLocaleString("id-ID") +
+    ' presensi">' +
+    '<svg viewBox="0 0 160 160" class="kepala-class-donut-svg">' +
+    '<circle class="kepala-class-donut-track" cx="' +
+    cx +
+    '" cy="' +
+    cy +
+    '" r="' +
+    r +
+    '" fill="none" stroke-width="20" />' +
+    slicesSvg +
+    "</svg>" +
+    '<div class="kepala-class-donut-center">' +
+    "<strong>" +
+    pctHadir +
+    "%</strong>" +
+    "<span>HADIR</span>" +
+    "</div>" +
+    "</div>" +
+    "</div>" +
+    '<div class="kepala-class-stat-list">' +
+    rowsHtml +
+    "</div>" +
+    "</div>" +
+    '<div class="kepala-class-spectrum-footer">' +
+    '<div class="kepala-class-spectrum-bar">' +
+    (spectrumSegments ||
+      '<span class="kepala-class-spectrum-empty"></span>') +
+    "</div>" +
+    '<div class="kepala-class-spectrum-meta">' +
+    "<span>Kehadiran Efektif (H+T): <strong>" +
+    pctEfektif +
+    "%</strong></span>" +
+    "<span>Tanpa Keterangan (Alfa): <strong class=\"" +
+    (aVal > 0 ? "is-alert" : "") +
+    '">' +
+    aVal.toLocaleString("id-ID") +
+    "</strong></span>" +
+    "</div>" +
     "</div>" +
     '<div id="rekapDetail' +
     g.kelasId +
-    '" class="hidden" style="margin-top:12px;">' +
+    '" class="kepala-class-detail-drawer hidden">' +
     __rekapSiswaTable(g.siswa || []) +
     "</div>" +
     "</div>"
@@ -159,39 +412,52 @@ function __rekapKelasCard(g) {
 function __rekapSiswaTable(siswa) {
   if (!siswa.length) return __kosong("Tidak ada siswa.");
   var head =
-    '<thead><tr style="background:var(--parchment-alt);color:var(--slate);border-bottom:1px solid var(--line);text-align:left;"><th style="padding:8px;">No</th><th style="padding:8px;">NIS</th><th style="padding:8px;">Nama</th><th style="padding:8px;">H</th><th style="padding:8px;">I</th><th style="padding:8px;">S</th><th style="padding:8px;">A</th><th style="padding:8px;">T</th><th style="padding:8px;">Jumlah</th><th style="padding:8px;">% Hadir</th></tr></thead>';
+    '<thead><tr><th>No</th><th>NIS</th><th>Nama Siswa</th><th style="text-align:center;">H</th><th style="text-align:center;">T</th><th style="text-align:center;">I</th><th style="text-align:center;">S</th><th style="text-align:center;">A</th><th style="text-align:center;">Total</th><th style="text-align:right;">% Hadir</th></tr></thead>';
   var tr = siswa
     .map(function (x, i) {
+      var pct = Number(x.persen) || 0;
+      var pctCls =
+        pct >= 85 ? "is-good" : pct >= 70 ? "is-warn" : "is-low";
       return (
-        '<tr style="border-bottom:1px solid var(--line);color:var(--ink);"><td style="padding:8px;color:var(--slate-light);">' +
+        "<tr>" +
+        '<td class="col-no">' +
         (i + 1) +
-        '</td><td style="padding:8px;color:var(--ink);">' +
+        "</td>" +
+        '<td class="col-nis">' +
         escH(x.nis) +
-        '</td><td style="padding:8px;font-weight:600;color:var(--ink);">' +
+        "</td>" +
+        '<td class="col-nama">' +
         escH(x.nama) +
         "</td>" +
-        '<td style="padding:8px;color:#047857;font-weight:700;">' +
+        '<td class="col-stat is-h">' +
         (x.hadir || 0) +
-        '</td><td style="padding:8px;color:var(--ink);">' +
-        (x.izin || 0) +
-        '</td><td style="padding:8px;color:var(--ink);">' +
-        (x.sakit || 0) +
         "</td>" +
-        '<td style="padding:8px;color:#be123c;font-weight:700;">' +
-        (x.alpa || 0) +
-        '</td><td style="padding:8px;color:var(--ink);">' +
+        '<td class="col-stat is-t">' +
         (x.telat || 0) +
         "</td>" +
-        '<td style="padding:8px;color:var(--ink);">' +
+        '<td class="col-stat is-i">' +
+        (x.izin || 0) +
+        "</td>" +
+        '<td class="col-stat is-s">' +
+        (x.sakit || 0) +
+        "</td>" +
+        '<td class="col-stat is-a">' +
+        (x.alpa || 0) +
+        "</td>" +
+        '<td class="col-stat is-tot">' +
         (x.total || 0) +
-        '</td><td style="padding:8px;"><strong style="color:var(--ink);">' +
-        (x.persen || 0) +
-        "%</strong></td></tr>"
+        "</td>" +
+        '<td class="col-pct"><span class="rekap-pct-pill ' +
+        pctCls +
+        '">' +
+        pct +
+        "%</span></td>" +
+        "</tr>"
       );
     })
     .join("");
   return (
-    '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:12px;">' +
+    '<div class="kepala-rekap-detail-table-wrap"><table class="kepala-rekap-detail-table">' +
     head +
     "<tbody>" +
     tr +
@@ -1175,12 +1441,16 @@ async function muatKepalaSiswa() {
     "kepalaSiswaAkhir",
   );
 }
-async function tampilRiwayatHarian() {
-  var el = document.getElementById("kepalaSiswaHasil");
+async function tampilRiwayatHarian(containerSel, tglInputId) {
+  var el = containerSel
+    ? document.querySelector(containerSel)
+    : document.getElementById("kepalaSiswaHasil");
   if (!el) return;
   var tglSel =
+    (tglInputId && document.getElementById(tglInputId)) ||
     document.getElementById("kepalaSiswaAwal") ||
-    document.getElementById("kepalaSiswaTgl");
+    document.getElementById("kepalaSiswaTgl") ||
+    document.getElementById("adminRekapAwal");
   var tgl = tglSel ? __tglIndo(tglSel.value) : "";
   if (!tgl) {
     showToast("Pilih tanggal terlebih dahulu", "error");

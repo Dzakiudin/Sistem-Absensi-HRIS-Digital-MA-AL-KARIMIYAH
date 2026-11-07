@@ -65,6 +65,7 @@ var selfServiceMapFns = map[string]bool{
 	"ajukanIzin":         true,
 	"batalkanIzin":       true,
 	"jawabPengganti":     true,
+	"simpanCatatanBK":    true,
 }
 
 var adminMapFns = map[string]bool{

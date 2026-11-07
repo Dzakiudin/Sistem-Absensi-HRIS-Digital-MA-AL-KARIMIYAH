@@ -227,6 +227,26 @@ CREATE INDEX IF NOT EXISTS idx_abs_siswa_sesi ON madrasah_absensi_siswa (sesi_id
 CREATE INDEX IF NOT EXISTS idx_absensi_siswa_siswa ON madrasah_absensi_siswa (siswa_id);
 CREATE INDEX IF NOT EXISTS idx_absensi_siswa_tgl_guru ON madrasah_absensi_siswa (tanggal, guru_username);
 
+-- Catatan / Jurnal Layanan Bimbingan & Konseling (Guru BK)
+CREATE TABLE IF NOT EXISTS madrasah_catatan_bk (
+    id SERIAL PRIMARY KEY,
+    siswa_id INT NOT NULL REFERENCES madrasah_siswa(id) ON DELETE CASCADE,
+    kelas VARCHAR(30) DEFAULT '-',
+    tanggal DATE NOT NULL DEFAULT CURRENT_DATE,
+    kategori VARCHAR(80) NOT NULL DEFAULT 'Kedisiplinan / Presensi',
+    tindak_lanjut TEXT DEFAULT '',
+    catatan TEXT NOT NULL DEFAULT '',
+    status VARCHAR(40) NOT NULL DEFAULT 'Dipantau',
+    guru_bk_username VARCHAR(100) NOT NULL,
+    guru_bk_nama VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_catatan_bk_siswa ON madrasah_catatan_bk (siswa_id);
+CREATE INDEX IF NOT EXISTS idx_catatan_bk_tanggal ON madrasah_catatan_bk (tanggal DESC);
+CREATE INDEX IF NOT EXISTS idx_catatan_bk_status ON madrasah_catatan_bk (status);
+
 -- Penggantian guru untuk satu rentang tanggal (dari-sampai). Guru A menunjuk
 -- guru B sebagai pengganti utk seluruh sesi jadwalnya selama rentang aktif.
 -- Status: 'Menunggu' -> 'Terkonfirmasi' (B konfirmasi sekali) / 'Ditolak' /

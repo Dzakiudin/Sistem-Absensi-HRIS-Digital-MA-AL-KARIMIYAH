@@ -8247,11 +8247,11 @@ table.data-table tbody tr:last-child td {
   --guru-primary: #064e3b;
   --guru-secondary: #047857;
   --guru-mint: #6cf8bb;
-  --guru-canvas: #faf8ff;
-  --guru-tint: #f2f3ff;
-  --guru-border: #e7e9f4;
+  --guru-canvas: #f8fafc;
+  --guru-tint: #f1f5f9;
+  --guru-border: #e2e8f0;
   background: var(--guru-canvas);
-  color: #131b2e;
+  color: #0f172a;
 }
 
 #guruSection .guru-portal-shell {
@@ -8262,9 +8262,9 @@ table.data-table tbody tr:last-child td {
 
 #guruSection .app-topbar {
   height: 72px;
-  background: rgba(250, 248, 255, 0.9) !important;
-  border-bottom: 1px solid rgba(231, 233, 244, 0.85) !important;
-  box-shadow: 0 2px 16px rgba(19, 27, 46, 0.045) !important;
+  background: rgba(255, 255, 255, 0.94) !important;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.9) !important;
+  box-shadow: 0 2px 16px rgba(15, 23, 42, 0.045) !important;
 }
 
 #guruSection .app-topbar .topbar-inner {
@@ -8326,7 +8326,8 @@ table.data-table tbody tr:last-child td {
 #guruSection #guruPanelJadwal,
 #guruSection #guruPanelRiwayat,
 #guruSection #guruPanelHonor,
-#guruSection #guruPanelPresensi {
+#guruSection #guruPanelPresensi,
+#guruSection #guruPanelBK {
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -8606,7 +8607,8 @@ table.data-table tbody tr:last-child td {
   gap: 4px;
   padding: 10px 12px;
   border-radius: 12px;
-  background: #f3f4ff;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
 }
 
 #guruSection .guru-attendance-metric > span {
@@ -8667,7 +8669,8 @@ table.data-table tbody tr:last-child td {
   align-items: center;
   justify-content: center;
   border-radius: 14px;
-  background: #e9eaff;
+  background: #ecfdf5;
+  border: 1px solid #d1fae5;
   color: #064e3b;
 }
 
@@ -8899,7 +8902,8 @@ table.data-table tbody tr:last-child td {
   justify-content: space-between;
   gap: 8px;
   padding: 8px 12px;
-  background: #f0f2ff;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
 }
 
 #guruSection .guru-day-name {
@@ -9040,9 +9044,9 @@ table.data-table tbody tr:last-child td {
 #guruSection .riwayat-filter-bar {
   margin-bottom: 14px;
   padding: 12px;
-  border: 0;
+  border: 1px solid #e2e8f0;
   border-radius: 15px;
-  background: #f3f4ff;
+  background: #f8fafc;
 }
 
 #guruSection .riwayat-filter-controls {
@@ -9067,9 +9071,9 @@ table.data-table tbody tr:last-child td {
   width: 100%;
   min-width: 0;
   min-height: 42px;
-  border: 0;
+  border: 1px solid #cbd5e1;
   border-radius: 12px;
-  background-color: #e9eaff;
+  background-color: #ffffff;
   font-size: 12px;
 }
 
@@ -9157,9 +9161,9 @@ table.data-table tbody tr:last-child td {
   width: 100%;
   min-height: 46px;
   padding: 0 12px;
-  border: 0;
+  border: 1px solid #cbd5e1;
   border-radius: 12px;
-  background: #f0f2ff;
+  background: #f8fafc;
 }
 
 #guruSection .guru-presensi-date-row > .btn {
@@ -9193,9 +9197,9 @@ table.data-table tbody tr:last-child td {
 #guruSection .guru-date-shortcuts button {
   min-height: 30px;
   padding: 0 10px;
-  border: 0;
+  border: 1px solid #e2e8f0;
   border-radius: 999px;
-  background: #e9eaff;
+  background: #f1f5f9;
   color: #263246;
   font-size: 10px;
   font-weight: 600;
@@ -9203,7 +9207,8 @@ table.data-table tbody tr:last-child td {
 }
 
 #guruSection .guru-date-shortcuts button:last-child {
-  background: #6cf8bb;
+  background: #d1fae5;
+  border-color: #a7f3d0;
   color: #064e3b;
 }
 
@@ -9225,7 +9230,8 @@ table.data-table tbody tr:last-child td {
 #guruSection .guru-presensi-list-heading > span {
   padding: 5px 9px;
   border-radius: 999px;
-  background: #e9eaff;
+  background: #ecfdf5;
+  border: 1px solid #d1fae5;
   color: #064e3b;
   font-size: 10px;
   white-space: nowrap;
@@ -9251,7 +9257,7 @@ table.data-table tbody tr:last-child td {
   place-items: center;
   margin-bottom: 3px;
   border-radius: 14px;
-  background: #e9eaff;
+  background: #ecfdf5;
   color: #064e3b;
 }
 
@@ -9296,7 +9302,7 @@ table.data-table tbody tr:last-child td {
   height: 42px;
   place-items: center;
   border-radius: 13px;
-  background: #e9eaff;
+  background: #ecfdf5;
   color: #064e3b;
 }
 
@@ -9430,13 +9436,15 @@ table.data-table tbody tr:last-child td {
   bottom: max(10px, env(safe-area-inset-bottom)) !important;
   left: 50% !important;
   width: calc(100% - 24px) !important;
-  max-width: 520px !important;
+  max-width: 560px !important;
   transform: translateX(-50%) !important;
-  border: 1px solid rgba(226, 232, 240, 0.9) !important;
+  border: 1px solid rgba(226, 232, 240, 0.92) !important;
   border-radius: 22px !important;
   padding: 5px 8px !important;
-  background: rgba(250, 248, 255, 0.94) !important;
-  box-shadow: 0 8px 28px rgba(19, 27, 46, 0.12) !important;
+  background: rgba(255, 255, 255, 0.96) !important;
+  box-shadow: 0 8px 28px rgba(15, 23, 42, 0.12) !important;
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
 }
 
 #guruSection .guru-nav-btn {
@@ -9446,7 +9454,7 @@ table.data-table tbody tr:last-child td {
   gap: 3px;
   padding: 5px 4px;
   border-radius: 16px;
-  color: #47515f;
+  color: #475569;
   font-size: 10px;
 }
 
@@ -9456,8 +9464,8 @@ table.data-table tbody tr:last-child td {
 }
 
 #guruSection .guru-nav-btn.active {
-  background: #6cf8bb;
-  color: #003527;
+  background: #d1fae5;
+  color: #064e3b;
 }
 
 #guruSection .guru-nav-btn span {
@@ -9601,10 +9609,16 @@ table.data-table tbody tr:last-child td {
     min-width: 0;
   }
 
+  #guruSection #guruPanelAbsen > #guruHomeBKWidget {
+    grid-column: 1 / -1;
+    min-width: 0;
+  }
+
   #guruSection #guruPanelJadwal:not(.hidden),
   #guruSection #guruPanelRiwayat:not(.hidden),
   #guruSection #guruPanelPresensi:not(.hidden),
-  #guruSection #guruPanelHonor:not(.hidden) {
+  #guruSection #guruPanelHonor:not(.hidden),
+  #guruSection #guruPanelBK:not(.hidden) {
     max-width: 100%;
   }
 
@@ -11901,22 +11915,22 @@ textarea:focus-visible {
 #adminSection,
 #kepalaSection {
   --role-primary: #064e3b;
-  --role-primary-soft: #e9fbf3;
-  --role-canvas: #f7f7fc;
+  --role-primary-soft: #ecfdf5;
+  --role-canvas: #f8fafc;
   --role-card: #ffffff;
-  --role-line: #e3e8f2;
-  --role-lavender: #eef0ff;
+  --role-line: #e2e8f0;
+  --role-lavender: #f1f5f9;
   background:
-    radial-gradient(ellipse at 50% -12%, rgba(108, 248, 187, 0.09), transparent 38%),
+    radial-gradient(ellipse at 50% -12%, rgba(16, 185, 129, 0.08), transparent 38%),
     var(--role-canvas);
 }
 
 #adminSection .app-topbar,
 #kepalaSection .app-topbar {
   height: 68px;
-  background: rgba(250, 248, 255, 0.96);
-  border-bottom: 1px solid rgba(226, 232, 240, 0.82);
-  box-shadow: 0 2px 14px rgba(19, 27, 46, 0.035);
+  background: rgba(255, 255, 255, 0.96);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.9);
+  box-shadow: 0 2px 14px rgba(15, 23, 42, 0.035);
   -webkit-backdrop-filter: blur(16px);
 }
 
@@ -11935,10 +11949,10 @@ textarea:focus-visible {
 
 #adminSection .badge-role,
 #kepalaSection .badge-role {
-  background: #6cf8bb;
-  border: 0;
+  background: #d1fae5;
+  border: 1px solid #a7f3d0;
   border-radius: 999px;
-  color: #003527;
+  color: #064e3b;
   font-size: 10px;
   font-weight: 700;
   padding: 4px 9px;
@@ -12252,9 +12266,9 @@ textarea:focus-visible {
 #kepalaSection input.input,
 #kepalaSection select.input {
   min-height: 42px;
-  border-color: #dfe4ef;
+  border-color: #cbd5e1;
   border-radius: 10px;
-  background-color: #f4f5ff;
+  background-color: #f8fafc;
 }
 
 #adminSection .btn,
@@ -12273,13 +12287,13 @@ textarea:focus-visible {
 
 #adminSection table.data-table th,
 #kepalaSection table.data-table th {
-  background: #eef0ff;
-  color: #53617a;
+  background: #f1f5f9;
+  color: #475569;
 }
 
 #adminSection table.data-table tr:hover td,
 #kepalaSection table.data-table tr:hover td {
-  background: #f8f9ff;
+  background: #f8fafc;
 }
 
 #kepalaSection [data-panel="kepala-siswa"] > .card:first-child {
@@ -12315,7 +12329,7 @@ textarea:focus-visible {
   gap: 2px;
   padding: 7px 8px;
   border-radius: 11px;
-  background: #f3f4ff;
+  background: #f8fafc;
   color: #1f2937;
 }
 
@@ -12373,8 +12387,8 @@ textarea:focus-visible {
 
 #kepalaSection #kepalaSiswaHasil {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
 }
 
 #kepalaSection #kepalaSiswaHasil > .kepala-class-summary {
@@ -12439,7 +12453,7 @@ textarea:focus-visible {
   height: 18px;
   place-items: center;
   color: #526078;
-  background: #eef0ff;
+  background: #f1f5f9;
   border-radius: 999px;
   font-size: 9px;
   font-weight: 700;
@@ -12453,7 +12467,7 @@ textarea:focus-visible {
 
 #kepalaSection .kepala-approval-filter.active span {
   color: #064e3b;
-  background: #6cf8bb;
+  background: #a7f3d0;
 }
 
 #kepalaSection .kepala-approval-card {
@@ -12513,8 +12527,8 @@ textarea:focus-visible {
 #kepalaSection .kepala-approval-card-details {
   margin: 10px 0 0 52px;
   padding: 10px 12px;
-  background: #f5f6fb;
-  border: 1px solid #edf0f6;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
   border-radius: 12px;
 }
 
@@ -12733,23 +12747,23 @@ textarea:focus-visible {
 }
 
 #kepalaSection .kbm-badge {
-  color: #005236;
-  background: #6cf8bb;
-  border: 0;
+  color: #064e3b;
+  background: #d1fae5;
+  border: 1px solid #a7f3d0;
   border-radius: 999px;
   font-size: 10px;
 }
 
 #kepalaSection .kbm-item-card {
   padding: 11px 12px !important;
-  background: #f8f7ff;
-  border-color: #eeeff8;
+  background: #f8fafc;
+  border-color: #e2e8f0;
   border-radius: 13px;
 }
 
 #kepalaSection .kepala-honor-control-card {
   padding: 20px !important;
-  background: #white;
+  background: #ffffff;
 }
 
 #kepalaSection .kepala-honor-toolbar {
@@ -12807,10 +12821,10 @@ textarea:focus-visible {
 
 #adminSection .admin-bottom-nav,
 #kepalaSection .admin-bottom-nav {
-  border: 1px solid rgba(226, 232, 240, 0.88) !important;
+  border: 1px solid rgba(226, 232, 240, 0.92) !important;
   border-radius: 20px;
-  background: rgba(250, 248, 255, 0.96) !important;
-  box-shadow: 0 -4px 20px rgba(19, 27, 46, 0.06) !important;
+  background: rgba(255, 255, 255, 0.96) !important;
+  box-shadow: 0 8px 28px rgba(15, 23, 42, 0.08) !important;
   -webkit-backdrop-filter: blur(18px) saturate(1.3);
 }
 
@@ -12818,16 +12832,16 @@ textarea:focus-visible {
 #kepalaSection .admin-nav-btn {
   min-height: 54px;
   padding: 4px 3px;
-  color: #667085;
+  color: #64748b;
   font-family: Inter, sans-serif;
   font-size: 10px;
 }
 
 #adminSection .admin-nav-btn.active,
 #kepalaSection .admin-nav-btn.active {
-  background: #6cf8bb;
+  background: #d1fae5;
   border-radius: 13px;
-  color: #003527;
+  color: #064e3b;
 }
 
 .dark #adminSection,
@@ -14644,8 +14658,8 @@ textarea:focus-visible {
 
 #kepalaSection .kepala-rekap-aggregation-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
 }
 
 #kepalaSection #kepalaSiswaHasil {
@@ -15756,3 +15770,2090 @@ textarea:focus-visible {
     flex: 0 0 auto;
   }
 }
+
+/* =============================================================
+   DIAGRAM AGREGASI KEHADIRAN KELAS (ADMIN, KEPALA, GURU BK + MOBILE)
+   ============================================================= */
+#adminSection .kepala-rekap-aggregation-grid,
+#kepalaSection .kepala-rekap-aggregation-grid,
+#guruSection .kepala-rekap-aggregation-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: 14px;
+  align-items: start;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-class-summary {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0 !important;
+  padding: 16px 18px !important;
+  background: #ffffff !important;
+  border: 1px solid #e4eaf3 !important;
+  border-radius: 18px !important;
+  box-shadow: 0 6px 20px -8px rgba(15, 23, 42, 0.08);
+  transition:
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-class-summary:hover {
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 10px 26px -10px rgba(15, 23, 42, 0.13);
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-class-summary.is-expanded {
+  grid-column: 1 / -1;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-class-summary-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 0 !important;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #eef2f7;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-class-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-class-code-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 42px;
+  height: 42px;
+  padding: 0 10px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+  border: 1px solid #a7f3d0;
+  color: #065f46;
+  font-family: "Plus Jakarta Sans", var(--font-display);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  flex-shrink: 0;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-class-title-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-class-title-meta h3 {
+  margin: 0 !important;
+  color: #0f172a;
+  font-family: "Plus Jakarta Sans", var(--font-display);
+  font-size: 15.5px !important;
+  font-weight: 800;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-class-sub-pills {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+  color: #64748b;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-class-sub-dot {
+  color: #cbd5e1;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-class-sub-pill.is-total {
+  color: #047857;
+  font-weight: 700;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-class-detail-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 13px;
+  border-radius: 10px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #1e293b;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.16s ease;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-class-detail-btn:hover {
+  background: #ecfdf5;
+  border-color: #a7f3d0;
+  color: #065f46;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-class-detail-btn[aria-expanded="true"] {
+  background: #059669;
+  border-color: #059669;
+  color: #ffffff;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-class-diagram-body {
+  display: grid;
+  grid-template-columns: 158px minmax(0, 1fr);
+  align-items: center;
+  gap: 16px;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-class-donut-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-class-donut-box {
+  position: relative;
+  width: 152px;
+  height: 152px;
+  display: grid;
+  place-items: center;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-class-donut-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-class-donut-track {
+  stroke: #f1f5f9;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-class-donut-slice {
+  cursor: pointer;
+  transition:
+    stroke-width 0.2s ease,
+    opacity 0.2s ease;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-class-donut-slice:hover {
+  stroke-width: 24;
+  opacity: 0.92;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-class-donut-center {
+  position: absolute;
+  inset: 22%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: inset 0 0 0 1px #eef2f6;
+  pointer-events: none;
+  text-align: center;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-class-donut-center > strong {
+  color: #0f172a;
+  font-family: "Plus Jakarta Sans", var(--font-display);
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-class-donut-center > span {
+  margin-top: 3px;
+  color: #64748b;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-class-stat-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-class-stat-row {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 7px 10px;
+  background: #f8fafc;
+  border: 1px solid #e9eef5;
+  border-radius: 10px;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-class-stat-row:hover {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  transform: translateX(2px);
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-class-stat-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-class-stat-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  color: #334155;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-class-stat-label > i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-class-stat-values {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  flex-shrink: 0;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-class-stat-values > strong {
+  color: #0f172a;
+  font-family: "Plus Jakarta Sans", var(--font-display);
+  font-size: 12.5px;
+  font-weight: 800;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-class-stat-pct {
+  min-width: 38px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: #ecfdf5;
+  color: #047857;
+  font-size: 10.5px;
+  font-weight: 700;
+  text-align: center;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-class-stat-row.is-late .kepala-class-stat-pct {
+  background: #f5f3ff;
+  color: #6d28d9;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-class-stat-row.is-permission .kepala-class-stat-pct {
+  background: #fffbeb;
+  color: #b45309;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-class-stat-row.is-sick .kepala-class-stat-pct {
+  background: #f0f9ff;
+  color: #0369a1;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-class-stat-row.is-absent .kepala-class-stat-pct {
+  background: #fff1f2;
+  color: #be123c;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-class-stat-bar-track {
+  width: 100%;
+  height: 4px;
+  border-radius: 999px;
+  background: #e2e8f0;
+  overflow: hidden;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-class-stat-bar-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.35s ease;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-class-spectrum-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding-top: 10px;
+  border-top: 1px dashed #e2e8f0;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-class-spectrum-bar {
+  display: flex;
+  width: 100%;
+  height: 7px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  overflow: hidden;
+  gap: 2px;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-class-spectrum-seg {
+  display: block;
+  height: 100%;
+  min-width: 3px;
+  border-radius: 999px;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-class-spectrum-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px;
+  color: #64748b;
+  font-size: 11px;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-class-spectrum-meta strong {
+  color: #047857;
+  font-weight: 800;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-class-spectrum-meta strong.is-alert {
+  color: #be123c;
+}
+
+/* Tabel Detail Siswa di dalam Card */
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-class-detail-drawer {
+  margin-top: 4px;
+  padding-top: 12px;
+  border-top: 1px solid #e2e8f0;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-rekap-detail-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-rekap-detail-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-rekap-detail-table thead tr {
+  background: #f8fafc;
+  color: #475569;
+  border-bottom: 1px solid #e2e8f0;
+  text-align: left;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-rekap-detail-table th {
+  padding: 9px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-rekap-detail-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #1e293b;
+  white-space: nowrap;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-rekap-detail-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-rekap-detail-table .col-no {
+  color: #94a3b8;
+  width: 36px;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-rekap-detail-table .col-nama {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-rekap-detail-table .col-stat {
+  text-align: center;
+  font-weight: 600;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-rekap-detail-table .col-stat.is-h {
+  color: #059669;
+  font-weight: 700;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-rekap-detail-table .col-stat.is-t {
+  color: #7c3aed;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-rekap-detail-table .col-stat.is-i {
+  color: #d97706;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-rekap-detail-table .col-stat.is-s {
+  color: #0284c7;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-rekap-detail-table .col-stat.is-a {
+  color: #e11d48;
+  font-weight: 700;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .kepala-rekap-detail-table .col-pct {
+  text-align: right;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .rekap-pct-pill {
+  display: inline-block;
+  min-width: 42px;
+  padding: 2px 7px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .rekap-pct-pill.is-good {
+  background: #ecfdf5;
+  color: #047857;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .rekap-pct-pill.is-warn {
+  background: #fffbeb;
+  color: #b45309;
+}
+
+:is(#adminSection, #kepalaSection, #guruSection) .rekap-pct-pill.is-low {
+  background: #fff1f2;
+  color: #be123c;
+}
+
+/* Dark Mode Support untuk Diagram Kelas */
+.dark :is(#adminSection, #kepalaSection, #guruSection) .kepala-class-summary {
+  background: #12221b !important;
+  border-color: #254536 !important;
+}
+
+.dark :is(#adminSection, #kepalaSection, #guruSection) .kepala-class-summary-head {
+  border-bottom-color: #1f3b2e;
+}
+
+.dark :is(#adminSection, #kepalaSection, #guruSection) .kepala-class-code-badge {
+  background: #0d1e17;
+  border-color: #254536;
+  color: #6ee7b7;
+}
+
+.dark :is(#adminSection, #kepalaSection, #guruSection) .kepala-class-title-meta h3,
+.dark :is(#adminSection, #kepalaSection, #guruSection) .kepala-class-donut-center > strong,
+.dark :is(#adminSection, #kepalaSection, #guruSection) .kepala-class-stat-values > strong {
+  color: #e5eee9;
+}
+
+.dark :is(#adminSection, #kepalaSection, #guruSection) .kepala-class-sub-pill.is-total {
+  color: #6ee7b7;
+}
+
+.dark :is(#adminSection, #kepalaSection, #guruSection) .kepala-class-detail-btn {
+  background: #0d1e17;
+  border-color: #254536;
+  color: #dbe9e1;
+}
+
+.dark :is(#adminSection, #kepalaSection, #guruSection) .kepala-class-detail-btn[aria-expanded="true"] {
+  background: #059669;
+  border-color: #10b981;
+  color: #ffffff;
+}
+
+.dark :is(#adminSection, #kepalaSection, #guruSection) .kepala-class-donut-track {
+  stroke: #1b3328;
+}
+
+.dark :is(#adminSection, #kepalaSection, #guruSection) .kepala-class-donut-center {
+  background: #0d1e17;
+  box-shadow: inset 0 0 0 1px #254536;
+}
+
+.dark :is(#adminSection, #kepalaSection, #guruSection) .kepala-class-stat-row {
+  background: #0d1e17;
+  border-color: #213d30;
+}
+
+.dark :is(#adminSection, #kepalaSection, #guruSection) .kepala-class-stat-row:hover {
+  background: #152b22;
+  border-color: #2e5442;
+}
+
+.dark :is(#adminSection, #kepalaSection, #guruSection) .kepala-class-stat-label {
+  color: #cbd5e1;
+}
+
+.dark :is(#adminSection, #kepalaSection, #guruSection) .kepala-class-stat-bar-track,
+.dark :is(#adminSection, #kepalaSection, #guruSection) .kepala-class-spectrum-bar {
+  background: #1b3328;
+}
+
+.dark :is(#adminSection, #kepalaSection, #guruSection) .kepala-class-stat-pct {
+  background: rgba(16, 185, 129, 0.16);
+  color: #6ee7b7;
+}
+
+.dark :is(#adminSection, #kepalaSection, #guruSection) .kepala-class-stat-row.is-late .kepala-class-stat-pct {
+  background: rgba(124, 58, 237, 0.2);
+  color: #c4b5fd;
+}
+
+.dark :is(#adminSection, #kepalaSection, #guruSection) .kepala-class-stat-row.is-permission .kepala-class-stat-pct {
+  background: rgba(217, 119, 6, 0.2);
+  color: #fcd34d;
+}
+
+.dark :is(#adminSection, #kepalaSection, #guruSection) .kepala-class-stat-row.is-sick .kepala-class-stat-pct {
+  background: rgba(2, 132, 199, 0.2);
+  color: #7dd3fc;
+}
+
+.dark :is(#adminSection, #kepalaSection, #guruSection) .kepala-class-stat-row.is-absent .kepala-class-stat-pct {
+  background: rgba(225, 29, 72, 0.2);
+  color: #fda4af;
+}
+
+.dark :is(#adminSection, #kepalaSection, #guruSection) .kepala-class-spectrum-footer,
+.dark :is(#adminSection, #kepalaSection, #guruSection) .kepala-class-detail-drawer {
+  border-top-color: #213d30;
+}
+
+.dark :is(#adminSection, #kepalaSection, #guruSection) .kepala-rekap-detail-table-wrap {
+  border-color: #254536;
+}
+
+.dark :is(#adminSection, #kepalaSection, #guruSection) .kepala-rekap-detail-table thead tr {
+  background: #0d1e17;
+  color: #94a3b8;
+  border-bottom-color: #254536;
+}
+
+.dark :is(#adminSection, #kepalaSection, #guruSection) .kepala-rekap-detail-table td {
+  border-bottom-color: #1b3328;
+  color: #dbe9e1;
+}
+
+.dark :is(#adminSection, #kepalaSection, #guruSection) .kepala-rekap-detail-table .col-nama {
+  color: #ffffff;
+}
+
+/* Responsif Tablet & Mobile untuk Rekap & Diagram Kelas */
+@media (max-width: 1099px) {
+  :is(#adminSection, #kepalaSection, #guruSection) .kepala-rekap-aggregation-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}
+
+@media (max-width: 780px) {
+  #adminSiswaTabRekap .admin-rekap-fields > .admin-rekap-field:first-child,
+  #kepalaSection [data-panel="kepala-siswa"] .admin-rekap-fields > .admin-rekap-field:first-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 600px) {
+  #adminSection #adminSiswaTabRekap > .card:first-child,
+  #kepalaSection [data-panel="kepala-siswa"] > .card:first-child {
+    padding: 14px !important;
+    border-radius: 16px !important;
+  }
+
+  :is(#adminSection, #kepalaSection, #guruSection) .kepala-class-summary {
+    padding: 14px !important;
+    gap: 12px;
+    border-radius: 16px !important;
+  }
+
+  :is(#adminSection, #kepalaSection, #guruSection) .kepala-class-summary-head {
+    padding-bottom: 10px;
+    gap: 8px;
+  }
+
+  :is(#adminSection, #kepalaSection, #guruSection) .kepala-class-code-badge {
+    min-width: 36px;
+    height: 36px;
+    padding: 0 8px;
+    font-size: 11.5px;
+    border-radius: 10px;
+  }
+
+  :is(#adminSection, #kepalaSection, #guruSection) .kepala-class-title-meta h3 {
+    font-size: 14px !important;
+  }
+
+  :is(#adminSection, #kepalaSection, #guruSection) .kepala-class-sub-pills {
+    font-size: 10.5px;
+  }
+
+  :is(#adminSection, #kepalaSection, #guruSection) .kepala-class-detail-btn {
+    padding: 6px 10px;
+    font-size: 11px;
+    border-radius: 9px;
+  }
+
+  :is(#adminSection, #kepalaSection, #guruSection) .kepala-class-diagram-body {
+    grid-template-columns: 122px minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  :is(#adminSection, #kepalaSection, #guruSection) .kepala-class-donut-box {
+    width: 120px;
+    height: 120px;
+  }
+
+  :is(#adminSection, #kepalaSection, #guruSection) .kepala-class-donut-center > strong {
+    font-size: 20px;
+  }
+
+  :is(#adminSection, #kepalaSection, #guruSection) .kepala-class-donut-center > span {
+    font-size: 8px;
+  }
+
+  :is(#adminSection, #kepalaSection, #guruSection) .kepala-class-stat-list {
+    gap: 5px;
+  }
+
+  :is(#adminSection, #kepalaSection, #guruSection) .kepala-class-stat-row {
+    padding: 6px 8px;
+    gap: 4px;
+    border-radius: 9px;
+  }
+
+  :is(#adminSection, #kepalaSection, #guruSection) .kepala-class-stat-label {
+    font-size: 11px;
+    gap: 6px;
+  }
+
+  :is(#adminSection, #kepalaSection, #guruSection) .kepala-class-stat-values > strong {
+    font-size: 11.5px;
+  }
+
+  :is(#adminSection, #kepalaSection, #guruSection) .kepala-class-stat-pct {
+    min-width: 34px;
+    padding: 2px 5px;
+    font-size: 9.5px;
+  }
+
+  :is(#adminSection, #kepalaSection, #guruSection) .kepala-class-spectrum-meta {
+    font-size: 10.5px;
+  }
+}
+
+@media (max-width: 380px) {
+  :is(#adminSection, #kepalaSection, #guruSection) .kepala-class-diagram-body {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+  }
+
+  :is(#adminSection, #kepalaSection, #guruSection) .kepala-class-stat-list {
+    width: 100%;
+  }
+}
+
+/* =============================================================
+   MODUL BIMBINGAN & KONSELING (GURU BK - PORTAL PRESENSI)
+   ============================================================= */
+
+/* 6-Tab Bottom Navigation untuk Guru BK */
+#guruSection .guru-bottom-nav.has-bk-tab .guru-nav-btn {
+  padding: 6px 2px;
+  gap: 3px;
+  font-size: 10px;
+}
+
+#guruSection .guru-bottom-nav.has-bk-tab .guru-nav-btn svg {
+  width: 19px;
+  height: 19px;
+}
+
+/* Widget Beranda BK di Tab Absen (#guruHomeBKWidget) */
+#guruSection .guru-bk-home-widget {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+}
+
+#guruSection .guru-bk-home-widget .guru-section-heading {
+  margin-bottom: 0 !important;
+}
+
+#guruSection .guru-bk-home-card {
+  background: var(--surface, #ffffff);
+  border: 1px solid var(--line, #e2e8f0);
+  border-radius: var(--radius-card, 20px);
+  padding: 16px;
+  box-shadow: var(--shadow-card, 0 8px 24px -10px rgba(15, 23, 42, 0.08));
+}
+
+#guruSection .guru-bk-home-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+#guruSection .guru-bk-home-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+#guruSection .guru-bk-home-metric {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 6px;
+  border-radius: 13px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  text-align: center;
+  min-width: 0;
+}
+
+#guruSection .guru-bk-home-metric strong {
+  font-family: "Plus Jakarta Sans", var(--font-display);
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.1;
+  color: #0f172a;
+  font-variant-numeric: tabular-nums;
+}
+
+#guruSection .guru-bk-home-metric span {
+  margin-top: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #475569;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+#guruSection .guru-bk-home-metric.is-danger {
+  background: #fff1f2;
+  border-color: #fecdd3;
+}
+#guruSection .guru-bk-home-metric.is-danger strong {
+  color: #be123c;
+}
+#guruSection .guru-bk-home-metric.is-danger span {
+  color: #9f1239;
+}
+
+#guruSection .guru-bk-home-metric.is-violet {
+  background: #f5f3ff;
+  border-color: #ddd6fe;
+}
+#guruSection .guru-bk-home-metric.is-violet strong {
+  color: #6d28d9;
+}
+#guruSection .guru-bk-home-metric.is-violet span {
+  color: #5b21b6;
+}
+
+#guruSection .guru-bk-home-metric.is-sky {
+  background: #f0f9ff;
+  border-color: #bae6fd;
+}
+#guruSection .guru-bk-home-metric.is-sky strong {
+  color: #0369a1;
+}
+#guruSection .guru-bk-home-metric.is-sky span {
+  color: #075985;
+}
+
+#guruSection .guru-bk-home-metric.is-emerald {
+  background: #ecfdf5;
+  border-color: #a7f3d0;
+}
+#guruSection .guru-bk-home-metric.is-emerald strong {
+  color: #047857;
+}
+#guruSection .guru-bk-home-metric.is-emerald span {
+  color: #065f46;
+}
+
+#guruSection .guru-bk-home-top-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+#guruSection .guru-bk-home-top-label {
+  font-size: 10.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #64748b;
+}
+
+#guruSection .guru-bk-home-top-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 11px;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+#guruSection .guru-bk-home-top-main {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+  flex: 1;
+}
+
+#guruSection .guru-bk-risk-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: #10b981;
+}
+
+#guruSection .guru-bk-risk-dot.is-kritis {
+  background: #e11d48;
+  box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.16);
+}
+
+#guruSection .guru-bk-risk-dot.is-waspada {
+  background: #d97706;
+  box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.16);
+}
+
+#guruSection .guru-bk-risk-dot.is-pantauan {
+  background: #0284c7;
+}
+
+#guruSection .guru-bk-home-top-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+#guruSection .guru-bk-home-top-text strong {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#guruSection .guru-bk-home-top-text small {
+  font-size: 11px;
+  color: #64748b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#guruSection .guru-bk-mini-btn {
+  flex-shrink: 0;
+  padding: 5px 10px;
+  border-radius: 8px;
+  border: 1px solid #a7f3d0;
+  background: #ecfdf5;
+  color: #065f46;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+#guruSection .guru-bk-mini-btn:hover {
+  background: #059669;
+  border-color: #059669;
+  color: #ffffff;
+}
+
+#guruSection .guru-bk-home-safe-banner {
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #065f46;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+#guruSection .guru-bk-home-QuickActions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+#guruSection .guru-bk-home-QuickActions .btn {
+  flex: 1 1 160px;
+  justify-content: center;
+}
+
+/* KPI Grid di Hero #guruPanelBK (#guruBKKpiGrid) */
+#guruSection .guru-bk-hero {
+  gap: 12px;
+}
+
+#guruSection .guru-bk-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 2px;
+}
+
+#guruSection .guru-bk-kpi-card {
+  appearance: none;
+  -webkit-appearance: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 2px;
+  padding: 11px 12px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  text-align: left;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.16s ease, border-color 0.16s ease, transform 0.16s ease;
+}
+
+#guruSection .guru-bk-kpi-card:hover {
+  background: rgba(255, 255, 255, 0.19);
+  border-color: rgba(255, 255, 255, 0.34);
+  transform: translateY(-1px);
+}
+
+#guruSection .guru-bk-kpi-card.is-rose {
+  background: rgba(244, 63, 94, 0.22);
+  border-color: rgba(253, 164, 175, 0.38);
+}
+
+#guruSection .guru-bk-kpi-card.is-violet {
+  background: rgba(139, 92, 246, 0.22);
+  border-color: rgba(196, 181, 253, 0.36);
+}
+
+#guruSection .guru-bk-kpi-card.is-sky {
+  background: rgba(14, 165, 233, 0.22);
+  border-color: rgba(125, 211, 252, 0.36);
+}
+
+#guruSection .guru-bk-kpi-card.is-emerald {
+  background: rgba(16, 185, 129, 0.22);
+  border-color: rgba(110, 231, 183, 0.36);
+}
+
+#guruSection .guru-bk-kpi-val {
+  font-family: "Plus Jakarta Sans", var(--font-display);
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.1;
+  color: #ffffff;
+  font-variant-numeric: tabular-nums;
+}
+
+#guruSection .guru-bk-kpi-lbl {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #ecfdf5;
+  line-height: 1.25;
+  margin-top: 2px;
+}
+
+#guruSection .guru-bk-kpi-sub {
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(225, 255, 243, 0.78);
+  line-height: 1.25;
+}
+
+/* Sub-Navigasi 4 Modul BK (.guru-bk-subnav & .guru-bk-tab-btn) */
+#guruSection .guru-bk-subnav {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  padding: 5px;
+  border-radius: 16px;
+  background: #e2e8f0;
+  border: 1px solid #cbd5e1;
+}
+
+#guruSection .guru-bk-tab-btn {
+  appearance: none;
+  -webkit-appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 38px;
+  padding: 7px 8px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #475569;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.16s ease, color 0.16s ease, box-shadow 0.16s ease;
+}
+
+#guruSection .guru-bk-tab-btn:hover {
+  color: #0f172a;
+}
+
+#guruSection .guru-bk-tab-btn.active {
+  background: #ffffff;
+  border-color: rgba(15, 23, 42, 0.06);
+  color: #064e3b;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+}
+
+#guruSection #guruBKContentArea,
+#guruSection .guru-bk-subpanel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Filter Card & Controls (.guru-bk-filter-card) */
+#guruSection .guru-bk-filter-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px !important;
+  margin-bottom: 16px !important;
+}
+
+#guruSection #guruBKContentArea > .guru-bk-filter-card {
+  margin-bottom: 0 !important;
+}
+
+#guruSection .guru-bk-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+#guruSection .guru-bk-card-head h3 {
+  margin: 0;
+  font-family: "Plus Jakarta Sans", var(--font-display);
+  font-size: 15.5px;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.3;
+}
+
+#guruSection .guru-bk-card-head p {
+  margin: 3px 0 0;
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.45;
+}
+
+#guruSection .guru-bk-card-head .btn {
+  flex-shrink: 0;
+}
+
+#guruSection .guru-bk-date-bar {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) auto;
+  align-items: end;
+  gap: 8px;
+}
+
+#guruSection .guru-bk-date-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+#guruSection .guru-bk-date-field label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #475569;
+}
+
+#guruSection .guru-bk-date-field .input,
+#guruSection .guru-bk-search-row .input {
+  width: 100%;
+  min-height: 40px;
+  padding: 0 11px;
+  border-radius: 11px;
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  color: #0f172a;
+  font-size: 12.5px;
+}
+
+#guruSection .guru-bk-date-bar > .btn {
+  min-height: 40px;
+  padding-inline: 14px;
+  border-radius: 11px;
+  white-space: nowrap;
+}
+
+#guruSection .guru-bk-action-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Chip Filter Bar (.guru-bk-chip-scroll) */
+#guruSection .guru-bk-chip-scroll {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 2px 0;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+#guruSection .guru-bk-chip-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+#guruSection .guru-bk-chip {
+  appearance: none;
+  -webkit-appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  color: #475569;
+  font-family: inherit;
+  font-size: 11.5px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+
+#guruSection .guru-bk-chip:hover {
+  border-color: #94a3b8;
+  color: #0f172a;
+}
+
+#guruSection .guru-bk-chip.active {
+  background: #064e3b;
+  border-color: #064e3b;
+  color: #ffffff;
+}
+
+#guruSection .guru-bk-search-row {
+  display: grid;
+  grid-template-columns: minmax(130px, 0.42fr) minmax(0, 1fr);
+  gap: 8px;
+}
+
+.guru-bk-result-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 2px 4px;
+  margin-bottom: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.guru-bk-result-meta strong {
+  color: #0f172a;
+  font-weight: 800;
+}
+
+/* Student Cards (Radar Presensi & Data Asuh) */
+.guru-bk-student-list,
+.guru-bk-journal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.guru-bk-student-card {
+  background: var(--surface, #ffffff);
+  border: 1px solid var(--line, #e2e8f0);
+  border-radius: 18px;
+  padding: 16px;
+  margin-bottom: 0 !important;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: var(--shadow-card, 0 4px 16px -8px rgba(15, 23, 42, 0.06));
+}
+
+.guru-bk-student-card.is-kritis {
+  border-left: 4px solid #e11d48;
+}
+
+.guru-bk-student-card.is-waspada {
+  border-left: 4px solid #d97706;
+}
+
+.guru-bk-student-card.is-pantauan {
+  border-left: 4px solid #0284c7;
+}
+
+.guru-bk-student-card.is-aman {
+  border-left: 4px solid #10b981;
+}
+
+.guru-bk-student-top {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.guru-bk-student-ident {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.guru-bk-student-badges {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.guru-bk-kelas-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: 7px;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #065f46;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.guru-bk-nis-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  border-radius: 7px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  color: #475569;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.guru-bk-risk-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.guru-bk-risk-pill.is-kritis {
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+  color: #be123c;
+}
+
+.guru-bk-risk-pill.is-waspada {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  color: #b45309;
+}
+
+.guru-bk-risk-pill.is-pantauan {
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  color: #0369a1;
+}
+
+.guru-bk-risk-pill.is-aman {
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #047857;
+}
+
+.guru-bk-student-ident h4 {
+  margin: 2px 0 0;
+  font-family: "Plus Jakarta Sans", var(--font-display);
+  font-size: 15px;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.3;
+}
+
+.guru-bk-student-sub {
+  margin: 0;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+.guru-bk-tag-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.guru-bk-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  border-radius: 7px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.guru-bk-tag.is-yatim {
+  background: #f5f3ff;
+  border: 1px solid #ddd6fe;
+  color: #6d28d9;
+}
+
+.guru-bk-tag.is-luar {
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  color: #0369a1;
+}
+
+.guru-bk-tag.is-pulau {
+  background: #ecfeff;
+  border: 1px solid #a5f3fc;
+  color: #0e7490;
+}
+
+.guru-bk-tag.is-note {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  color: #92400e;
+}
+
+/* Strip Statistik Presensi Siswa (Global: di Kartu & di Modal) */
+.guru-bk-stat-strip {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 6px;
+  padding: 10px 8px;
+  border-radius: 13px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.guru-bk-stat-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 2px;
+}
+
+.guru-bk-stat-cell small {
+  font-size: 10px;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.guru-bk-stat-cell strong {
+  font-family: "Plus Jakarta Sans", var(--font-display);
+  font-size: 14px;
+  font-weight: 800;
+  color: #0f172a;
+  font-variant-numeric: tabular-nums;
+}
+
+.guru-bk-stat-cell.is-h strong { color: #059669; }
+.guru-bk-stat-cell.is-t strong { color: #7c3aed; }
+.guru-bk-stat-cell.is-i strong { color: #d97706; }
+.guru-bk-stat-cell.is-s strong { color: #0284c7; }
+.guru-bk-stat-cell.is-a strong { color: #e11d48; }
+.guru-bk-stat-cell.is-pct strong { color: #0f172a; }
+
+/* Enhanced Ringkasan Presensi di Modal Profil Siswa (.guru-bk-modal-att-card) */
+.guru-bk-modal-att-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 13px 14px;
+  border-radius: 15px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 14px -8px rgba(15, 23, 42, 0.06);
+}
+
+.guru-bk-modal-att-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.guru-bk-modal-att-title {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.guru-bk-modal-att-title span {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.guru-bk-modal-att-title small {
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.guru-bk-modal-att-badge {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #065f46;
+}
+
+.guru-bk-modal-att-badge small {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.guru-bk-modal-att-badge.is-warn {
+  background: #fffbeb;
+  border-color: #fde68a;
+  color: #b45309;
+}
+
+.guru-bk-modal-att-badge.is-danger {
+  background: #fff1f2;
+  border-color: #fecdd3;
+  color: #be123c;
+}
+
+.guru-bk-modal-att-bar-track {
+  width: 100%;
+  height: 7px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  overflow: hidden;
+}
+
+.guru-bk-modal-att-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #059669 0%, #10b981 100%);
+  transition: width 0.3s ease;
+}
+
+.guru-bk-modal-att-bar-fill.is-warn {
+  background: linear-gradient(90deg, #d97706 0%, #f59e0b 100%);
+}
+
+.guru-bk-modal-att-bar-fill.is-danger {
+  background: linear-gradient(90deg, #e11d48 0%, #f43f5e 100%);
+}
+
+.guru-bk-stat-strip.is-enhanced {
+  padding: 0;
+  background: transparent;
+  border: 0;
+  gap: 7px;
+}
+
+.guru-bk-stat-strip.is-enhanced .guru-bk-stat-cell {
+  padding: 9px 6px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  gap: 3px;
+}
+
+.guru-bk-stat-strip.is-enhanced .guru-bk-stat-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  margin-bottom: 1px;
+}
+
+.guru-bk-stat-strip.is-enhanced .guru-bk-stat-cell.is-h {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+.guru-bk-stat-strip.is-enhanced .guru-bk-stat-cell.is-h .guru-bk-stat-dot {
+  background: #059669;
+}
+
+.guru-bk-stat-strip.is-enhanced .guru-bk-stat-cell.is-t {
+  background: #f5f3ff;
+  border-color: #ddd6fe;
+}
+.guru-bk-stat-strip.is-enhanced .guru-bk-stat-cell.is-t .guru-bk-stat-dot {
+  background: #7c3aed;
+}
+
+.guru-bk-stat-strip.is-enhanced .guru-bk-stat-cell.is-i {
+  background: #fffbeb;
+  border-color: #fde68a;
+}
+.guru-bk-stat-strip.is-enhanced .guru-bk-stat-cell.is-i .guru-bk-stat-dot {
+  background: #d97706;
+}
+
+.guru-bk-stat-strip.is-enhanced .guru-bk-stat-cell.is-s {
+  background: #f0f9ff;
+  border-color: #bae6fd;
+}
+.guru-bk-stat-strip.is-enhanced .guru-bk-stat-cell.is-s .guru-bk-stat-dot {
+  background: #0284c7;
+}
+
+.guru-bk-stat-strip.is-enhanced .guru-bk-stat-cell.is-a {
+  background: #fff1f2;
+  border-color: #fecdd3;
+}
+.guru-bk-stat-strip.is-enhanced .guru-bk-stat-cell.is-a .guru-bk-stat-dot {
+  background: #e11d48;
+}
+
+.guru-bk-stat-strip.is-enhanced .guru-bk-stat-cell.is-pct {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+.guru-bk-stat-strip.is-enhanced .guru-bk-stat-cell.is-pct .guru-bk-stat-dot {
+  background: #0f172a;
+}
+
+.guru-bk-stat-strip.is-enhanced .guru-bk-stat-cell strong {
+  font-size: 15px;
+}
+
+/* Box Info Keluarga & Domisili (Tab Data Asuh) */
+.guru-bk-family-box {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.guru-bk-family-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.guru-bk-family-row span {
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748b;
+  flex-shrink: 0;
+}
+
+.guru-bk-family-row strong {
+  font-weight: 700;
+  color: #1e293b;
+  text-align: right;
+  word-break: break-word;
+}
+
+/* Footer Kartu Siswa (.guru-bk-student-foot) */
+.guru-bk-student-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-top: 9px;
+  border-top: 1px dashed #e2e8f0;
+}
+
+.guru-bk-reason-text {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #475569;
+  line-height: 1.35;
+}
+
+.guru-bk-student-actions {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-left: auto;
+}
+
+/* Jurnal Layanan BK Card (.guru-bk-journal-card) */
+.guru-bk-journal-card {
+  background: var(--surface, #ffffff);
+  border: 1px solid var(--line, #e2e8f0);
+  border-radius: 18px;
+  padding: 16px;
+  margin-bottom: 0 !important;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: var(--shadow-card, 0 4px 16px -8px rgba(15, 23, 42, 0.06));
+}
+
+.guru-bk-journal-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.guru-bk-journal-badges {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.guru-bk-kat-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: 7px;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #334155;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.guru-bk-status-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.guru-bk-status-pill.is-dipantau {
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  color: #0369a1;
+}
+
+.guru-bk-status-pill.is-ortu {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  color: #b45309;
+}
+
+.guru-bk-status-pill.is-visit {
+  background: #f5f3ff;
+  border: 1px solid #ddd6fe;
+  color: #6d28d9;
+}
+
+.guru-bk-status-pill.is-selesai {
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #047857;
+}
+
+.guru-bk-journal-date {
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748b;
+}
+
+.guru-bk-journal-student {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.guru-bk-journal-student h4,
+.guru-bk-journal-student strong {
+  margin: 0;
+  font-family: "Plus Jakarta Sans", var(--font-display);
+  font-size: 14.5px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.guru-bk-journal-student span {
+  padding: 2px 8px;
+  border-radius: 7px;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #065f46;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.guru-bk-journal-body {
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.guru-bk-journal-field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.guru-bk-journal-field small {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #64748b;
+}
+
+.guru-bk-journal-field p {
+  margin: 0;
+  font-size: 12.5px;
+  color: #1e293b;
+  line-height: 1.45;
+}
+
+.guru-bk-journal-field.is-followup {
+  padding-top: 6px;
+  border-top: 1px dashed #cbd5e1;
+}
+
+.guru-bk-journal-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+.guru-bk-journal-author {
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.guru-bk-journal-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Modal Profil Lengkap Siswa (.guru-bk-modal-profile) */
+.guru-bk-modal-profile {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.guru-bk-modal-head-box {
+  padding: 13px 15px;
+  border-radius: 15px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.guru-bk-profile-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 14px;
+  padding: 14px;
+  border-radius: 15px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.guru-bk-profile-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.guru-bk-profile-item.is-full {
+  grid-column: 1 / -1;
+}
+
+.guru-bk-profile-item span {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+}
+
+.guru-bk-profile-item strong {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #0f172a;
+  word-break: break-word;
+}
+
+.guru-bk-mini-note {
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.guru-bk-mini-note small {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #047857;
+}
+
+.guru-bk-mini-note p {
+  margin: 0;
+  font-size: 12px;
+  color: #1e293b;
+}
+
+/* Diagram Kelas di dalam #guruPanelBK (agar muat di shell 600px) */
+#guruSection #guruBKDiagramList {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+#guruSection #guruBKDiagramList .kepala-class-viz-body {
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+}
+
+#guruSection #guruBKDiagramList .kepala-class-stat-list {
+  width: 100%;
+}
+
+/* Dark Mode untuk Modul BK */
+.dark #guruSection .guru-bk-home-card,
+.dark .guru-bk-student-card,
+.dark .guru-bk-journal-card,
+.dark .guru-bk-modal-att-card {
+  background: #12221b;
+  border-color: #254536;
+}
+
+.dark #guruSection .guru-bk-home-metric,
+.dark #guruSection .guru-bk-home-top-item,
+.dark .guru-bk-stat-strip,
+.dark .guru-bk-stat-strip.is-enhanced .guru-bk-stat-cell,
+.dark .guru-bk-family-box,
+.dark .guru-bk-journal-body,
+.dark .guru-bk-profile-grid,
+.dark .guru-bk-mini-note {
+  background: #0d1e17;
+  border-color: #213d30;
+}
+
+.dark #guruSection .guru-bk-home-metric strong,
+.dark #guruSection .guru-bk-home-top-text strong,
+.dark #guruSection .guru-bk-card-head h3,
+.dark .guru-bk-result-meta strong,
+.dark .guru-bk-student-ident h4,
+.dark .guru-bk-stat-cell strong,
+.dark .guru-bk-family-row strong,
+.dark .guru-bk-journal-student h4,
+.dark .guru-bk-journal-student strong,
+.dark .guru-bk-journal-field p,
+.dark .guru-bk-modal-att-title span,
+.dark .guru-bk-profile-item strong,
+.dark .guru-bk-mini-note p {
+  color: #e5eee9;
+}
+
+.dark #guruSection .guru-bk-subnav {
+  background: #0d1e17;
+  border-color: #254536;
+}
+
+.dark #guruSection .guru-bk-tab-btn {
+  color: #94a3b8;
+}
+
+.dark #guruSection .guru-bk-tab-btn.active {
+  background: #183026;
+  border-color: #28503e;
+  color: #6ee7b7;
+}
+
+.dark #guruSection .guru-bk-date-field .input,
+.dark #guruSection .guru-bk-search-row .input {
+  background: #0d1e17;
+  border-color: #254536;
+  color: #e5eee9;
+}
+
+.dark #guruSection .guru-bk-chip {
+  background: #0d1e17;
+  border-color: #254536;
+  color: #cbd5e1;
+}
+
+.dark #guruSection .guru-bk-chip.active {
+  background: #059669;
+  border-color: #10b981;
+  color: #ffffff;
+}
+
+.dark .guru-bk-modal-head-box {
+  background: #12281f;
+  border-color: #254536;
+}
+
+.dark .guru-bk-modal-att-bar-track {
+  background: #193126;
+}
+
+/* Responsif Mobile Modul BK */
+@media (max-width: 600px) {
+  #guruSection .guru-bk-home-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  #guruSection .guru-bk-subnav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  #guruSection .guru-bk-date-bar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  #guruSection .guru-bk-date-bar > .btn {
+    grid-column: 1 / -1;
+    width: 100%;
+    justify-content: center;
+  }
+
+  #guruSection .guru-bk-search-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .guru-bk-stat-strip,
+  .guru-bk-stat-strip.is-enhanced {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    row-gap: 8px;
+  }
+
+  .guru-bk-student-foot {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .guru-bk-student-actions {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .guru-bk-student-actions .btn {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .guru-bk-profile-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  #guruSection .guru-bottom-nav.has-bk-tab .guru-nav-btn {
+    font-size: 9.5px;
+    padding: 6px 1px;
+  }
+
+  #guruSection .guru-bottom-nav.has-bk-tab .guru-nav-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+

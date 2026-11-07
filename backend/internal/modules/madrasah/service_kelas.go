@@ -7,7 +7,7 @@ import (
 )
 
 func (s *Service) GetDaftarKelas(ctx context.Context, requestedBy string) (map[string]interface{}, error) {
-	if !s.CheckAccess(ctx, requestedBy, "adminKepala") {
+	if !s.CheckAccess(ctx, requestedBy, "adminKepala") && !s.isGuruBK(ctx, requestedBy) {
 		return map[string]interface{}{"success": false, "message": "Akses ditolak"}, nil
 	}
 	rows, err := s.kelas.Daftar(ctx)

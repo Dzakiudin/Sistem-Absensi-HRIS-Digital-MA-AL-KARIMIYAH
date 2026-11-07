@@ -23,4 +23,5 @@ export const APP_MODULES = [
   "19_siswa_rekap.js",
   "20_kepala_izin.js",
   "21_master_mapel.js",
+  "22_guru_bk.js",
 ];
