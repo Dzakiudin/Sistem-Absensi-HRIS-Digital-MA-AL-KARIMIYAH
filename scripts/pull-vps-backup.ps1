@@ -25,7 +25,10 @@ $DestDir = Join-Path $LocalBackupRoot $FolderName
 New-Item -ItemType Directory -Force -Path $LocalBackupRoot | Out-Null
 
 Write-Host "Mengunduh $FolderName ke $DestDir ..."
-scp -i $SshKey -o StrictHostKeyChecking=no -r "${VpsHost}:${LatestFolder}" "$LocalBackupRoot\"
+scp -i $SshKey -o StrictHostKeyChecking=no -r "${VpsHost}:${LatestFolder}" "$LocalBackupRoot"
+if ($LASTEXITCODE -ne 0) {
+    throw "Gagal mengunduh $FolderName via scp."
+}
 
 Write-Host "Memverifikasi SHA256SUMS di lokal..."
 $SumsFile = Join-Path $DestDir "SHA256SUMS"
