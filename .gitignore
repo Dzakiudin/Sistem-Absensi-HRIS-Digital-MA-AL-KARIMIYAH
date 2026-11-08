@@ -69,3 +69,8 @@ postgres.zip
 
 # Graphify cache
 graphify-out/cache/
+
+AGENTS.md
+CLAUDE.md
+GEMINI.md
+

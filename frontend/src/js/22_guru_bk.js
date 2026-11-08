@@ -44,7 +44,7 @@ function __bkRiskMeta(level) {
       label: "Kritis · Panggilan Ortu",
       short: "Kritis",
       cls: "is-kritis",
-      color: "#e11d48",
+      color: "#b85656",
     };
   }
   if (level === "waspada") {
@@ -52,7 +52,7 @@ function __bkRiskMeta(level) {
       label: "Waspada · Pembinaan BK",
       short: "Waspada",
       cls: "is-waspada",
-      color: "#d97706",
+      color: "#b57c3c",
     };
   }
   if (level === "pantauan") {
@@ -60,14 +60,14 @@ function __bkRiskMeta(level) {
       label: "Pantauan Presensi",
       short: "Pantauan",
       cls: "is-pantauan",
-      color: "#0284c7",
+      color: "#4d7ea1",
     };
   }
   return {
     label: "Kehadiran Baik",
     short: "Aman",
     cls: "is-aman",
-    color: "#059669",
+    color: "#4d755f",
   };
 }
 
@@ -1195,7 +1195,7 @@ function renderDaftarJurnalBK() {
           '<button type="button" class="btn btn-outline btn-sm" onclick="bukaModalCatatanBK(' +
           c.id +
           ')">Edit</button>' +
-          '<button type="button" class="btn btn-sm" style="background:rgba(239,68,68,0.1);color:#e11d48;border:1px solid rgba(239,68,68,0.25);" onclick="hapusCatatanBKKlik(' +
+          '<button type="button" class="btn btn-sm" style="background:rgba(239,68,68,0.1);color:#b85656;border:1px solid rgba(239,68,68,0.25);" onclick="hapusCatatanBKKlik(' +
           c.id +
           ')">Hapus</button>' +
           "</div>" +

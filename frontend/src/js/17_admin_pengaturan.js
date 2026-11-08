@@ -191,21 +191,39 @@ function inisialisasiDefaultBulanTahun() {
 // FUNGSI INTERAKTIF LAYOUT & FITUR LENGKAP
 // ============================================================
 
-// 1. Dark / Light Mode Toggle & State Persistence
-function toggleTheme() {
-  const isDark = document.documentElement.classList.toggle("dark");
+// 1. Dark / Light Mode Toggle & State Persistence (Astryx Theme Sync)
+function applyAstryxThemeMode(mode) {
+  const isDark = mode === "dark";
+  document.documentElement.classList.toggle("dark", isDark);
+  document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
+  document.documentElement.setAttribute("data-astryx-theme", "neutral");
   try {
     localStorage.setItem("theme", isDark ? "dark" : "light");
   } catch (e) {}
+  try {
+    window.dispatchEvent(
+      new CustomEvent("astryx-theme-change", {
+        detail: { mode: isDark ? "dark" : "light" },
+      }),
+    );
+  } catch (e) {}
+}
+
+function toggleTheme() {
+  const isDark = !document.documentElement.classList.contains("dark");
+  applyAstryxThemeMode(isDark ? "dark" : "light");
 }
 
 (function restoreTheme() {
   try {
-    if (localStorage.getItem("theme") === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
+    const saved = localStorage.getItem("theme");
+    const isDark = saved === "dark";
+    document.documentElement.classList.toggle("dark", isDark);
+    document.documentElement.setAttribute(
+      "data-theme",
+      isDark ? "dark" : "light",
+    );
+    document.documentElement.setAttribute("data-astryx-theme", "neutral");
   } catch (e) {}
 })();
 

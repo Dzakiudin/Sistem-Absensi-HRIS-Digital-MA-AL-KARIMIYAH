@@ -105,7 +105,7 @@ async function deteksiJadwalManualGuru() {
 
   if (!jadwalHariIni.length) {
     autoBox.classList.remove("hidden");
-    chipsEl.innerHTML = `<span style="font-size: 11px; color: #64748b; font-style: italic;">Tidak ada jadwal mengajar tetap untuk hari ${namaHari}. Anda dapat memilih Mapel &amp; Kelas manual di bawah.</span>`;
+    chipsEl.innerHTML = `<span style="font-size: 11px; color: #6e6a61; font-style: italic;">Tidak ada jadwal mengajar tetap untuk hari ${namaHari}. Anda dapat memilih Mapel &amp; Kelas manual di bawah.</span>`;
     return;
   }
 

@@ -485,6 +485,7 @@ function firstOfMonthInputValue() {
    INISIALISASI
    ============================================================= */
 function initApp() {
+  if (!document.getElementById("loginForm")) return;
   if (window.__appInitialized) return;
   window.__appInitialized = true;
 
@@ -518,6 +519,22 @@ function initApp() {
   // karena pengguna sedang tidak beraktivitas.
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "visible") panggilUlangTabAktif();
+  });
+
+  if (typeof inisialisasiDefaultBulanTahun === "function") {
+    inisialisasiDefaultBulanTahun();
+  }
+  ["adminFilterMulai", "kepalaFilterMulai"].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el && !el.value && typeof firstOfMonthInputValue === "function") {
+      el.value = firstOfMonthInputValue();
+    }
+  });
+  ["adminFilterAkhir", "kepalaFilterAkhir"].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el && !el.value && typeof todayInputValue === "function") {
+      el.value = todayInputValue();
+    }
   });
 
   pulihkanSesi();
@@ -868,15 +885,18 @@ function eyeIconSVG(off) {
    AUTENTIKASI
    ============================================================= */
 async function handleLogin(e) {
-  e.preventDefault();
+  if (e && e.preventDefault) e.preventDefault();
+  const btn = document.getElementById("loginSubmitBtn");
+  if (btn && btn.disabled) return false;
   const username = document.getElementById("loginUsername").value.trim();
   const password = document.getElementById("loginPassword").value;
   const errBox = document.getElementById("loginError");
   errBox.classList.add("hidden");
 
-  const btn = document.getElementById("loginSubmitBtn");
-  btn.disabled = true;
-  btn.textContent = "Memeriksa...";
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = "Memeriksa...";
+  }
   try {
     const res = await runServer("login", username, password);
     if (res.success) {
@@ -3369,12 +3389,12 @@ async function muatPermintaanPenggantiSaya() {
         pr.status === "Pending"
           ? "#fffbeb"
           : pr.status === "Disetujui"
-            ? "#f0fdf4"
-            : "#f1f5f9";
-      html += `<div style="background:${bg}; border:1px solid #e2e8f0; border-radius:10px; padding:8px 10px; margin-bottom:6px;">
+            ? "#f1f5f2"
+            : "#efede7";
+      html += `<div style="background:${bg}; border:1px solid #e4e2da; border-radius:10px; padding:8px 10px; margin-bottom:6px;">
         <div style="font-weight:600;">${esc(pr.jenis)} · ${esc(pr.tglMulai)} s.d. ${esc(pr.tglSelesai)}</div>
-        <div style="font-size:11.5px; color:#64748b; margin-top:2px;">Status: <span style="color:#064e3b; font-weight:600;">${esc(pr.status)}</span>${pr.namaPengganti ? " \u00b7 Pengganti: " + esc(pr.namaPengganti) + " (" + esc(pr.statusPengganti || "-") + ")" : ""}</div>
-        ${pr.alasan ? `<div style="font-size:11.5px; color:#475569; margin-top:2px;">${esc(pr.alasan)}</div>` : ""}
+        <div style="font-size:11.5px; color:#6e6a61; margin-top:2px;">Status: <span style="color:#355242; font-weight:600;">${esc(pr.status)}</span>${pr.namaPengganti ? " \u00b7 Pengganti: " + esc(pr.namaPengganti) + " (" + esc(pr.statusPengganti || "-") + ")" : ""}</div>
+        ${pr.alasan ? `<div style="font-size:11.5px; color:#57534c; margin-top:2px;">${esc(pr.alasan)}</div>` : ""}
         ${pr.status === "Pending" ? `<button class="btn btn-outline" style="padding:3px 10px; font-size:11.5px; margin-top:6px;" onclick="batalkanIzinKlik(${pr.id})">Batalkan</button>` : ""}
       </div>`;
     });
@@ -3455,7 +3475,7 @@ function renderGrafikTrenMingguan(containerId, dataTren) {
   if (!el) return;
   if (!Array.isArray(dataTren) || !dataTren.length) {
     el.innerHTML =
-      '<div style="text-align:center; padding:40px; color:#94a3b8; font-size:12.5px;">Data tren mingguan belum tersedia</div>';
+      '<div style="text-align:center; padding:40px; color:#8c887f; font-size:12.5px;">Data tren mingguan belum tersedia</div>';
     return;
   }
 
@@ -3518,8 +3538,8 @@ function renderGrafikTrenMingguan(containerId, dataTren) {
     const yPos = padTop + chartH * (1 - pct);
     const labelVal = Math.round(maxVal * pct);
     gridLines += `
-      <line x1="${padLeft - 8}" y1="${yPos}" x2="${svgW - padRight}" y2="${yPos}" stroke="#e2e8f0" stroke-dasharray="4,4" stroke-width="1" />
-      <text x="${padLeft - 14}" y="${yPos + 4}" fill="#94a3b8" font-size="11" font-weight="600" text-anchor="end">${labelVal}</text>
+      <line x1="${padLeft - 8}" y1="${yPos}" x2="${svgW - padRight}" y2="${yPos}" stroke="#e4e2da" stroke-dasharray="4,4" stroke-width="1" />
+      <text x="${padLeft - 14}" y="${yPos + 4}" fill="#8c887f" font-size="11" font-weight="600" text-anchor="end">${labelVal}</text>
     `;
   });
 
@@ -3548,7 +3568,7 @@ function renderGrafikTrenMingguan(containerId, dataTren) {
         {
           label: "Tepat Waktu",
           value: `${d.tepatWaktu} guru`,
-          color: "#10b981",
+          color: "#5e8770",
         },
         { label: "Terlambat", value: `${d.terlambat} guru`, color: "#f59e0b" },
         { label: "Izin / Sakit", value: `${d.izin} guru`, color: "#3b82f6" },
@@ -3560,7 +3580,7 @@ function renderGrafikTrenMingguan(containerId, dataTren) {
         {
           label: "Total Kehadiran",
           value: `${persenBadge} (${activeHadir}/${d.totalGuru})`,
-          color: "#059669",
+          color: "#4d755f",
         },
       ],
     }).replace(/"/g, "&quot;");
@@ -3568,15 +3588,15 @@ function renderGrafikTrenMingguan(containerId, dataTren) {
     barsHtml += `
       <g class="tren-bar-group" data-tip="${tipData}" onmouseenter="handleBarHover(event, this)" onmousemove="moveChartTooltip(event)" onmouseleave="hideChartTooltip()" ontouchstart="handleBarHover(event, this)">
         <!-- Stacked Segments -->
-        ${tepatH > 0 ? `<rect class="tren-bar-front" x="${x}" y="${yTepat}" width="${barW}" height="${tepatH}" rx="${lambatH === 0 && izinH === 0 ? 7 : 3}" fill="#10b981" />` : ""}
+        ${tepatH > 0 ? `<rect class="tren-bar-front" x="${x}" y="${yTepat}" width="${barW}" height="${tepatH}" rx="${lambatH === 0 && izinH === 0 ? 7 : 3}" fill="#5e8770" />` : ""}
         ${lambatH > 0 ? `<rect class="tren-bar-front" x="${x}" y="${yLambat}" width="${barW}" height="${lambatH}" rx="${izinH === 0 ? 7 : 3}" fill="#f59e0b" />` : ""}
         ${izinH > 0 ? `<rect class="tren-bar-front" x="${x}" y="${yIzin}" width="${barW}" height="${izinH}" rx="7" fill="#3b82f6" />` : ""}
         <!-- Value Badge Above Bar -->
-        <text x="${cx}" y="${yTop - 6}" font-size="11" font-weight="700" fill="${isToday ? "#34d399" : activeHadir > 0 ? "var(--ink)" : "var(--slate-light)"}" text-anchor="middle">${activeHadir > 0 ? persenBadge : "-"}</text>
+        <text x="${cx}" y="${yTop - 6}" font-size="11" font-weight="700" fill="${isToday ? "#8fb9a0" : activeHadir > 0 ? "var(--ink)" : "var(--slate-light)"}" text-anchor="middle">${activeHadir > 0 ? persenBadge : "-"}</text>
         <!-- Day & Date Label -->
-        <text x="${cx}" y="${svgH - 20}" font-size="11.5" font-weight="${isToday ? "800" : "600"}" fill="${isToday ? "#34d399" : "var(--ink)"}" text-anchor="middle">${esc(d.hari.substring(0, 3))}</text>
-        <text x="${cx}" y="${svgH - 6}" font-size="9.5" font-weight="500" fill="#94a3b8" text-anchor="middle">${esc(d.tanggal.substring(0, 5))}</text>
-        ${isToday ? `<circle cx="${cx}" cy="${svgH - 1}" r="2" fill="#10b981" />` : ""}
+        <text x="${cx}" y="${svgH - 20}" font-size="11.5" font-weight="${isToday ? "800" : "600"}" fill="${isToday ? "#8fb9a0" : "var(--ink)"}" text-anchor="middle">${esc(d.hari.substring(0, 3))}</text>
+        <text x="${cx}" y="${svgH - 6}" font-size="9.5" font-weight="500" fill="#8c887f" text-anchor="middle">${esc(d.tanggal.substring(0, 5))}</text>
+        ${isToday ? `<circle cx="${cx}" cy="${svgH - 1}" r="2" fill="#5e8770" />` : ""}
       </g>
     `;
   });
@@ -3594,7 +3614,7 @@ function renderGrafikLineKehadiran(containerId, dataTren, avgBadgeId) {
   if (!el) return;
   if (!Array.isArray(dataTren) || !dataTren.length) {
     el.innerHTML =
-      '<div style="text-align:center; padding:30px; color:#94a3b8; font-size:12.5px;">Data tren kehadiran belum tersedia</div>';
+      '<div style="text-align:center; padding:30px; color:#8c887f; font-size:12.5px;">Data tren kehadiran belum tersedia</div>';
     return;
   }
 
@@ -3672,8 +3692,8 @@ function renderGrafikLineKehadiran(containerId, dataTren, avgBadgeId) {
   [0, 0.25, 0.5, 0.75, 1.0].forEach((p) => {
     const y = baseBottom - p * chartH;
     gridHtml += `
-      <line class="line-grid-line" x1="${padLeft - 8}" y1="${y}" x2="${svgW - padRight}" y2="${y}" stroke="#f1f5f9" stroke-dasharray="${p === 0 ? "none" : "3,3"}" stroke-width="${p === 0 ? 1.5 : 1}" />
-      <text x="${padLeft - 12}" y="${y + 3.5}" fill="#94a3b8" font-size="10" font-weight="600" text-anchor="end">${Math.round(p * 100)}%</text>
+      <line class="line-grid-line" x1="${padLeft - 8}" y1="${y}" x2="${svgW - padRight}" y2="${y}" stroke="#efede7" stroke-dasharray="${p === 0 ? "none" : "3,3"}" stroke-width="${p === 0 ? 1.5 : 1}" />
+      <text x="${padLeft - 12}" y="${y + 3.5}" fill="#8c887f" font-size="10" font-weight="600" text-anchor="end">${Math.round(p * 100)}%</text>
     `;
   });
 
@@ -3719,16 +3739,16 @@ function renderGrafikLineKehadiran(containerId, dataTren, avgBadgeId) {
     const tipData = JSON.stringify({
       title: `${pt.d.hari}, ${pt.d.tanggal}`,
       items: [
-        { label: "Tingkat Kehadiran", value: `${pt.pct}%`, color: "#10b981" },
+        { label: "Tingkat Kehadiran", value: `${pt.pct}%`, color: "#5e8770" },
         {
           label: "Hadir",
           value: `${pt.d.hadir} / ${pt.d.totalGuru} guru`,
-          color: "#059669",
+          color: "#4d755f",
         },
         {
           label: "Tepat Waktu",
           value: `${pt.d.tepatWaktu} guru`,
-          color: "#10b981",
+          color: "#5e8770",
         },
         {
           label: "Terlambat",
@@ -3750,20 +3770,20 @@ function renderGrafikLineKehadiran(containerId, dataTren, avgBadgeId) {
     pointsHtml += `
       <g class="line-chart-point-group" data-tip="${tipData}" onmouseenter="handleBarHover(event, this)" onmousemove="moveChartTooltip(event)" onmouseleave="hideChartTooltip()" ontouchstart="handleBarHover(event, this)">
         <!-- Vertical guide line on hover -->
-        <line class="line-hover-guide" x1="${pt.x}" y1="${padTop}" x2="${pt.x}" y2="${baseBottom}" stroke="#10b981" stroke-dasharray="3,3" stroke-width="1.5" />
+        <line class="line-hover-guide" x1="${pt.x}" y1="${padTop}" x2="${pt.x}" y2="${baseBottom}" stroke="#5e8770" stroke-dasharray="3,3" stroke-width="1.5" />
         
         <!-- X Axis Labels -->
-        <text x="${pt.x}" y="${svgH - 18}" font-size="11" font-weight="${pt.isToday ? "800" : "600"}" fill="${pt.isToday ? "#059669" : "#475569"}" class="${pt.isToday ? "is-today-text" : ""}" text-anchor="middle">${esc(pt.d.hari.substring(0, 3))}</text>
-        <text x="${pt.x}" y="${svgH - 6}" font-size="9" font-weight="500" fill="#94a3b8" text-anchor="middle">${esc(pt.d.tanggal.substring(0, 5))}</text>
+        <text x="${pt.x}" y="${svgH - 18}" font-size="11" font-weight="${pt.isToday ? "800" : "600"}" fill="${pt.isToday ? "#4d755f" : "#57534c"}" class="${pt.isToday ? "is-today-text" : ""}" text-anchor="middle">${esc(pt.d.hari.substring(0, 3))}</text>
+        <text x="${pt.x}" y="${svgH - 6}" font-size="9" font-weight="500" fill="#8c887f" text-anchor="middle">${esc(pt.d.tanggal.substring(0, 5))}</text>
         
         <!-- Value Pill above point -->
-        <text class="line-val-text ${pt.isToday ? "is-today-text" : ""}" x="${pt.x}" y="${valY}" font-size="10.5" font-weight="700" fill="${pt.isToday ? "#059669" : "#334155"}" text-anchor="middle">${pt.pct}%</text>
+        <text class="line-val-text ${pt.isToday ? "is-today-text" : ""}" x="${pt.x}" y="${valY}" font-size="10.5" font-weight="700" fill="${pt.isToday ? "#4d755f" : "#3d3a35"}" text-anchor="middle">${pt.pct}%</text>
 
         <!-- Pulsing halo for today -->
-        ${pt.isToday ? `<circle cx="${pt.x}" cy="${pt.y}" r="8" fill="rgba(16,185,129,0.3)" class="line-pulse-ring" />` : ""}
+        ${pt.isToday ? `<circle cx="${pt.x}" cy="${pt.y}" r="8" fill="rgba(94, 135, 112,0.3)" class="line-pulse-ring" />` : ""}
         
         <!-- Point Core Circle -->
-        <circle class="line-point-core" cx="${pt.x}" cy="${pt.y}" r="4.5" fill="#ffffff" stroke="${pt.isToday ? "#059669" : "#10b981"}" stroke-width="2.5" />
+        <circle class="line-point-core" cx="${pt.x}" cy="${pt.y}" r="4.5" fill="#ffffff" stroke="${pt.isToday ? "#4d755f" : "#5e8770"}" stroke-width="2.5" />
         
         <!-- Hitbox for easy mouse / touch hover -->
         <circle cx="${pt.x}" cy="${pt.y}" r="18" fill="transparent" style="cursor: pointer;" />
@@ -3778,18 +3798,18 @@ function renderGrafikLineKehadiran(containerId, dataTren, avgBadgeId) {
     <svg class="line-chart-svg" viewBox="0 0 ${svgW} ${svgH}">
       <defs>
         <linearGradient id="${gradId}" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#10b981" stop-opacity="0.28" />
-          <stop offset="80%" stop-color="#10b981" stop-opacity="0.04" />
-          <stop offset="100%" stop-color="#10b981" stop-opacity="0.0" />
+          <stop offset="0%" stop-color="#5e8770" stop-opacity="0.28" />
+          <stop offset="80%" stop-color="#5e8770" stop-opacity="0.04" />
+          <stop offset="100%" stop-color="#5e8770" stop-opacity="0.0" />
         </linearGradient>
         <filter id="${filterId}" x="-20%" y="-20%" width="140%" height="140%">
-          <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#10b981" flood-opacity="0.32"/>
+          <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#5e8770" flood-opacity="0.32"/>
         </filter>
       </defs>
       ${gridHtml}
       ${targetLineHtml}
       <path d="${areaPath}" fill="url(#${gradId})" />
-      <path d="${linePath}" fill="none" stroke="#10b981" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round" filter="url(#${filterId})" />
+      <path d="${linePath}" fill="none" stroke="#5e8770" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round" filter="url(#${filterId})" />
       ${pointsHtml}
     </svg>
   `;
@@ -3817,7 +3837,7 @@ function renderGrafikDonutStatus(chartId, legendId, komp, totalGuru) {
     {
       label: "Tepat Waktu",
       count: tepat,
-      color: "#10b981",
+      color: "#5e8770",
       pct: Math.round((tepat / total) * 100),
     },
     {
@@ -3866,15 +3886,15 @@ function renderGrafikDonutStatus(chartId, legendId, komp, totalGuru) {
   });
 
   if (hadir === 0 && izin === 0) {
-    circlesHtml = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#f1f5f9" stroke-width="20" />`;
+    circlesHtml = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#efede7" stroke-width="20" />`;
   }
 
   chartEl.innerHTML = `
     <svg viewBox="0 0 165 165" style="width:100%; height:100%; display:block;">
-      <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#f1f5f9" stroke-width="20" />
+      <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#efede7" stroke-width="20" />
       ${circlesHtml}
       <text class="donut-center-text" x="${cx}" y="${cy - 7}" font-size="28" font-weight="800" fill="var(--ink)">${persenHadir}%</text>
-      <text class="donut-center-text" x="${cx}" y="${cy + 15}" font-size="10" font-weight="700" fill="#64748b" letter-spacing="0.08em">HADIR</text>
+      <text class="donut-center-text" x="${cx}" y="${cy + 15}" font-size="10" font-weight="700" fill="#6e6a61" letter-spacing="0.08em">HADIR</text>
     </svg>
   `;
 
@@ -3905,12 +3925,12 @@ function renderDistribusiJamKedatangan(containerId, dist, batas) {
     {
       label: "Sebelum 06:45 (Awal)",
       count: (dist && dist.sebelum0645) || 0,
-      color: "#10b981",
+      color: "#5e8770",
     },
     {
       label: "06:45 – 07:00 (Optimal)",
       count: (dist && dist.jam0645_0700) || 0,
-      color: "#059669",
+      color: "#4d755f",
     },
     {
       label: `07:00 – ${batas || "07:15"} (Mendekati Batas)`,
@@ -3926,7 +3946,7 @@ function renderDistribusiJamKedatangan(containerId, dist, batas) {
 
   if (total === 0) {
     el.innerHTML =
-      '<div style="text-align:center; padding:18px; color:#94a3b8; font-size:12px;">Belum ada guru yang melakukan presensi hari ini.</div>';
+      '<div style="text-align:center; padding:18px; color:#8c887f; font-size:12px;">Belum ada guru yang melakukan presensi hari ini.</div>';
     return;
   }
 
@@ -3971,7 +3991,7 @@ function renderKepatuhanLokasi(containerId, badgeId, lokasi) {
 
   if (total === 0) {
     cEl.innerHTML =
-      '<div style="text-align:center; padding:18px; color:#94a3b8; font-size:12px;">Belum ada aktivitas presensi dengan koordinat GPS hari ini.</div>';
+      '<div style="text-align:center; padding:18px; color:#8c887f; font-size:12px;">Belum ada aktivitas presensi dengan koordinat GPS hari ini.</div>';
     return;
   }
 
@@ -3982,7 +4002,7 @@ function renderKepatuhanLokasi(containerId, badgeId, lokasi) {
         <strong style="color:var(--ink);">${dalam} guru (${persenDalam}%)</strong>
       </div>
       <div style="width:100%; height:10px; background:rgba(244, 63, 94, 0.18); border-radius:99px; overflow:hidden; display:flex;">
-        <div style="width:${persenDalam}%; height:100%; background:#10b981; border-radius:99px 0 0 99px; transition:width 0.4s ease;"></div>
+        <div style="width:${persenDalam}%; height:100%; background:#5e8770; border-radius:99px 0 0 99px; transition:width 0.4s ease;"></div>
       </div>
       <div style="display:flex; justify-content:space-between; align-items:center; font-size:11px; color:var(--slate); margin-top:6px;">
         <span>Luar Radius: <strong style="color:var(--ink);">${luar} guru</strong></span>
@@ -4511,11 +4531,11 @@ function bukaRekapSiswaDashboard(prefix) {
 
 function renderPieStatistikSiswa(ring) {
   const statuses = [
-    { label: "Hadir", key: "hadir", color: "#059669" },
-    { label: "Terlambat", key: "telat", color: "#7c3aed" },
-    { label: "Izin", key: "izin", color: "#d97706" },
-    { label: "Sakit", key: "sakit", color: "#0284c7" },
-    { label: "Alpa", key: "alpa", color: "#e11d48" },
+    { label: "Hadir", key: "hadir", color: "#4d755f" },
+    { label: "Terlambat", key: "telat", color: "#7c65a3" },
+    { label: "Izin", key: "izin", color: "#b57c3c" },
+    { label: "Sakit", key: "sakit", color: "#4d7ea1" },
+    { label: "Alpa", key: "alpa", color: "#b85656" },
   ].map((status) => ({
     ...status,
     value: Math.max(0, Number(ring[status.key]) || 0),
@@ -4550,7 +4570,7 @@ function renderPieStatistikSiswa(ring) {
       <span>${total.toLocaleString("id-ID")} total presensi</span>
     </div>
     <div class="kepala-student-pie-content">
-      <div class="kepala-student-pie-chart" role="img" aria-label="${percentHadir}% hadir dari ${total.toLocaleString("id-ID")} total presensi" style="background:${total ? `conic-gradient(${slices.join(",")})` : "#e2e8f0"};">
+      <div class="kepala-student-pie-chart" role="img" aria-label="${percentHadir}% hadir dari ${total.toLocaleString("id-ID")} total presensi" style="background:${total ? `conic-gradient(${slices.join(",")})` : "#e4e2da"};">
         <div class="kepala-student-pie-center">
           <strong>${percentHadir}%</strong>
           <span>HADIR</span>
@@ -4579,11 +4599,11 @@ function renderGrafikStatistikSiswa(perHari, mulai) {
       date,
       tanggal,
       statuses: [
-        { label: "Hadir", key: "hadir", color: "#059669" },
-        { label: "Izin", key: "izin", color: "#d97706" },
-        { label: "Sakit", key: "sakit", color: "#0284c7" },
-        { label: "Alpa", key: "alpa", color: "#e11d48" },
-        { label: "Terlambat", key: "telat", color: "#7c3aed" },
+        { label: "Hadir", key: "hadir", color: "#4d755f" },
+        { label: "Izin", key: "izin", color: "#b57c3c" },
+        { label: "Sakit", key: "sakit", color: "#4d7ea1" },
+        { label: "Alpa", key: "alpa", color: "#b85656" },
+        { label: "Terlambat", key: "telat", color: "#7c65a3" },
       ].map((status) => ({
         ...status,
         value: Math.max(0, Number(row[status.key]) || 0),
@@ -4634,7 +4654,7 @@ function renderGrafikStatistikSiswa(perHari, mulai) {
           {
             label: "Total Kehadiran",
             value: `${persenKehadiran}% (${totalKehadiran.toLocaleString("id-ID")}/${total.toLocaleString("id-ID")})`,
-            color: "#059669",
+            color: "#4d755f",
           },
         ],
       }).replace(/"/g, "&quot;");
@@ -4656,11 +4676,11 @@ function renderGrafikStatistikSiswa(perHari, mulai) {
     )
     .join("");
   const legend = [
-    { label: "Hadir", color: "#059669" },
-    { label: "Izin", color: "#d97706" },
-    { label: "Sakit", color: "#0284c7" },
-    { label: "Alpa", color: "#e11d48" },
-    { label: "Terlambat", color: "#7c3aed" },
+    { label: "Hadir", color: "#4d755f" },
+    { label: "Izin", color: "#b57c3c" },
+    { label: "Sakit", color: "#4d7ea1" },
+    { label: "Alpa", color: "#b85656" },
+    { label: "Terlambat", color: "#7c65a3" },
   ]
     .map(
       (item) =>
@@ -4692,7 +4712,7 @@ async function muatStatistikSiswa(prefix) {
   const body = document.getElementById(bodyId);
   if (!body) return;
   body.innerHTML =
-    '<div style="text-align:center;padding:24px;color:#94a3b8;font-size:12.5px;">Memuat statistik kehadiran siswa...</div>';
+    '<div style="text-align:center;padding:24px;color:#8c887f;font-size:12.5px;">Memuat statistik kehadiran siswa...</div>';
   const d = new Date();
   const mulai = new Date(d.getTime() - 29 * 86400000);
   // Backend parseTanggalIndo expects DD/MM/YYYY format
@@ -4717,7 +4737,7 @@ async function muatStatistikSiswa(prefix) {
   }
   if (!res || !res.success || !res.data) {
     body.innerHTML =
-      '<div style="text-align:center;padding:24px;color:#94a3b8;font-size:12.5px;">' +
+      '<div style="text-align:center;padding:24px;color:#8c887f;font-size:12.5px;">' +
       ((res && res.message) || "Data tidak tersedia") +
       "</div>";
     return;
@@ -4727,11 +4747,11 @@ async function muatStatistikSiswa(prefix) {
   const badge = document.getElementById(prefix + "SiswaPersenBadge");
   if (badge) badge.textContent = (ring.persenHadir || 0) + "% Hadir";
   const stat = [
-    { l: "Hadir", v: ring.hadir || 0, c: "#047857" },
-    { l: "Izin", v: ring.izin || 0, c: "#d97706" },
-    { l: "Sakit", v: ring.sakit || 0, c: "#0284c7" },
-    { l: "Alpa", v: ring.alpa || 0, c: "#be123c" },
-    { l: "Terlambat", v: ring.telat || 0, c: "#7c3aed" },
+    { l: "Hadir", v: ring.hadir || 0, c: "#466b57" },
+    { l: "Izin", v: ring.izin || 0, c: "#b57c3c" },
+    { l: "Sakit", v: ring.sakit || 0, c: "#4d7ea1" },
+    { l: "Alpa", v: ring.alpa || 0, c: "#a84c4c" },
+    { l: "Terlambat", v: ring.telat || 0, c: "#7c65a3" },
     { l: "Total", v: ring.total || 0, c: "var(--ink)" },
   ]
     .map(
@@ -4828,7 +4848,7 @@ function muatTopKehadiranKepala(riwayatList) {
 
   if (!teacherList.length) {
     listEl.innerHTML =
-      '<div style="text-align:center; padding:18px; color:#94a3b8; font-size:12.5px;">Data rekap presensi bulan ini belum tersedia</div>';
+      '<div style="text-align:center; padding:18px; color:#8c887f; font-size:12.5px;">Data rekap presensi bulan ini belum tersedia</div>';
     return;
   }
 
@@ -4848,7 +4868,7 @@ function muatTopKehadiranKepala(riwayatList) {
 
   const rankBadges = [
     '<span title="Peringkat 1" style="display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:7px; font-size:14px; line-height:1; background:linear-gradient(135deg, #fef3c7, #fde68a); border:1px solid #fcd34d; flex-shrink:0; box-shadow:0 1px 2px rgba(217,119,6,0.15);">🥇</span>',
-    '<span title="Peringkat 2" style="display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:7px; font-size:14px; line-height:1; background:linear-gradient(135deg, #f1f5f9, #e2e8f0); border:1px solid #cbd5e1; flex-shrink:0; box-shadow:0 1px 2px rgba(71,85,105,0.1);">🥈</span>',
+    '<span title="Peringkat 2" style="display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:7px; font-size:14px; line-height:1; background:linear-gradient(135deg, #efede7, #e4e2da); border:1px solid #d5d2c8; flex-shrink:0; box-shadow:0 1px 2px rgba(71,85,105,0.1);">🥈</span>',
     '<span title="Peringkat 3" style="display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:7px; font-size:14px; line-height:1; background:linear-gradient(135deg, #ffedd5, #fed7aa); border:1px solid #fdba74; flex-shrink:0; box-shadow:0 1px 2px rgba(194,65,12,0.15);">🥉</span>',
     '<span title="Peringkat 4" style="display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:7px; font-weight:700; font-size:12px; background:var(--parchment); color:var(--slate); border:1px solid var(--line); flex-shrink:0;">4</span>',
     '<span title="Peringkat 5" style="display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:7px; font-weight:700; font-size:12px; background:var(--parchment); color:var(--slate); border:1px solid var(--line); flex-shrink:0;">5</span>',
@@ -4862,14 +4882,14 @@ function muatTopKehadiranKepala(riwayatList) {
       <div style="flex:1; min-width:0;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2px;">
           <strong style="font-size:12.5px; color:var(--ink); font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${esc(g.namaGuru)}</strong>
-          <span style="font-size:12px; font-weight:800; color:#059669; flex-shrink:0; margin-left:6px;">${g.persen}%</span>
+          <span style="font-size:12px; font-weight:800; color:#4d755f; flex-shrink:0; margin-left:6px;">${g.persen}%</span>
         </div>
         <div style="display:flex; justify-content:space-between; align-items:center; font-size:11px; color:var(--slate); margin-bottom:4px;">
           <span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${esc(g.mapel)}</span>
           <span style="font-weight:600; flex-shrink:0;">${g.hadir}/${totalDays} Hari</span>
         </div>
         <div style="height:5px; background:var(--line); border-radius:999px; overflow:hidden;">
-          <div style="height:100%; width:${g.persen}%; background:linear-gradient(90deg, #10b981, #059669); border-radius:999px;"></div>
+          <div style="height:100%; width:${g.persen}%; background:linear-gradient(90deg, #5e8770, #4d755f); border-radius:999px;"></div>
         </div>
       </div>
     </div>
@@ -4958,7 +4978,7 @@ async function muatKbmHariIniKepala(namaHariIni) {
         if (r) {
           if (r.statusWaktu === "Hadir") {
             statusHtml =
-              '<span style="display:inline-flex; align-items:center; gap:4px; font-size:10.5px; font-weight:700; color:#059669; background:#dcfce7; border:1px solid #bbf7d0; padding:2px 7px; border-radius:6px; white-space:nowrap;"><span style="width:5px; height:5px; border-radius:50%; background:#10b981;"></span>Tepat Waktu</span>';
+              '<span style="display:inline-flex; align-items:center; gap:4px; font-size:10.5px; font-weight:700; color:#4d755f; background:#e0ebe4; border:1px solid #c8dbd0; padding:2px 7px; border-radius:6px; white-space:nowrap;"><span style="width:5px; height:5px; border-radius:50%; background:#5e8770;"></span>Tepat Waktu</span>';
           } else if (r.statusWaktu === "Terlambat") {
             statusHtml =
               '<span style="display:inline-flex; align-items:center; gap:4px; font-size:10.5px; font-weight:700; color:#b45309; background:#fef3c7; border:1px solid #fde68a; padding:2px 7px; border-radius:6px; white-space:nowrap;"><span style="width:5px; height:5px; border-radius:50%; background:#f59e0b;"></span>Terlambat</span>';
@@ -4967,7 +4987,7 @@ async function muatKbmHariIniKepala(namaHariIni) {
           }
         } else {
           statusHtml =
-            '<span style="display:inline-flex; align-items:center; gap:4px; font-size:10.5px; font-weight:600; color:var(--slate); background:var(--parchment-alt); border:1px solid var(--line); padding:2px 7px; border-radius:6px; white-space:nowrap;"><span style="width:5px; height:5px; border-radius:50%; background:#94a3b8;"></span>Belum Presensi</span>';
+            '<span style="display:inline-flex; align-items:center; gap:4px; font-size:10.5px; font-weight:600; color:var(--slate); background:var(--parchment-alt); border:1px solid var(--line); padding:2px 7px; border-radius:6px; white-space:nowrap;"><span style="width:5px; height:5px; border-radius:50%; background:#8c887f;"></span>Belum Presensi</span>';
         }
 
         return `
@@ -4999,7 +5019,7 @@ async function muatJadwalKepala() {
     const listEl = document.getElementById("listJadwal" + d);
     if (listEl)
       listEl.innerHTML =
-        '<div style="text-align:center; padding:12px; color:#94a3b8; font-size:12px;"><span class="spin-sm"></span> Memuat...</div>';
+        '<div style="text-align:center; padding:12px; color:#8c887f; font-size:12px;"><span class="spin-sm"></span> Memuat...</div>';
   });
 
   try {
@@ -5057,7 +5077,7 @@ async function muatJadwalKepala() {
           (j) => `
         <div class="kbm-item-card" style="padding:10px 12px; margin-bottom:8px;">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-            <span class="kbm-jam-badge" style="font-size:11px; font-weight:800; color:#059669; background:#dcfce7; padding:2px 6px; border-radius:4px;">Jam ${esc(j.jamKe)}</span>
+            <span class="kbm-jam-badge" style="font-size:11px; font-weight:800; color:#4d755f; background:#e0ebe4; padding:2px 6px; border-radius:4px;">Jam ${esc(j.jamKe)}</span>
             <span class="kbm-kelas-badge" style="font-size:11px; font-weight:700; color:var(--slate); background:var(--parchment-alt); border:1px solid var(--line); padding:2px 6px; border-radius:4px;">${esc(j.kelas)}</span>
           </div>
           <div style="font-size:13px; font-weight:700; color:var(--ink);">${esc(j.mataPelajaran)}</div>
@@ -5143,7 +5163,7 @@ async function muatAktivitasHariIni(prefix) {
   const el = document.getElementById(prefix + "AktivitasList");
   if (!el) return;
   el.innerHTML =
-    '<tr><td colspan="5" style="text-align:center; padding:28px 16px; color:#94a3b8;"><span class="spin-sm"></span> Memuat aktivitas hari ini...</td></tr>';
+    '<tr><td colspan="5" style="text-align:center; padding:28px 16px; color:#8c887f;"><span class="spin-sm"></span> Memuat aktivitas hari ini...</td></tr>';
   try {
     const today = todayInputValue();
     const res = await runServer(
@@ -5158,9 +5178,9 @@ async function muatAktivitasHariIni(prefix) {
       return;
     }
     if (!res.data.length) {
-      el.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:36px 16px; color:#94a3b8;">
+      el.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:36px 16px; color:#8c887f;">
         <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:32px; height:32px; color:#cbd5e1;"><path d="M20 7h-7l-2-2H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2z"></path></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:32px; height:32px; color:#d5d2c8;"><path d="M20 7h-7l-2-2H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2z"></path></svg>
           <span style="font-size:13px; font-weight:500;">Belum ada aktivitas presensi hari ini.</span>
         </div>
       </td></tr>`;
@@ -7126,7 +7146,7 @@ async function deteksiJadwalManualGuru() {
 
   if (!jadwalHariIni.length) {
     autoBox.classList.remove("hidden");
-    chipsEl.innerHTML = `<span style="font-size: 11px; color: #64748b; font-style: italic;">Tidak ada jadwal mengajar tetap untuk hari ${namaHari}. Anda dapat memilih Mapel &amp; Kelas manual di bawah.</span>`;
+    chipsEl.innerHTML = `<span style="font-size: 11px; color: #6e6a61; font-style: italic;">Tidak ada jadwal mengajar tetap untuk hari ${namaHari}. Anda dapat memilih Mapel &amp; Kelas manual di bawah.</span>`;
     return;
   }
 
@@ -7787,7 +7807,7 @@ async function hapusUserSekarang(id) {
 function bukaModalImpor() {
   __modalOpen(
     "Impor Akun Guru Massal",
-    '<div style="font-size:12px;color:#475569;margin-bottom:10px;line-height:1.7;">' +
+    '<div style="font-size:12px;color:#57534c;margin-bottom:10px;line-height:1.7;">' +
       "<b>Langkah:</b><br>" +
       "1. Klik <b>Unduh Template Excel</b> untuk mendapat berkas contoh berwarna.<br>" +
       "2. Isi data guru di Excel (wajib: <b>Nama Lengkap</b> saja, username &amp; password otomatis jika kosong).<br>" +
@@ -7796,13 +7816,13 @@ function bukaModalImpor() {
       '<label for="mImporFileGuru" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border:2px dashed var(--brand-emerald-500);border-radius:12px;padding:24px 12px;background:var(--brand-emerald-50);cursor:pointer;text-align:center;">' +
       '<svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="var(--brand-emerald-800)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>' +
       '<span style="font-size:13px;font-weight:700;color:var(--brand-emerald-800);">Klik untuk pilih berkas Excel</span>' +
-      '<span id="mImporNamaGuru" style="font-size:12px;color:#64748b;">Mendukung .xlsx, .xls, dan .csv</span>' +
+      '<span id="mImporNamaGuru" style="font-size:12px;color:#6e6a61;">Mendukung .xlsx, .xls, dan .csv</span>' +
       "</label>" +
       '<input type="file" id="mImporFileGuru" accept=".xlsx,.xls,.csv" style="display:none;">' +
       '<div id="mImporInfoGuru" style="display:none;margin-top:10px;padding:10px 12px;border-radius:10px;font-size:12px;line-height:1.6;"></div>' +
       '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:14px;">' +
       '<button type="button" style="background:var(--brand-emerald-600);color:#fff;border:none;border-radius:10px;padding:10px 16px;cursor:pointer;font-weight:600;font-size:13px;" onclick="unduhTemplateGuru()">Unduh Template Excel</button>' +
-      '<span style="font-size:11px;color:#94a3b8;">Baris pertama = judul kolom, dilewati saat impor.</span>' +
+      '<span style="font-size:11px;color:#8c887f;">Baris pertama = judul kolom, dilewati saat impor.</span>' +
       "</div>" +
       '<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px;">' +
       __btnSekunder("Batal", "__modalClose()") +
@@ -8221,21 +8241,39 @@ function inisialisasiDefaultBulanTahun() {
 // FUNGSI INTERAKTIF LAYOUT & FITUR LENGKAP
 // ============================================================
 
-// 1. Dark / Light Mode Toggle & State Persistence
-function toggleTheme() {
-  const isDark = document.documentElement.classList.toggle("dark");
+// 1. Dark / Light Mode Toggle & State Persistence (Astryx Theme Sync)
+function applyAstryxThemeMode(mode) {
+  const isDark = mode === "dark";
+  document.documentElement.classList.toggle("dark", isDark);
+  document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
+  document.documentElement.setAttribute("data-astryx-theme", "neutral");
   try {
     localStorage.setItem("theme", isDark ? "dark" : "light");
   } catch (e) {}
+  try {
+    window.dispatchEvent(
+      new CustomEvent("astryx-theme-change", {
+        detail: { mode: isDark ? "dark" : "light" },
+      }),
+    );
+  } catch (e) {}
+}
+
+function toggleTheme() {
+  const isDark = !document.documentElement.classList.contains("dark");
+  applyAstryxThemeMode(isDark ? "dark" : "light");
 }
 
 (function restoreTheme() {
   try {
-    if (localStorage.getItem("theme") === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
+    const saved = localStorage.getItem("theme");
+    const isDark = saved === "dark";
+    document.documentElement.classList.toggle("dark", isDark);
+    document.documentElement.setAttribute(
+      "data-theme",
+      isDark ? "dark" : "light",
+    );
+    document.documentElement.setAttribute("data-astryx-theme", "neutral");
   } catch (e) {}
 })();
 
@@ -8705,8 +8743,8 @@ function initGeofenceMap() {
   }).addTo(geofenceMap);
 
   geofenceCircle = L.circle([lat, lng], {
-    color: "#059669",
-    fillColor: "#10b981",
+    color: "#4d755f",
+    fillColor: "#5e8770",
     fillOpacity: 0.22,
     weight: 2,
     radius: rad,
@@ -8718,7 +8756,7 @@ function initGeofenceMap() {
 
   geofenceMarker
     .bindPopup(
-      '<b style="font-size:13px; color:#064e3b;">Lokasi Titik Presensi</b><br><span style="font-size:11px; color:#64748b;">Geser pin ini untuk memindahkan titik.</span>',
+      '<b style="font-size:13px; color:#355242;">Lokasi Titik Presensi</b><br><span style="font-size:11px; color:#6e6a61;">Geser pin ini untuk memindahkan titik.</span>',
     )
     .openPopup();
 
@@ -8820,9 +8858,9 @@ function __badge(txt, kind) {
     fg = "#818cf8",
     bd = "rgba(99, 102, 241, 0.3)";
   if (kind === "green") {
-    bg = "rgba(16, 185, 129, 0.15)";
-    fg = "#34d399";
-    bd = "rgba(52, 211, 153, 0.3)";
+    bg = "rgba(94, 135, 112, 0.15)";
+    fg = "#8fb9a0";
+    bd = "rgba(143, 185, 160, 0.3)";
   }
   if (kind === "muted") {
     bg = "rgba(148, 163, 184, 0.15)";
@@ -9092,7 +9130,7 @@ function __pagingHalaman() {
   var totalHalaman = Math.max(1, Math.ceil(__siswaTotal / __siswaPer));
   if (totalHalaman <= 1) return "";
   return (
-    '<div style="display:flex;align-items:center;gap:8px;justify-content:flex-end;margin-top:12px;font-size:12px;color:#475569;">' +
+    '<div style="display:flex;align-items:center;gap:8px;justify-content:flex-end;margin-top:12px;font-size:12px;color:#57534c;">' +
     "<span>Total " +
     __siswaTotal +
     " siswa</span>" +
@@ -9562,7 +9600,7 @@ async function hapusSiswaSekarang(id) {
 function bukaModalImporSiswa() {
   __modalOpen(
     "Impor Massal Siswa",
-    '<div style="font-size:12px;color:#475569;margin-bottom:10px;line-height:1.7;">' +
+    '<div style="font-size:12px;color:#57534c;margin-bottom:10px;line-height:1.7;">' +
       "<b>Langkah:</b><br>" +
       "1. Klik <b>Unduh Template Excel</b> untuk mendapat berkas contoh berwarna.<br>" +
       "2. Isi data siswa di Excel sesuai kolom template.<br>" +
@@ -9571,13 +9609,13 @@ function bukaModalImporSiswa() {
       '<label for="mImporFile" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border:2px dashed var(--brand-emerald-500);border-radius:12px;padding:24px 12px;background:var(--brand-emerald-50);cursor:pointer;text-align:center;">' +
       '<svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="var(--brand-emerald-800)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>' +
       '<span style="font-size:13px;font-weight:700;color:var(--brand-emerald-800);">Klik untuk pilih berkas Excel</span>' +
-      '<span id="mImporNama" style="font-size:12px;color:#64748b;">Mendukung .xlsx, .xls, dan .csv</span>' +
+      '<span id="mImporNama" style="font-size:12px;color:#6e6a61;">Mendukung .xlsx, .xls, dan .csv</span>' +
       "</label>" +
       '<input type="file" id="mImporFile" accept=".xlsx,.xls,.csv" style="display:none;">' +
       '<div id="mImporInfo" style="display:none;margin-top:10px;padding:10px 12px;border-radius:10px;font-size:12px;line-height:1.6;"></div>' +
       '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:14px;">' +
       '<button type="button" style="background:var(--brand-emerald-600);color:#fff;border:none;border-radius:10px;padding:10px 16px;cursor:pointer;font-weight:600;font-size:13px;" onclick="unduhTemplateSiswa()">Unduh Template Excel</button>' +
-      '<span style="font-size:11px;color:#94a3b8;">Baris pertama = judul kolom, dilewati saat impor.</span>' +
+      '<span style="font-size:11px;color:#8c887f;">Baris pertama = judul kolom, dilewati saat impor.</span>' +
       "</div>" +
       '<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px;">' +
       __btnSekunder("Batal", "__modalClose()") +
@@ -9888,7 +9926,7 @@ async function bukaModalPindahSiswa(id) {
   }
   __modalOpen(
     "Pindah Kelas - " + escH(s.namaLengkap),
-    '<div style="font-size:13px;color:#475569;margin-bottom:12px;">NIS ' +
+    '<div style="font-size:13px;color:#57534c;margin-bottom:12px;">NIS ' +
       escH(s.nis) +
       " - Kelas saat ini: " +
       escH(s.kelas || "-") +
@@ -10136,7 +10174,7 @@ async function muatTabelTahun() {
     '<h3 style="margin:0;font-size:16px;font-weight:700;color:var(--ink);">Data Tahun Ajaran</h3>' +
     __btnUtama("+ Tambah Tahun Ajaran", "bukaModalTahun()") +
     "</div>" +
-    '<div style="font-size:12px;color:#64748b;margin-bottom:10px;">Tahun ajaran yang <b>aktif</b> dipakai untuk pembagian kelas & presensi pada operasional berjalan.</div>' +
+    '<div style="font-size:12px;color:#6e6a61;margin-bottom:10px;">Tahun ajaran yang <b>aktif</b> dipakai untuk pembagian kelas & presensi pada operasional berjalan.</div>' +
     __tabelTahun(rows) +
     "</div>";
 }
@@ -10363,7 +10401,7 @@ async function muatAssignSiswa() {
     __btnBahaya("Lepas Terpilih", "assignLepas()") +
     "</div>" +
     "</div>" +
-    '<div style="font-size:12px;color:#64748b;margin:6px 0 10px;">Centang siswa, lalu pilih kelas tujuan (Pasang), atau pilih tahun ajaran lalu lepas dari kelas (Lepas).</div>' +
+    '<div style="font-size:12px;color:#6e6a61;margin:6px 0 10px;">Centang siswa, lalu pilih kelas tujuan (Pasang), atau pilih tahun ajaran lalu lepas dari kelas (Lepas).</div>' +
     __tabelAssign(rows) +
     "</div>";
 }
@@ -10609,15 +10647,15 @@ function __rekapKelasCard(g) {
       label: "Hadir",
       cls: "present",
       value: hVal,
-      color: "#059669",
-      bg: "#ecfdf5",
-      textColor: "#047857",
+      color: "#4d755f",
+      bg: "#eef3f0",
+      textColor: "#466b57",
     },
     {
       label: "Telat",
       cls: "late",
       value: tVal,
-      color: "#7c3aed",
+      color: "#7c65a3",
       bg: "#f5f3ff",
       textColor: "#6d28d9",
     },
@@ -10625,7 +10663,7 @@ function __rekapKelasCard(g) {
       label: "Izin",
       cls: "permission",
       value: iVal,
-      color: "#d97706",
+      color: "#b57c3c",
       bg: "#fffbeb",
       textColor: "#b45309",
     },
@@ -10633,7 +10671,7 @@ function __rekapKelasCard(g) {
       label: "Sakit",
       cls: "sick",
       value: sVal,
-      color: "#0284c7",
+      color: "#4d7ea1",
       bg: "#f0f9ff",
       textColor: "#0369a1",
     },
@@ -10641,9 +10679,9 @@ function __rekapKelasCard(g) {
       label: "Alfa",
       cls: "absent",
       value: aVal,
-      color: "#e11d48",
+      color: "#b85656",
       bg: "#fff1f2",
-      textColor: "#be123c",
+      textColor: "#a84c4c",
     },
   ].map(function (st) {
     var pct =
@@ -11152,31 +11190,31 @@ function cetakRekapSiswa() {
   var tr = baris
     .map(function (x, i) {
       return (
-        '<tr><td style="padding:5px 8px;border:1px solid #cbd5e1;text-align:center;">' +
+        '<tr><td style="padding:5px 8px;border:1px solid #d5d2c8;text-align:center;">' +
         (i + 1) +
         "</td>" +
-        '<td style="padding:5px 8px;border:1px solid #cbd5e1;">' +
+        '<td style="padding:5px 8px;border:1px solid #d5d2c8;">' +
         esc(x.kode) +
         "</td>" +
-        '<td style="padding:5px 8px;border:1px solid #cbd5e1;">' +
+        '<td style="padding:5px 8px;border:1px solid #d5d2c8;">' +
         esc(x.nis) +
         "</td>" +
-        '<td style="padding:5px 8px;border:1px solid #cbd5e1;">' +
+        '<td style="padding:5px 8px;border:1px solid #d5d2c8;">' +
         esc(x.nama) +
         "</td>" +
-        '<td style="padding:5px 8px;border:1px solid #cbd5e1;text-align:center;">' +
+        '<td style="padding:5px 8px;border:1px solid #d5d2c8;text-align:center;">' +
         x.jk +
         "</td>" +
         ["hadir", "izin", "sakit", "alpa", "telat", "total"]
           .map(function (f) {
             return (
-              '<td style="padding:5px 8px;border:1px solid #cbd5e1;text-align:center;">' +
+              '<td style="padding:5px 8px;border:1px solid #d5d2c8;text-align:center;">' +
               x[f] +
               "</td>"
             );
           })
           .join("") +
-        '<td style="padding:5px 8px;border:1px solid #cbd5e1;text-align:center;">' +
+        '<td style="padding:5px 8px;border:1px solid #d5d2c8;text-align:center;">' +
         x.persen +
         "%</td></tr>"
       );
@@ -11198,7 +11236,7 @@ function cetakRekapSiswa() {
   ]
     .map(function (h) {
       return (
-        '<th style="padding:6px 8px;border:1px solid #94a3b8;background:#f1f5f9;text-align:left;font-weight:700;">' +
+        '<th style="padding:6px 8px;border:1px solid #8c887f;background:#efede7;text-align:left;font-weight:700;">' +
         h +
         "</th>"
       );
@@ -11211,8 +11249,8 @@ function cetakRekapSiswa() {
   }
   w.document.write(
     '<!doctype html><html><head><meta charset="UTF-8"><title>Rekap Presensi Siswa</title><style>' +
-      "body{font-family:Calibri,Arial,sans-serif;color:#0f172a;margin:24px;}" +
-      ".kop{text-align:center;margin-bottom:14px;} .kop h2{margin:0;font-size:20px;} .kop p{margin:2px 0;font-size:12px;color:#475569;}" +
+      "body{font-family:Calibri,Arial,sans-serif;color:#1f1e1c;margin:24px;}" +
+      ".kop{text-align:center;margin-bottom:14px;} .kop h2{margin:0;font-size:20px;} .kop p{margin:2px 0;font-size:12px;color:#57534c;}" +
       "table{width:100%;border-collapse:collapse;font-size:12px;} th,td{font-size:12px;}" +
       "@media print{ .ttd{margin-top:48px;} body{margin:12mm;} }" +
       "</style></head><body>" +
@@ -11770,10 +11808,10 @@ async function tampilStatistikGuru() {
       : null;
     function warnaBerlabel(w) {
       var map = {
-        "#34d399": "#047857",
-        "#fb7185": "#be123c",
+        "#8fb9a0": "#466b57",
+        "#9ec4ad": "#4d755f",
+        "#fb7185": "#a84c4c",
         "#fbbf24": "#b45309",
-        "#4ade80": "#059669",
         "#f87171": "#dc2626",
       };
       return map[w] || w || "var(--ink)";
@@ -11812,7 +11850,7 @@ async function tampilStatistikGuru() {
           ket =
             '<span style="font-size:11px;color:var(--slate-light);">belum ada jadwal</span>';
         } else {
-          var warna = p >= 90 ? "#34d399" : p >= 75 ? "#fbbf24" : "#fb7185";
+          var warna = p >= 90 ? "#8fb9a0" : p >= 75 ? "#fbbf24" : "#fb7185";
           var wTeks = warnaBerlabel(warna);
           var w = Math.max(3, Math.min(p, 100));
           bar =
@@ -11859,10 +11897,10 @@ async function tampilStatistikGuru() {
       "</div>" +
       '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;">' +
       card("Guru Aktif", total) +
-      card("Rata-rata Kehadiran", rata === null ? "-" : rata + "%", "#34d399") +
-      card("Alpa Total", alpaTotal, alpaTotal > 0 ? "#fb7185" : "#34d399") +
-      card("Guru <90%", bawah90, bawah90 > 0 ? "#fbbf24" : "#34d399") +
-      card("Guru <75%", bawah75, bawah75 > 0 ? "#fb7185" : "#34d399") +
+      card("Rata-rata Kehadiran", rata === null ? "-" : rata + "%", "#8fb9a0") +
+      card("Alpa Total", alpaTotal, alpaTotal > 0 ? "#fb7185" : "#8fb9a0") +
+      card("Guru <90%", bawah90, bawah90 > 0 ? "#fbbf24" : "#8fb9a0") +
+      card("Guru <75%", bawah75, bawah75 > 0 ? "#fb7185" : "#8fb9a0") +
       "</div>" +
       (top3
         ? '<div style="font-size:12px;color:var(--slate);margin-bottom:12px;">Kehadiran terbaik: <b style="color:var(--ink);">' +
@@ -11969,14 +12007,14 @@ function __tabelRiwayatHarian(rows) {
         '</td><td style="padding:8px;color:var(--ink);">' +
         escH(x.guru || "-") +
         "</td>" +
-        '<td style="padding:8px;color:#047857;font-weight:700;">' +
+        '<td style="padding:8px;color:#466b57;font-weight:700;">' +
         (x.hadir || 0) +
         '</td><td style="padding:8px;color:var(--ink);">' +
         (x.izin || 0) +
         '</td><td style="padding:8px;color:var(--ink);">' +
         (x.sakit || 0) +
         "</td>" +
-        '<td style="padding:8px;color:#be123c;font-weight:700;">' +
+        '<td style="padding:8px;color:#a84c4c;font-weight:700;">' +
         (x.alpa || 0) +
         '</td><td style="padding:8px;color:var(--ink);">' +
         (x.telat || 0) +
@@ -12602,19 +12640,19 @@ function __xlsHTML(judul, meta, kolom, baris, namaFile, lebar) {
   var thf = "";
   for (var kf = 0; kf < kolom.length; kf++) {
     thf +=
-      '<th style="border:1px solid #94a3b8;background:#1e293b;color:#ffffff;padding:6px 9px;font-weight:700;text-align:left;">' +
+      '<th style="border:1px solid #8c887f;background:#292724;color:#ffffff;padding:6px 9px;font-weight:700;text-align:left;">' +
       __xlsEsc(kolom[kf]) +
       "</th>";
   }
   function selF(c) {
     if (typeof c === "number")
       return (
-        '<td style="border:1px solid #cbd5e1;padding:5px 9px;text-align:center;">' +
+        '<td style="border:1px solid #d5d2c8;padding:5px 9px;text-align:center;">' +
         c +
         "</td>"
       );
     return (
-      '<td style="border:1px solid #cbd5e1;padding:5px 9px;">' +
+      '<td style="border:1px solid #d5d2c8;padding:5px 9px;">' +
       __xlsEsc(c) +
       "</td>"
     );
@@ -12637,7 +12675,7 @@ function __xlsHTML(judul, meta, kolom, baris, namaFile, lebar) {
     colgf += "</colgroup>";
   }
   var xlsf =
-    '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel"><head><meta charset="UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>Rekap</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--><style>table{border-collapse:collapse;font-family:Calibri,Arial,sans-serif;font-size:12px;}h3{font-family:Calibri,Arial,sans-serif;margin:6px 0 2px;font-size:16px;}p.meta{font-family:Calibri,Arial,sans-serif;font-size:11px;color:#475569;margin:0 0 10px;}</style></head><body><h3>' +
+    '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel"><head><meta charset="UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>Rekap</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--><style>table{border-collapse:collapse;font-family:Calibri,Arial,sans-serif;font-size:12px;}h3{font-family:Calibri,Arial,sans-serif;margin:6px 0 2px;font-size:16px;}p.meta{font-family:Calibri,Arial,sans-serif;font-size:11px;color:#57534c;margin:0 0 10px;}</style></head><body><h3>' +
     __xlsEsc(judul) +
     "</h3>" +
     (meta ? '<p class="meta">' + __xlsEsc(meta) + "</p>" : "") +
@@ -13157,7 +13195,7 @@ function __bkRiskMeta(level) {
       label: "Kritis · Panggilan Ortu",
       short: "Kritis",
       cls: "is-kritis",
-      color: "#e11d48",
+      color: "#b85656",
     };
   }
   if (level === "waspada") {
@@ -13165,7 +13203,7 @@ function __bkRiskMeta(level) {
       label: "Waspada · Pembinaan BK",
       short: "Waspada",
       cls: "is-waspada",
-      color: "#d97706",
+      color: "#b57c3c",
     };
   }
   if (level === "pantauan") {
@@ -13173,14 +13211,14 @@ function __bkRiskMeta(level) {
       label: "Pantauan Presensi",
       short: "Pantauan",
       cls: "is-pantauan",
-      color: "#0284c7",
+      color: "#4d7ea1",
     };
   }
   return {
     label: "Kehadiran Baik",
     short: "Aman",
     cls: "is-aman",
-    color: "#059669",
+    color: "#4d755f",
   };
 }
 
@@ -14308,7 +14346,7 @@ function renderDaftarJurnalBK() {
           '<button type="button" class="btn btn-outline btn-sm" onclick="bukaModalCatatanBK(' +
           c.id +
           ')">Edit</button>' +
-          '<button type="button" class="btn btn-sm" style="background:rgba(239,68,68,0.1);color:#e11d48;border:1px solid rgba(239,68,68,0.25);" onclick="hapusCatatanBKKlik(' +
+          '<button type="button" class="btn btn-sm" style="background:rgba(239,68,68,0.1);color:#b85656;border:1px solid rgba(239,68,68,0.25);" onclick="hapusCatatanBKKlik(' +
           c.id +
           ')">Hapus</button>' +
           "</div>" +

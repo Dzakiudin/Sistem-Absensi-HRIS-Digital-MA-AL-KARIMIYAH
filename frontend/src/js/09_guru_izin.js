@@ -131,12 +131,12 @@ async function muatPermintaanPenggantiSaya() {
         pr.status === "Pending"
           ? "#fffbeb"
           : pr.status === "Disetujui"
-            ? "#f0fdf4"
-            : "#f1f5f9";
-      html += `<div style="background:${bg}; border:1px solid #e2e8f0; border-radius:10px; padding:8px 10px; margin-bottom:6px;">
+            ? "#f1f5f2"
+            : "#efede7";
+      html += `<div style="background:${bg}; border:1px solid #e4e2da; border-radius:10px; padding:8px 10px; margin-bottom:6px;">
         <div style="font-weight:600;">${esc(pr.jenis)} · ${esc(pr.tglMulai)} s.d. ${esc(pr.tglSelesai)}</div>
-        <div style="font-size:11.5px; color:#64748b; margin-top:2px;">Status: <span style="color:#064e3b; font-weight:600;">${esc(pr.status)}</span>${pr.namaPengganti ? " \u00b7 Pengganti: " + esc(pr.namaPengganti) + " (" + esc(pr.statusPengganti || "-") + ")" : ""}</div>
-        ${pr.alasan ? `<div style="font-size:11.5px; color:#475569; margin-top:2px;">${esc(pr.alasan)}</div>` : ""}
+        <div style="font-size:11.5px; color:#6e6a61; margin-top:2px;">Status: <span style="color:#355242; font-weight:600;">${esc(pr.status)}</span>${pr.namaPengganti ? " \u00b7 Pengganti: " + esc(pr.namaPengganti) + " (" + esc(pr.statusPengganti || "-") + ")" : ""}</div>
+        ${pr.alasan ? `<div style="font-size:11.5px; color:#57534c; margin-top:2px;">${esc(pr.alasan)}</div>` : ""}
         ${pr.status === "Pending" ? `<button class="btn btn-outline" style="padding:3px 10px; font-size:11.5px; margin-top:6px;" onclick="batalkanIzinKlik(${pr.id})">Batalkan</button>` : ""}
       </div>`;
     });

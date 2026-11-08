@@ -7,6 +7,8 @@ import { APP_MODULES } from "../src/js/manifest.mjs";
 const here = dirname(fileURLToPath(import.meta.url));
 const srcDir = join(here, "..", "src", "js");
 const outFile = join(here, "..", "public", "app.js");
+const globalsCssSrc = join(here, "..", "app", "globals.css");
+const globalsCssOut = join(here, "..", "public", "globals.css");
 const appVersionFile = join(here, "..", "app", "app-version.json");
 const bodyHtmlFile = join(here, "..", "app", "body.html");
 const bodyJsonFile = join(here, "..", "app", "body_html.json");
@@ -15,15 +17,22 @@ const bundle = APP_MODULES.map((file) =>
   readFileSync(join(srcDir, file), "utf8"),
 ).join("");
 
+const globalsCss = readFileSync(globalsCssSrc, "utf8");
 writeFileSync(outFile, bundle, "utf8");
-const bundleVersion = createHash("sha256").update(bundle).digest("hex").slice(0, 16);
+writeFileSync(globalsCssOut, globalsCss, "utf8");
+
+const bundleVersion = createHash("sha256")
+  .update(bundle)
+  .update(globalsCss)
+  .digest("hex")
+  .slice(0, 16);
 writeFileSync(
   appVersionFile,
   JSON.stringify({ version: bundleVersion }) + "\n",
   "utf8",
 );
 console.log(
-  `app.js built: ${APP_MODULES.length} modules, ${bundle.length} chars, ${bundleVersion}`,
+  `app.js & globals.css built: ${APP_MODULES.length} modules, ${bundle.length} chars, ${bundleVersion}`,
 );
 
 const bodyHtml = readFileSync(bodyHtmlFile, "utf8");

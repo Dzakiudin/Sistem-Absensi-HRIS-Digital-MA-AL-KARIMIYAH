@@ -1,13 +1,17 @@
 "use client";
 
+import { Section } from "@astryxdesign/core/Section";
 import bodyData from "./body_html.json";
+import { useMountAppBody } from "../src/mountAppBody";
 
 export default function HomePage() {
+  const mountRef = useMountAppBody(bodyData.html);
+
   return (
-    <div
-      id="app-root-container"
-      suppressHydrationWarning
-      dangerouslySetInnerHTML={{ __html: bodyData.html }}
+    <Section
+      ref={mountRef}
+      variant="transparent"
+      padding={0}
     />
   );
 }

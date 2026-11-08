@@ -58,8 +58,8 @@ function initGeofenceMap() {
   }).addTo(geofenceMap);
 
   geofenceCircle = L.circle([lat, lng], {
-    color: "#059669",
-    fillColor: "#10b981",
+    color: "#4d755f",
+    fillColor: "#5e8770",
     fillOpacity: 0.22,
     weight: 2,
     radius: rad,
@@ -71,7 +71,7 @@ function initGeofenceMap() {
 
   geofenceMarker
     .bindPopup(
-      '<b style="font-size:13px; color:#064e3b;">Lokasi Titik Presensi</b><br><span style="font-size:11px; color:#64748b;">Geser pin ini untuk memindahkan titik.</span>',
+      '<b style="font-size:13px; color:#355242;">Lokasi Titik Presensi</b><br><span style="font-size:11px; color:#6e6a61;">Geser pin ini untuk memindahkan titik.</span>',
     )
     .openPopup();
 

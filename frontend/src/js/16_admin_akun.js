@@ -574,7 +574,7 @@ async function hapusUserSekarang(id) {
 function bukaModalImpor() {
   __modalOpen(
     "Impor Akun Guru Massal",
-    '<div style="font-size:12px;color:#475569;margin-bottom:10px;line-height:1.7;">' +
+    '<div style="font-size:12px;color:#57534c;margin-bottom:10px;line-height:1.7;">' +
       "<b>Langkah:</b><br>" +
       "1. Klik <b>Unduh Template Excel</b> untuk mendapat berkas contoh berwarna.<br>" +
       "2. Isi data guru di Excel (wajib: <b>Nama Lengkap</b> saja, username &amp; password otomatis jika kosong).<br>" +
@@ -583,13 +583,13 @@ function bukaModalImpor() {
       '<label for="mImporFileGuru" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border:2px dashed var(--brand-emerald-500);border-radius:12px;padding:24px 12px;background:var(--brand-emerald-50);cursor:pointer;text-align:center;">' +
       '<svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="var(--brand-emerald-800)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>' +
       '<span style="font-size:13px;font-weight:700;color:var(--brand-emerald-800);">Klik untuk pilih berkas Excel</span>' +
-      '<span id="mImporNamaGuru" style="font-size:12px;color:#64748b;">Mendukung .xlsx, .xls, dan .csv</span>' +
+      '<span id="mImporNamaGuru" style="font-size:12px;color:#6e6a61;">Mendukung .xlsx, .xls, dan .csv</span>' +
       "</label>" +
       '<input type="file" id="mImporFileGuru" accept=".xlsx,.xls,.csv" style="display:none;">' +
       '<div id="mImporInfoGuru" style="display:none;margin-top:10px;padding:10px 12px;border-radius:10px;font-size:12px;line-height:1.6;"></div>' +
       '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:14px;">' +
       '<button type="button" style="background:var(--brand-emerald-600);color:#fff;border:none;border-radius:10px;padding:10px 16px;cursor:pointer;font-weight:600;font-size:13px;" onclick="unduhTemplateGuru()">Unduh Template Excel</button>' +
-      '<span style="font-size:11px;color:#94a3b8;">Baris pertama = judul kolom, dilewati saat impor.</span>' +
+      '<span style="font-size:11px;color:#8c887f;">Baris pertama = judul kolom, dilewati saat impor.</span>' +
       "</div>" +
       '<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px;">' +
       __btnSekunder("Batal", "__modalClose()") +

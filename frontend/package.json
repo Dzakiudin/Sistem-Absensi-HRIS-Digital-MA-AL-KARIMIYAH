@@ -16,11 +16,15 @@
     "backend:restart": "npm run backend:build && npm run backend:run"
   },
   "dependencies": {
+    "@astryxdesign/core": "^0.7.11",
+    "@astryxdesign/theme-neutral": "^0.7.11",
+    "@stylexjs/stylex": "^0.19.1",
     "next": "16.3.5",
     "react": "19.2.8",
     "react-dom": "19.2.8"
   },
   "devDependencies": {
+    "@astryxdesign/cli": "^0.7.11",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

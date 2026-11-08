@@ -52,7 +52,7 @@ function renderGrafikTrenMingguan(containerId, dataTren) {
   if (!el) return;
   if (!Array.isArray(dataTren) || !dataTren.length) {
     el.innerHTML =
-      '<div style="text-align:center; padding:40px; color:#94a3b8; font-size:12.5px;">Data tren mingguan belum tersedia</div>';
+      '<div style="text-align:center; padding:40px; color:#8c887f; font-size:12.5px;">Data tren mingguan belum tersedia</div>';
     return;
   }
 
@@ -115,8 +115,8 @@ function renderGrafikTrenMingguan(containerId, dataTren) {
     const yPos = padTop + chartH * (1 - pct);
     const labelVal = Math.round(maxVal * pct);
     gridLines += `
-      <line x1="${padLeft - 8}" y1="${yPos}" x2="${svgW - padRight}" y2="${yPos}" stroke="#e2e8f0" stroke-dasharray="4,4" stroke-width="1" />
-      <text x="${padLeft - 14}" y="${yPos + 4}" fill="#94a3b8" font-size="11" font-weight="600" text-anchor="end">${labelVal}</text>
+      <line x1="${padLeft - 8}" y1="${yPos}" x2="${svgW - padRight}" y2="${yPos}" stroke="#e4e2da" stroke-dasharray="4,4" stroke-width="1" />
+      <text x="${padLeft - 14}" y="${yPos + 4}" fill="#8c887f" font-size="11" font-weight="600" text-anchor="end">${labelVal}</text>
     `;
   });
 
@@ -145,7 +145,7 @@ function renderGrafikTrenMingguan(containerId, dataTren) {
         {
           label: "Tepat Waktu",
           value: `${d.tepatWaktu} guru`,
-          color: "#10b981",
+          color: "#5e8770",
         },
         { label: "Terlambat", value: `${d.terlambat} guru`, color: "#f59e0b" },
         { label: "Izin / Sakit", value: `${d.izin} guru`, color: "#3b82f6" },
@@ -157,7 +157,7 @@ function renderGrafikTrenMingguan(containerId, dataTren) {
         {
           label: "Total Kehadiran",
           value: `${persenBadge} (${activeHadir}/${d.totalGuru})`,
-          color: "#059669",
+          color: "#4d755f",
         },
       ],
     }).replace(/"/g, "&quot;");
@@ -165,15 +165,15 @@ function renderGrafikTrenMingguan(containerId, dataTren) {
     barsHtml += `
       <g class="tren-bar-group" data-tip="${tipData}" onmouseenter="handleBarHover(event, this)" onmousemove="moveChartTooltip(event)" onmouseleave="hideChartTooltip()" ontouchstart="handleBarHover(event, this)">
         <!-- Stacked Segments -->
-        ${tepatH > 0 ? `<rect class="tren-bar-front" x="${x}" y="${yTepat}" width="${barW}" height="${tepatH}" rx="${lambatH === 0 && izinH === 0 ? 7 : 3}" fill="#10b981" />` : ""}
+        ${tepatH > 0 ? `<rect class="tren-bar-front" x="${x}" y="${yTepat}" width="${barW}" height="${tepatH}" rx="${lambatH === 0 && izinH === 0 ? 7 : 3}" fill="#5e8770" />` : ""}
         ${lambatH > 0 ? `<rect class="tren-bar-front" x="${x}" y="${yLambat}" width="${barW}" height="${lambatH}" rx="${izinH === 0 ? 7 : 3}" fill="#f59e0b" />` : ""}
         ${izinH > 0 ? `<rect class="tren-bar-front" x="${x}" y="${yIzin}" width="${barW}" height="${izinH}" rx="7" fill="#3b82f6" />` : ""}
         <!-- Value Badge Above Bar -->
-        <text x="${cx}" y="${yTop - 6}" font-size="11" font-weight="700" fill="${isToday ? "#34d399" : activeHadir > 0 ? "var(--ink)" : "var(--slate-light)"}" text-anchor="middle">${activeHadir > 0 ? persenBadge : "-"}</text>
+        <text x="${cx}" y="${yTop - 6}" font-size="11" font-weight="700" fill="${isToday ? "#8fb9a0" : activeHadir > 0 ? "var(--ink)" : "var(--slate-light)"}" text-anchor="middle">${activeHadir > 0 ? persenBadge : "-"}</text>
         <!-- Day & Date Label -->
-        <text x="${cx}" y="${svgH - 20}" font-size="11.5" font-weight="${isToday ? "800" : "600"}" fill="${isToday ? "#34d399" : "var(--ink)"}" text-anchor="middle">${esc(d.hari.substring(0, 3))}</text>
-        <text x="${cx}" y="${svgH - 6}" font-size="9.5" font-weight="500" fill="#94a3b8" text-anchor="middle">${esc(d.tanggal.substring(0, 5))}</text>
-        ${isToday ? `<circle cx="${cx}" cy="${svgH - 1}" r="2" fill="#10b981" />` : ""}
+        <text x="${cx}" y="${svgH - 20}" font-size="11.5" font-weight="${isToday ? "800" : "600"}" fill="${isToday ? "#8fb9a0" : "var(--ink)"}" text-anchor="middle">${esc(d.hari.substring(0, 3))}</text>
+        <text x="${cx}" y="${svgH - 6}" font-size="9.5" font-weight="500" fill="#8c887f" text-anchor="middle">${esc(d.tanggal.substring(0, 5))}</text>
+        ${isToday ? `<circle cx="${cx}" cy="${svgH - 1}" r="2" fill="#5e8770" />` : ""}
       </g>
     `;
   });
@@ -191,7 +191,7 @@ function renderGrafikLineKehadiran(containerId, dataTren, avgBadgeId) {
   if (!el) return;
   if (!Array.isArray(dataTren) || !dataTren.length) {
     el.innerHTML =
-      '<div style="text-align:center; padding:30px; color:#94a3b8; font-size:12.5px;">Data tren kehadiran belum tersedia</div>';
+      '<div style="text-align:center; padding:30px; color:#8c887f; font-size:12.5px;">Data tren kehadiran belum tersedia</div>';
     return;
   }
 
@@ -269,8 +269,8 @@ function renderGrafikLineKehadiran(containerId, dataTren, avgBadgeId) {
   [0, 0.25, 0.5, 0.75, 1.0].forEach((p) => {
     const y = baseBottom - p * chartH;
     gridHtml += `
-      <line class="line-grid-line" x1="${padLeft - 8}" y1="${y}" x2="${svgW - padRight}" y2="${y}" stroke="#f1f5f9" stroke-dasharray="${p === 0 ? "none" : "3,3"}" stroke-width="${p === 0 ? 1.5 : 1}" />
-      <text x="${padLeft - 12}" y="${y + 3.5}" fill="#94a3b8" font-size="10" font-weight="600" text-anchor="end">${Math.round(p * 100)}%</text>
+      <line class="line-grid-line" x1="${padLeft - 8}" y1="${y}" x2="${svgW - padRight}" y2="${y}" stroke="#efede7" stroke-dasharray="${p === 0 ? "none" : "3,3"}" stroke-width="${p === 0 ? 1.5 : 1}" />
+      <text x="${padLeft - 12}" y="${y + 3.5}" fill="#8c887f" font-size="10" font-weight="600" text-anchor="end">${Math.round(p * 100)}%</text>
     `;
   });
 
@@ -316,16 +316,16 @@ function renderGrafikLineKehadiran(containerId, dataTren, avgBadgeId) {
     const tipData = JSON.stringify({
       title: `${pt.d.hari}, ${pt.d.tanggal}`,
       items: [
-        { label: "Tingkat Kehadiran", value: `${pt.pct}%`, color: "#10b981" },
+        { label: "Tingkat Kehadiran", value: `${pt.pct}%`, color: "#5e8770" },
         {
           label: "Hadir",
           value: `${pt.d.hadir} / ${pt.d.totalGuru} guru`,
-          color: "#059669",
+          color: "#4d755f",
         },
         {
           label: "Tepat Waktu",
           value: `${pt.d.tepatWaktu} guru`,
-          color: "#10b981",
+          color: "#5e8770",
         },
         {
           label: "Terlambat",
@@ -347,20 +347,20 @@ function renderGrafikLineKehadiran(containerId, dataTren, avgBadgeId) {
     pointsHtml += `
       <g class="line-chart-point-group" data-tip="${tipData}" onmouseenter="handleBarHover(event, this)" onmousemove="moveChartTooltip(event)" onmouseleave="hideChartTooltip()" ontouchstart="handleBarHover(event, this)">
         <!-- Vertical guide line on hover -->
-        <line class="line-hover-guide" x1="${pt.x}" y1="${padTop}" x2="${pt.x}" y2="${baseBottom}" stroke="#10b981" stroke-dasharray="3,3" stroke-width="1.5" />
+        <line class="line-hover-guide" x1="${pt.x}" y1="${padTop}" x2="${pt.x}" y2="${baseBottom}" stroke="#5e8770" stroke-dasharray="3,3" stroke-width="1.5" />
         
         <!-- X Axis Labels -->
-        <text x="${pt.x}" y="${svgH - 18}" font-size="11" font-weight="${pt.isToday ? "800" : "600"}" fill="${pt.isToday ? "#059669" : "#475569"}" class="${pt.isToday ? "is-today-text" : ""}" text-anchor="middle">${esc(pt.d.hari.substring(0, 3))}</text>
-        <text x="${pt.x}" y="${svgH - 6}" font-size="9" font-weight="500" fill="#94a3b8" text-anchor="middle">${esc(pt.d.tanggal.substring(0, 5))}</text>
+        <text x="${pt.x}" y="${svgH - 18}" font-size="11" font-weight="${pt.isToday ? "800" : "600"}" fill="${pt.isToday ? "#4d755f" : "#57534c"}" class="${pt.isToday ? "is-today-text" : ""}" text-anchor="middle">${esc(pt.d.hari.substring(0, 3))}</text>
+        <text x="${pt.x}" y="${svgH - 6}" font-size="9" font-weight="500" fill="#8c887f" text-anchor="middle">${esc(pt.d.tanggal.substring(0, 5))}</text>
         
         <!-- Value Pill above point -->
-        <text class="line-val-text ${pt.isToday ? "is-today-text" : ""}" x="${pt.x}" y="${valY}" font-size="10.5" font-weight="700" fill="${pt.isToday ? "#059669" : "#334155"}" text-anchor="middle">${pt.pct}%</text>
+        <text class="line-val-text ${pt.isToday ? "is-today-text" : ""}" x="${pt.x}" y="${valY}" font-size="10.5" font-weight="700" fill="${pt.isToday ? "#4d755f" : "#3d3a35"}" text-anchor="middle">${pt.pct}%</text>
 
         <!-- Pulsing halo for today -->
-        ${pt.isToday ? `<circle cx="${pt.x}" cy="${pt.y}" r="8" fill="rgba(16,185,129,0.3)" class="line-pulse-ring" />` : ""}
+        ${pt.isToday ? `<circle cx="${pt.x}" cy="${pt.y}" r="8" fill="rgba(94, 135, 112,0.3)" class="line-pulse-ring" />` : ""}
         
         <!-- Point Core Circle -->
-        <circle class="line-point-core" cx="${pt.x}" cy="${pt.y}" r="4.5" fill="#ffffff" stroke="${pt.isToday ? "#059669" : "#10b981"}" stroke-width="2.5" />
+        <circle class="line-point-core" cx="${pt.x}" cy="${pt.y}" r="4.5" fill="#ffffff" stroke="${pt.isToday ? "#4d755f" : "#5e8770"}" stroke-width="2.5" />
         
         <!-- Hitbox for easy mouse / touch hover -->
         <circle cx="${pt.x}" cy="${pt.y}" r="18" fill="transparent" style="cursor: pointer;" />
@@ -375,18 +375,18 @@ function renderGrafikLineKehadiran(containerId, dataTren, avgBadgeId) {
     <svg class="line-chart-svg" viewBox="0 0 ${svgW} ${svgH}">
       <defs>
         <linearGradient id="${gradId}" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#10b981" stop-opacity="0.28" />
-          <stop offset="80%" stop-color="#10b981" stop-opacity="0.04" />
-          <stop offset="100%" stop-color="#10b981" stop-opacity="0.0" />
+          <stop offset="0%" stop-color="#5e8770" stop-opacity="0.28" />
+          <stop offset="80%" stop-color="#5e8770" stop-opacity="0.04" />
+          <stop offset="100%" stop-color="#5e8770" stop-opacity="0.0" />
         </linearGradient>
         <filter id="${filterId}" x="-20%" y="-20%" width="140%" height="140%">
-          <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#10b981" flood-opacity="0.32"/>
+          <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#5e8770" flood-opacity="0.32"/>
         </filter>
       </defs>
       ${gridHtml}
       ${targetLineHtml}
       <path d="${areaPath}" fill="url(#${gradId})" />
-      <path d="${linePath}" fill="none" stroke="#10b981" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round" filter="url(#${filterId})" />
+      <path d="${linePath}" fill="none" stroke="#5e8770" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round" filter="url(#${filterId})" />
       ${pointsHtml}
     </svg>
   `;
@@ -414,7 +414,7 @@ function renderGrafikDonutStatus(chartId, legendId, komp, totalGuru) {
     {
       label: "Tepat Waktu",
       count: tepat,
-      color: "#10b981",
+      color: "#5e8770",
       pct: Math.round((tepat / total) * 100),
     },
     {
@@ -463,15 +463,15 @@ function renderGrafikDonutStatus(chartId, legendId, komp, totalGuru) {
   });
 
   if (hadir === 0 && izin === 0) {
-    circlesHtml = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#f1f5f9" stroke-width="20" />`;
+    circlesHtml = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#efede7" stroke-width="20" />`;
   }
 
   chartEl.innerHTML = `
     <svg viewBox="0 0 165 165" style="width:100%; height:100%; display:block;">
-      <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#f1f5f9" stroke-width="20" />
+      <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#efede7" stroke-width="20" />
       ${circlesHtml}
       <text class="donut-center-text" x="${cx}" y="${cy - 7}" font-size="28" font-weight="800" fill="var(--ink)">${persenHadir}%</text>
-      <text class="donut-center-text" x="${cx}" y="${cy + 15}" font-size="10" font-weight="700" fill="#64748b" letter-spacing="0.08em">HADIR</text>
+      <text class="donut-center-text" x="${cx}" y="${cy + 15}" font-size="10" font-weight="700" fill="#6e6a61" letter-spacing="0.08em">HADIR</text>
     </svg>
   `;
 
@@ -502,12 +502,12 @@ function renderDistribusiJamKedatangan(containerId, dist, batas) {
     {
       label: "Sebelum 06:45 (Awal)",
       count: (dist && dist.sebelum0645) || 0,
-      color: "#10b981",
+      color: "#5e8770",
     },
     {
       label: "06:45 – 07:00 (Optimal)",
       count: (dist && dist.jam0645_0700) || 0,
-      color: "#059669",
+      color: "#4d755f",
     },
     {
       label: `07:00 – ${batas || "07:15"} (Mendekati Batas)`,
@@ -523,7 +523,7 @@ function renderDistribusiJamKedatangan(containerId, dist, batas) {
 
   if (total === 0) {
     el.innerHTML =
-      '<div style="text-align:center; padding:18px; color:#94a3b8; font-size:12px;">Belum ada guru yang melakukan presensi hari ini.</div>';
+      '<div style="text-align:center; padding:18px; color:#8c887f; font-size:12px;">Belum ada guru yang melakukan presensi hari ini.</div>';
     return;
   }
 
@@ -568,7 +568,7 @@ function renderKepatuhanLokasi(containerId, badgeId, lokasi) {
 
   if (total === 0) {
     cEl.innerHTML =
-      '<div style="text-align:center; padding:18px; color:#94a3b8; font-size:12px;">Belum ada aktivitas presensi dengan koordinat GPS hari ini.</div>';
+      '<div style="text-align:center; padding:18px; color:#8c887f; font-size:12px;">Belum ada aktivitas presensi dengan koordinat GPS hari ini.</div>';
     return;
   }
 
@@ -579,7 +579,7 @@ function renderKepatuhanLokasi(containerId, badgeId, lokasi) {
         <strong style="color:var(--ink);">${dalam} guru (${persenDalam}%)</strong>
       </div>
       <div style="width:100%; height:10px; background:rgba(244, 63, 94, 0.18); border-radius:99px; overflow:hidden; display:flex;">
-        <div style="width:${persenDalam}%; height:100%; background:#10b981; border-radius:99px 0 0 99px; transition:width 0.4s ease;"></div>
+        <div style="width:${persenDalam}%; height:100%; background:#5e8770; border-radius:99px 0 0 99px; transition:width 0.4s ease;"></div>
       </div>
       <div style="display:flex; justify-content:space-between; align-items:center; font-size:11px; color:var(--slate); margin-top:6px;">
         <span>Luar Radius: <strong style="color:var(--ink);">${luar} guru</strong></span>
@@ -1108,11 +1108,11 @@ function bukaRekapSiswaDashboard(prefix) {
 
 function renderPieStatistikSiswa(ring) {
   const statuses = [
-    { label: "Hadir", key: "hadir", color: "#059669" },
-    { label: "Terlambat", key: "telat", color: "#7c3aed" },
-    { label: "Izin", key: "izin", color: "#d97706" },
-    { label: "Sakit", key: "sakit", color: "#0284c7" },
-    { label: "Alpa", key: "alpa", color: "#e11d48" },
+    { label: "Hadir", key: "hadir", color: "#4d755f" },
+    { label: "Terlambat", key: "telat", color: "#7c65a3" },
+    { label: "Izin", key: "izin", color: "#b57c3c" },
+    { label: "Sakit", key: "sakit", color: "#4d7ea1" },
+    { label: "Alpa", key: "alpa", color: "#b85656" },
   ].map((status) => ({
     ...status,
     value: Math.max(0, Number(ring[status.key]) || 0),
@@ -1147,7 +1147,7 @@ function renderPieStatistikSiswa(ring) {
       <span>${total.toLocaleString("id-ID")} total presensi</span>
     </div>
     <div class="kepala-student-pie-content">
-      <div class="kepala-student-pie-chart" role="img" aria-label="${percentHadir}% hadir dari ${total.toLocaleString("id-ID")} total presensi" style="background:${total ? `conic-gradient(${slices.join(",")})` : "#e2e8f0"};">
+      <div class="kepala-student-pie-chart" role="img" aria-label="${percentHadir}% hadir dari ${total.toLocaleString("id-ID")} total presensi" style="background:${total ? `conic-gradient(${slices.join(",")})` : "#e4e2da"};">
         <div class="kepala-student-pie-center">
           <strong>${percentHadir}%</strong>
           <span>HADIR</span>
@@ -1176,11 +1176,11 @@ function renderGrafikStatistikSiswa(perHari, mulai) {
       date,
       tanggal,
       statuses: [
-        { label: "Hadir", key: "hadir", color: "#059669" },
-        { label: "Izin", key: "izin", color: "#d97706" },
-        { label: "Sakit", key: "sakit", color: "#0284c7" },
-        { label: "Alpa", key: "alpa", color: "#e11d48" },
-        { label: "Terlambat", key: "telat", color: "#7c3aed" },
+        { label: "Hadir", key: "hadir", color: "#4d755f" },
+        { label: "Izin", key: "izin", color: "#b57c3c" },
+        { label: "Sakit", key: "sakit", color: "#4d7ea1" },
+        { label: "Alpa", key: "alpa", color: "#b85656" },
+        { label: "Terlambat", key: "telat", color: "#7c65a3" },
       ].map((status) => ({
         ...status,
         value: Math.max(0, Number(row[status.key]) || 0),
@@ -1231,7 +1231,7 @@ function renderGrafikStatistikSiswa(perHari, mulai) {
           {
             label: "Total Kehadiran",
             value: `${persenKehadiran}% (${totalKehadiran.toLocaleString("id-ID")}/${total.toLocaleString("id-ID")})`,
-            color: "#059669",
+            color: "#4d755f",
           },
         ],
       }).replace(/"/g, "&quot;");
@@ -1253,11 +1253,11 @@ function renderGrafikStatistikSiswa(perHari, mulai) {
     )
     .join("");
   const legend = [
-    { label: "Hadir", color: "#059669" },
-    { label: "Izin", color: "#d97706" },
-    { label: "Sakit", color: "#0284c7" },
-    { label: "Alpa", color: "#e11d48" },
-    { label: "Terlambat", color: "#7c3aed" },
+    { label: "Hadir", color: "#4d755f" },
+    { label: "Izin", color: "#b57c3c" },
+    { label: "Sakit", color: "#4d7ea1" },
+    { label: "Alpa", color: "#b85656" },
+    { label: "Terlambat", color: "#7c65a3" },
   ]
     .map(
       (item) =>
@@ -1289,7 +1289,7 @@ async function muatStatistikSiswa(prefix) {
   const body = document.getElementById(bodyId);
   if (!body) return;
   body.innerHTML =
-    '<div style="text-align:center;padding:24px;color:#94a3b8;font-size:12.5px;">Memuat statistik kehadiran siswa...</div>';
+    '<div style="text-align:center;padding:24px;color:#8c887f;font-size:12.5px;">Memuat statistik kehadiran siswa...</div>';
   const d = new Date();
   const mulai = new Date(d.getTime() - 29 * 86400000);
   // Backend parseTanggalIndo expects DD/MM/YYYY format
@@ -1314,7 +1314,7 @@ async function muatStatistikSiswa(prefix) {
   }
   if (!res || !res.success || !res.data) {
     body.innerHTML =
-      '<div style="text-align:center;padding:24px;color:#94a3b8;font-size:12.5px;">' +
+      '<div style="text-align:center;padding:24px;color:#8c887f;font-size:12.5px;">' +
       ((res && res.message) || "Data tidak tersedia") +
       "</div>";
     return;
@@ -1324,11 +1324,11 @@ async function muatStatistikSiswa(prefix) {
   const badge = document.getElementById(prefix + "SiswaPersenBadge");
   if (badge) badge.textContent = (ring.persenHadir || 0) + "% Hadir";
   const stat = [
-    { l: "Hadir", v: ring.hadir || 0, c: "#047857" },
-    { l: "Izin", v: ring.izin || 0, c: "#d97706" },
-    { l: "Sakit", v: ring.sakit || 0, c: "#0284c7" },
-    { l: "Alpa", v: ring.alpa || 0, c: "#be123c" },
-    { l: "Terlambat", v: ring.telat || 0, c: "#7c3aed" },
+    { l: "Hadir", v: ring.hadir || 0, c: "#466b57" },
+    { l: "Izin", v: ring.izin || 0, c: "#b57c3c" },
+    { l: "Sakit", v: ring.sakit || 0, c: "#4d7ea1" },
+    { l: "Alpa", v: ring.alpa || 0, c: "#a84c4c" },
+    { l: "Terlambat", v: ring.telat || 0, c: "#7c65a3" },
     { l: "Total", v: ring.total || 0, c: "var(--ink)" },
   ]
     .map(
@@ -1425,7 +1425,7 @@ function muatTopKehadiranKepala(riwayatList) {
 
   if (!teacherList.length) {
     listEl.innerHTML =
-      '<div style="text-align:center; padding:18px; color:#94a3b8; font-size:12.5px;">Data rekap presensi bulan ini belum tersedia</div>';
+      '<div style="text-align:center; padding:18px; color:#8c887f; font-size:12.5px;">Data rekap presensi bulan ini belum tersedia</div>';
     return;
   }
 
@@ -1445,7 +1445,7 @@ function muatTopKehadiranKepala(riwayatList) {
 
   const rankBadges = [
     '<span title="Peringkat 1" style="display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:7px; font-size:14px; line-height:1; background:linear-gradient(135deg, #fef3c7, #fde68a); border:1px solid #fcd34d; flex-shrink:0; box-shadow:0 1px 2px rgba(217,119,6,0.15);">🥇</span>',
-    '<span title="Peringkat 2" style="display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:7px; font-size:14px; line-height:1; background:linear-gradient(135deg, #f1f5f9, #e2e8f0); border:1px solid #cbd5e1; flex-shrink:0; box-shadow:0 1px 2px rgba(71,85,105,0.1);">🥈</span>',
+    '<span title="Peringkat 2" style="display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:7px; font-size:14px; line-height:1; background:linear-gradient(135deg, #efede7, #e4e2da); border:1px solid #d5d2c8; flex-shrink:0; box-shadow:0 1px 2px rgba(71,85,105,0.1);">🥈</span>',
     '<span title="Peringkat 3" style="display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:7px; font-size:14px; line-height:1; background:linear-gradient(135deg, #ffedd5, #fed7aa); border:1px solid #fdba74; flex-shrink:0; box-shadow:0 1px 2px rgba(194,65,12,0.15);">🥉</span>',
     '<span title="Peringkat 4" style="display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:7px; font-weight:700; font-size:12px; background:var(--parchment); color:var(--slate); border:1px solid var(--line); flex-shrink:0;">4</span>',
     '<span title="Peringkat 5" style="display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:7px; font-weight:700; font-size:12px; background:var(--parchment); color:var(--slate); border:1px solid var(--line); flex-shrink:0;">5</span>',
@@ -1459,14 +1459,14 @@ function muatTopKehadiranKepala(riwayatList) {
       <div style="flex:1; min-width:0;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2px;">
           <strong style="font-size:12.5px; color:var(--ink); font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${esc(g.namaGuru)}</strong>
-          <span style="font-size:12px; font-weight:800; color:#059669; flex-shrink:0; margin-left:6px;">${g.persen}%</span>
+          <span style="font-size:12px; font-weight:800; color:#4d755f; flex-shrink:0; margin-left:6px;">${g.persen}%</span>
         </div>
         <div style="display:flex; justify-content:space-between; align-items:center; font-size:11px; color:var(--slate); margin-bottom:4px;">
           <span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${esc(g.mapel)}</span>
           <span style="font-weight:600; flex-shrink:0;">${g.hadir}/${totalDays} Hari</span>
         </div>
         <div style="height:5px; background:var(--line); border-radius:999px; overflow:hidden;">
-          <div style="height:100%; width:${g.persen}%; background:linear-gradient(90deg, #10b981, #059669); border-radius:999px;"></div>
+          <div style="height:100%; width:${g.persen}%; background:linear-gradient(90deg, #5e8770, #4d755f); border-radius:999px;"></div>
         </div>
       </div>
     </div>
@@ -1555,7 +1555,7 @@ async function muatKbmHariIniKepala(namaHariIni) {
         if (r) {
           if (r.statusWaktu === "Hadir") {
             statusHtml =
-              '<span style="display:inline-flex; align-items:center; gap:4px; font-size:10.5px; font-weight:700; color:#059669; background:#dcfce7; border:1px solid #bbf7d0; padding:2px 7px; border-radius:6px; white-space:nowrap;"><span style="width:5px; height:5px; border-radius:50%; background:#10b981;"></span>Tepat Waktu</span>';
+              '<span style="display:inline-flex; align-items:center; gap:4px; font-size:10.5px; font-weight:700; color:#4d755f; background:#e0ebe4; border:1px solid #c8dbd0; padding:2px 7px; border-radius:6px; white-space:nowrap;"><span style="width:5px; height:5px; border-radius:50%; background:#5e8770;"></span>Tepat Waktu</span>';
           } else if (r.statusWaktu === "Terlambat") {
             statusHtml =
               '<span style="display:inline-flex; align-items:center; gap:4px; font-size:10.5px; font-weight:700; color:#b45309; background:#fef3c7; border:1px solid #fde68a; padding:2px 7px; border-radius:6px; white-space:nowrap;"><span style="width:5px; height:5px; border-radius:50%; background:#f59e0b;"></span>Terlambat</span>';
@@ -1564,7 +1564,7 @@ async function muatKbmHariIniKepala(namaHariIni) {
           }
         } else {
           statusHtml =
-            '<span style="display:inline-flex; align-items:center; gap:4px; font-size:10.5px; font-weight:600; color:var(--slate); background:var(--parchment-alt); border:1px solid var(--line); padding:2px 7px; border-radius:6px; white-space:nowrap;"><span style="width:5px; height:5px; border-radius:50%; background:#94a3b8;"></span>Belum Presensi</span>';
+            '<span style="display:inline-flex; align-items:center; gap:4px; font-size:10.5px; font-weight:600; color:var(--slate); background:var(--parchment-alt); border:1px solid var(--line); padding:2px 7px; border-radius:6px; white-space:nowrap;"><span style="width:5px; height:5px; border-radius:50%; background:#8c887f;"></span>Belum Presensi</span>';
         }
 
         return `
@@ -1596,7 +1596,7 @@ async function muatJadwalKepala() {
     const listEl = document.getElementById("listJadwal" + d);
     if (listEl)
       listEl.innerHTML =
-        '<div style="text-align:center; padding:12px; color:#94a3b8; font-size:12px;"><span class="spin-sm"></span> Memuat...</div>';
+        '<div style="text-align:center; padding:12px; color:#8c887f; font-size:12px;"><span class="spin-sm"></span> Memuat...</div>';
   });
 
   try {
@@ -1654,7 +1654,7 @@ async function muatJadwalKepala() {
           (j) => `
         <div class="kbm-item-card" style="padding:10px 12px; margin-bottom:8px;">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-            <span class="kbm-jam-badge" style="font-size:11px; font-weight:800; color:#059669; background:#dcfce7; padding:2px 6px; border-radius:4px;">Jam ${esc(j.jamKe)}</span>
+            <span class="kbm-jam-badge" style="font-size:11px; font-weight:800; color:#4d755f; background:#e0ebe4; padding:2px 6px; border-radius:4px;">Jam ${esc(j.jamKe)}</span>
             <span class="kbm-kelas-badge" style="font-size:11px; font-weight:700; color:var(--slate); background:var(--parchment-alt); border:1px solid var(--line); padding:2px 6px; border-radius:4px;">${esc(j.kelas)}</span>
           </div>
           <div style="font-size:13px; font-weight:700; color:var(--ink);">${esc(j.mataPelajaran)}</div>
@@ -1740,7 +1740,7 @@ async function muatAktivitasHariIni(prefix) {
   const el = document.getElementById(prefix + "AktivitasList");
   if (!el) return;
   el.innerHTML =
-    '<tr><td colspan="5" style="text-align:center; padding:28px 16px; color:#94a3b8;"><span class="spin-sm"></span> Memuat aktivitas hari ini...</td></tr>';
+    '<tr><td colspan="5" style="text-align:center; padding:28px 16px; color:#8c887f;"><span class="spin-sm"></span> Memuat aktivitas hari ini...</td></tr>';
   try {
     const today = todayInputValue();
     const res = await runServer(
@@ -1755,9 +1755,9 @@ async function muatAktivitasHariIni(prefix) {
       return;
     }
     if (!res.data.length) {
-      el.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:36px 16px; color:#94a3b8;">
+      el.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:36px 16px; color:#8c887f;">
         <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:32px; height:32px; color:#cbd5e1;"><path d="M20 7h-7l-2-2H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2z"></path></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:32px; height:32px; color:#d5d2c8;"><path d="M20 7h-7l-2-2H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2z"></path></svg>
           <span style="font-size:13px; font-weight:500;">Belum ada aktivitas presensi hari ini.</span>
         </div>
       </td></tr>`;

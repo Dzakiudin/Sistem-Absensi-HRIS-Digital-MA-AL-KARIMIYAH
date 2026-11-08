@@ -141,15 +141,15 @@ function __rekapKelasCard(g) {
       label: "Hadir",
       cls: "present",
       value: hVal,
-      color: "#059669",
-      bg: "#ecfdf5",
-      textColor: "#047857",
+      color: "#4d755f",
+      bg: "#eef3f0",
+      textColor: "#466b57",
     },
     {
       label: "Telat",
       cls: "late",
       value: tVal,
-      color: "#7c3aed",
+      color: "#7c65a3",
       bg: "#f5f3ff",
       textColor: "#6d28d9",
     },
@@ -157,7 +157,7 @@ function __rekapKelasCard(g) {
       label: "Izin",
       cls: "permission",
       value: iVal,
-      color: "#d97706",
+      color: "#b57c3c",
       bg: "#fffbeb",
       textColor: "#b45309",
     },
@@ -165,7 +165,7 @@ function __rekapKelasCard(g) {
       label: "Sakit",
       cls: "sick",
       value: sVal,
-      color: "#0284c7",
+      color: "#4d7ea1",
       bg: "#f0f9ff",
       textColor: "#0369a1",
     },
@@ -173,9 +173,9 @@ function __rekapKelasCard(g) {
       label: "Alfa",
       cls: "absent",
       value: aVal,
-      color: "#e11d48",
+      color: "#b85656",
       bg: "#fff1f2",
-      textColor: "#be123c",
+      textColor: "#a84c4c",
     },
   ].map(function (st) {
     var pct =
@@ -684,31 +684,31 @@ function cetakRekapSiswa() {
   var tr = baris
     .map(function (x, i) {
       return (
-        '<tr><td style="padding:5px 8px;border:1px solid #cbd5e1;text-align:center;">' +
+        '<tr><td style="padding:5px 8px;border:1px solid #d5d2c8;text-align:center;">' +
         (i + 1) +
         "</td>" +
-        '<td style="padding:5px 8px;border:1px solid #cbd5e1;">' +
+        '<td style="padding:5px 8px;border:1px solid #d5d2c8;">' +
         esc(x.kode) +
         "</td>" +
-        '<td style="padding:5px 8px;border:1px solid #cbd5e1;">' +
+        '<td style="padding:5px 8px;border:1px solid #d5d2c8;">' +
         esc(x.nis) +
         "</td>" +
-        '<td style="padding:5px 8px;border:1px solid #cbd5e1;">' +
+        '<td style="padding:5px 8px;border:1px solid #d5d2c8;">' +
         esc(x.nama) +
         "</td>" +
-        '<td style="padding:5px 8px;border:1px solid #cbd5e1;text-align:center;">' +
+        '<td style="padding:5px 8px;border:1px solid #d5d2c8;text-align:center;">' +
         x.jk +
         "</td>" +
         ["hadir", "izin", "sakit", "alpa", "telat", "total"]
           .map(function (f) {
             return (
-              '<td style="padding:5px 8px;border:1px solid #cbd5e1;text-align:center;">' +
+              '<td style="padding:5px 8px;border:1px solid #d5d2c8;text-align:center;">' +
               x[f] +
               "</td>"
             );
           })
           .join("") +
-        '<td style="padding:5px 8px;border:1px solid #cbd5e1;text-align:center;">' +
+        '<td style="padding:5px 8px;border:1px solid #d5d2c8;text-align:center;">' +
         x.persen +
         "%</td></tr>"
       );
@@ -730,7 +730,7 @@ function cetakRekapSiswa() {
   ]
     .map(function (h) {
       return (
-        '<th style="padding:6px 8px;border:1px solid #94a3b8;background:#f1f5f9;text-align:left;font-weight:700;">' +
+        '<th style="padding:6px 8px;border:1px solid #8c887f;background:#efede7;text-align:left;font-weight:700;">' +
         h +
         "</th>"
       );
@@ -743,8 +743,8 @@ function cetakRekapSiswa() {
   }
   w.document.write(
     '<!doctype html><html><head><meta charset="UTF-8"><title>Rekap Presensi Siswa</title><style>' +
-      "body{font-family:Calibri,Arial,sans-serif;color:#0f172a;margin:24px;}" +
-      ".kop{text-align:center;margin-bottom:14px;} .kop h2{margin:0;font-size:20px;} .kop p{margin:2px 0;font-size:12px;color:#475569;}" +
+      "body{font-family:Calibri,Arial,sans-serif;color:#1f1e1c;margin:24px;}" +
+      ".kop{text-align:center;margin-bottom:14px;} .kop h2{margin:0;font-size:20px;} .kop p{margin:2px 0;font-size:12px;color:#57534c;}" +
       "table{width:100%;border-collapse:collapse;font-size:12px;} th,td{font-size:12px;}" +
       "@media print{ .ttd{margin-top:48px;} body{margin:12mm;} }" +
       "</style></head><body>" +
@@ -1302,10 +1302,10 @@ async function tampilStatistikGuru() {
       : null;
     function warnaBerlabel(w) {
       var map = {
-        "#34d399": "#047857",
-        "#fb7185": "#be123c",
+        "#8fb9a0": "#466b57",
+        "#9ec4ad": "#4d755f",
+        "#fb7185": "#a84c4c",
         "#fbbf24": "#b45309",
-        "#4ade80": "#059669",
         "#f87171": "#dc2626",
       };
       return map[w] || w || "var(--ink)";
@@ -1344,7 +1344,7 @@ async function tampilStatistikGuru() {
           ket =
             '<span style="font-size:11px;color:var(--slate-light);">belum ada jadwal</span>';
         } else {
-          var warna = p >= 90 ? "#34d399" : p >= 75 ? "#fbbf24" : "#fb7185";
+          var warna = p >= 90 ? "#8fb9a0" : p >= 75 ? "#fbbf24" : "#fb7185";
           var wTeks = warnaBerlabel(warna);
           var w = Math.max(3, Math.min(p, 100));
           bar =
@@ -1391,10 +1391,10 @@ async function tampilStatistikGuru() {
       "</div>" +
       '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;">' +
       card("Guru Aktif", total) +
-      card("Rata-rata Kehadiran", rata === null ? "-" : rata + "%", "#34d399") +
-      card("Alpa Total", alpaTotal, alpaTotal > 0 ? "#fb7185" : "#34d399") +
-      card("Guru <90%", bawah90, bawah90 > 0 ? "#fbbf24" : "#34d399") +
-      card("Guru <75%", bawah75, bawah75 > 0 ? "#fb7185" : "#34d399") +
+      card("Rata-rata Kehadiran", rata === null ? "-" : rata + "%", "#8fb9a0") +
+      card("Alpa Total", alpaTotal, alpaTotal > 0 ? "#fb7185" : "#8fb9a0") +
+      card("Guru <90%", bawah90, bawah90 > 0 ? "#fbbf24" : "#8fb9a0") +
+      card("Guru <75%", bawah75, bawah75 > 0 ? "#fb7185" : "#8fb9a0") +
       "</div>" +
       (top3
         ? '<div style="font-size:12px;color:var(--slate);margin-bottom:12px;">Kehadiran terbaik: <b style="color:var(--ink);">' +
@@ -1501,14 +1501,14 @@ function __tabelRiwayatHarian(rows) {
         '</td><td style="padding:8px;color:var(--ink);">' +
         escH(x.guru || "-") +
         "</td>" +
-        '<td style="padding:8px;color:#047857;font-weight:700;">' +
+        '<td style="padding:8px;color:#466b57;font-weight:700;">' +
         (x.hadir || 0) +
         '</td><td style="padding:8px;color:var(--ink);">' +
         (x.izin || 0) +
         '</td><td style="padding:8px;color:var(--ink);">' +
         (x.sakit || 0) +
         "</td>" +
-        '<td style="padding:8px;color:#be123c;font-weight:700;">' +
+        '<td style="padding:8px;color:#a84c4c;font-weight:700;">' +
         (x.alpa || 0) +
         '</td><td style="padding:8px;color:var(--ink);">' +
         (x.telat || 0) +
@@ -2134,19 +2134,19 @@ function __xlsHTML(judul, meta, kolom, baris, namaFile, lebar) {
   var thf = "";
   for (var kf = 0; kf < kolom.length; kf++) {
     thf +=
-      '<th style="border:1px solid #94a3b8;background:#1e293b;color:#ffffff;padding:6px 9px;font-weight:700;text-align:left;">' +
+      '<th style="border:1px solid #8c887f;background:#292724;color:#ffffff;padding:6px 9px;font-weight:700;text-align:left;">' +
       __xlsEsc(kolom[kf]) +
       "</th>";
   }
   function selF(c) {
     if (typeof c === "number")
       return (
-        '<td style="border:1px solid #cbd5e1;padding:5px 9px;text-align:center;">' +
+        '<td style="border:1px solid #d5d2c8;padding:5px 9px;text-align:center;">' +
         c +
         "</td>"
       );
     return (
-      '<td style="border:1px solid #cbd5e1;padding:5px 9px;">' +
+      '<td style="border:1px solid #d5d2c8;padding:5px 9px;">' +
       __xlsEsc(c) +
       "</td>"
     );
@@ -2169,7 +2169,7 @@ function __xlsHTML(judul, meta, kolom, baris, namaFile, lebar) {
     colgf += "</colgroup>";
   }
   var xlsf =
-    '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel"><head><meta charset="UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>Rekap</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--><style>table{border-collapse:collapse;font-family:Calibri,Arial,sans-serif;font-size:12px;}h3{font-family:Calibri,Arial,sans-serif;margin:6px 0 2px;font-size:16px;}p.meta{font-family:Calibri,Arial,sans-serif;font-size:11px;color:#475569;margin:0 0 10px;}</style></head><body><h3>' +
+    '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel"><head><meta charset="UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>Rekap</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--><style>table{border-collapse:collapse;font-family:Calibri,Arial,sans-serif;font-size:12px;}h3{font-family:Calibri,Arial,sans-serif;margin:6px 0 2px;font-size:16px;}p.meta{font-family:Calibri,Arial,sans-serif;font-size:11px;color:#57534c;margin:0 0 10px;}</style></head><body><h3>' +
     __xlsEsc(judul) +
     "</h3>" +
     (meta ? '<p class="meta">' + __xlsEsc(meta) + "</p>" : "") +

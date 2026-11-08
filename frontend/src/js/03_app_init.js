@@ -2,6 +2,7 @@
    INISIALISASI
    ============================================================= */
 function initApp() {
+  if (!document.getElementById("loginForm")) return;
   if (window.__appInitialized) return;
   window.__appInitialized = true;
 
@@ -35,6 +36,22 @@ function initApp() {
   // karena pengguna sedang tidak beraktivitas.
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "visible") panggilUlangTabAktif();
+  });
+
+  if (typeof inisialisasiDefaultBulanTahun === "function") {
+    inisialisasiDefaultBulanTahun();
+  }
+  ["adminFilterMulai", "kepalaFilterMulai"].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el && !el.value && typeof firstOfMonthInputValue === "function") {
+      el.value = firstOfMonthInputValue();
+    }
+  });
+  ["adminFilterAkhir", "kepalaFilterAkhir"].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el && !el.value && typeof todayInputValue === "function") {
+      el.value = todayInputValue();
+    }
   });
 
   pulihkanSesi();

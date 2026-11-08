@@ -55,9 +55,9 @@ function __badge(txt, kind) {
     fg = "#818cf8",
     bd = "rgba(99, 102, 241, 0.3)";
   if (kind === "green") {
-    bg = "rgba(16, 185, 129, 0.15)";
-    fg = "#34d399";
-    bd = "rgba(52, 211, 153, 0.3)";
+    bg = "rgba(94, 135, 112, 0.15)";
+    fg = "#8fb9a0";
+    bd = "rgba(143, 185, 160, 0.3)";
   }
   if (kind === "muted") {
     bg = "rgba(148, 163, 184, 0.15)";

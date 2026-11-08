@@ -45,7 +45,7 @@ function __pagingHalaman() {
   var totalHalaman = Math.max(1, Math.ceil(__siswaTotal / __siswaPer));
   if (totalHalaman <= 1) return "";
   return (
-    '<div style="display:flex;align-items:center;gap:8px;justify-content:flex-end;margin-top:12px;font-size:12px;color:#475569;">' +
+    '<div style="display:flex;align-items:center;gap:8px;justify-content:flex-end;margin-top:12px;font-size:12px;color:#57534c;">' +
     "<span>Total " +
     __siswaTotal +
     " siswa</span>" +
@@ -515,7 +515,7 @@ async function hapusSiswaSekarang(id) {
 function bukaModalImporSiswa() {
   __modalOpen(
     "Impor Massal Siswa",
-    '<div style="font-size:12px;color:#475569;margin-bottom:10px;line-height:1.7;">' +
+    '<div style="font-size:12px;color:#57534c;margin-bottom:10px;line-height:1.7;">' +
       "<b>Langkah:</b><br>" +
       "1. Klik <b>Unduh Template Excel</b> untuk mendapat berkas contoh berwarna.<br>" +
       "2. Isi data siswa di Excel sesuai kolom template.<br>" +
@@ -524,13 +524,13 @@ function bukaModalImporSiswa() {
       '<label for="mImporFile" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border:2px dashed var(--brand-emerald-500);border-radius:12px;padding:24px 12px;background:var(--brand-emerald-50);cursor:pointer;text-align:center;">' +
       '<svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="var(--brand-emerald-800)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>' +
       '<span style="font-size:13px;font-weight:700;color:var(--brand-emerald-800);">Klik untuk pilih berkas Excel</span>' +
-      '<span id="mImporNama" style="font-size:12px;color:#64748b;">Mendukung .xlsx, .xls, dan .csv</span>' +
+      '<span id="mImporNama" style="font-size:12px;color:#6e6a61;">Mendukung .xlsx, .xls, dan .csv</span>' +
       "</label>" +
       '<input type="file" id="mImporFile" accept=".xlsx,.xls,.csv" style="display:none;">' +
       '<div id="mImporInfo" style="display:none;margin-top:10px;padding:10px 12px;border-radius:10px;font-size:12px;line-height:1.6;"></div>' +
       '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:14px;">' +
       '<button type="button" style="background:var(--brand-emerald-600);color:#fff;border:none;border-radius:10px;padding:10px 16px;cursor:pointer;font-weight:600;font-size:13px;" onclick="unduhTemplateSiswa()">Unduh Template Excel</button>' +
-      '<span style="font-size:11px;color:#94a3b8;">Baris pertama = judul kolom, dilewati saat impor.</span>' +
+      '<span style="font-size:11px;color:#8c887f;">Baris pertama = judul kolom, dilewati saat impor.</span>' +
       "</div>" +
       '<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px;">' +
       __btnSekunder("Batal", "__modalClose()") +
@@ -841,7 +841,7 @@ async function bukaModalPindahSiswa(id) {
   }
   __modalOpen(
     "Pindah Kelas - " + escH(s.namaLengkap),
-    '<div style="font-size:13px;color:#475569;margin-bottom:12px;">NIS ' +
+    '<div style="font-size:13px;color:#57534c;margin-bottom:12px;">NIS ' +
       escH(s.nis) +
       " - Kelas saat ini: " +
       escH(s.kelas || "-") +
@@ -1089,7 +1089,7 @@ async function muatTabelTahun() {
     '<h3 style="margin:0;font-size:16px;font-weight:700;color:var(--ink);">Data Tahun Ajaran</h3>' +
     __btnUtama("+ Tambah Tahun Ajaran", "bukaModalTahun()") +
     "</div>" +
-    '<div style="font-size:12px;color:#64748b;margin-bottom:10px;">Tahun ajaran yang <b>aktif</b> dipakai untuk pembagian kelas & presensi pada operasional berjalan.</div>' +
+    '<div style="font-size:12px;color:#6e6a61;margin-bottom:10px;">Tahun ajaran yang <b>aktif</b> dipakai untuk pembagian kelas & presensi pada operasional berjalan.</div>' +
     __tabelTahun(rows) +
     "</div>";
 }
@@ -1316,7 +1316,7 @@ async function muatAssignSiswa() {
     __btnBahaya("Lepas Terpilih", "assignLepas()") +
     "</div>" +
     "</div>" +
-    '<div style="font-size:12px;color:#64748b;margin:6px 0 10px;">Centang siswa, lalu pilih kelas tujuan (Pasang), atau pilih tahun ajaran lalu lepas dari kelas (Lepas).</div>' +
+    '<div style="font-size:12px;color:#6e6a61;margin:6px 0 10px;">Centang siswa, lalu pilih kelas tujuan (Pasang), atau pilih tahun ajaran lalu lepas dari kelas (Lepas).</div>' +
     __tabelAssign(rows) +
     "</div>";
 }

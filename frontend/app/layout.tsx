@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
+import "@astryxdesign/core/reset.css";
+import "@astryxdesign/core/astryx.css";
 import appVersion from "./app-version.json";
-import "./globals.css";
+import { AppRoot } from "./AppRoot";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -28,16 +30,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="id" suppressHydrationWarning>
+    <html lang="id" data-astryx-theme="neutral" suppressHydrationWarning>
       <head>
+        <link
+          rel="stylesheet"
+          href={`/globals.css?v=${appVersion.version}`}
+        />
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{if(localStorage.getItem('theme')==='dark'){document.documentElement.classList.add('dark');}}catch(e){}})();`,
+            __html: `(function(){try{var t=localStorage.getItem('theme')==='dark'?'dark':'light';if(t==='dark'){document.documentElement.classList.add('dark');}document.documentElement.setAttribute('data-theme',t);document.documentElement.setAttribute('data-astryx-theme','neutral');}catch(e){}})();`,
           }}
         />
       </head>
       <body suppressHydrationWarning>
-        {children}
+        <AppRoot>{children}</AppRoot>
         <script defer src={`/app.js?v=${appVersion.version}`} />
       </body>
     </html>

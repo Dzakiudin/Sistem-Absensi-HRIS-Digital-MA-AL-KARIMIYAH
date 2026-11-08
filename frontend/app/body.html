@@ -24,7 +24,11 @@
     <h1 class="auth-title js-nama-sekolah">MA AL KARIMIYAH</h1>
     <p class="auth-subtitle">Sistem Absensi Guru Digital</p>
 
-    <form id="loginForm" class="auth-form">
+    <form
+      id="loginForm"
+      class="auth-form"
+      onsubmit="if(window.handleLogin){return window.handleLogin(event)}return false;"
+    >
       <div class="form-group">
         <label for="loginUsername">Username</label>
         <div class="input-with-icon">
@@ -179,6 +183,23 @@
       <div class="topbar-actions">
         <button
           type="button"
+          class="btn-icon-theme astryx-cmd-trigger"
+          onclick="window.openAstryxCommandPalette && window.openAstryxCommandPalette()"
+          title="Navigasi Cepat (Ctrl+K)"
+          aria-label="Navigasi Cepat (Ctrl+K)"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </button>
+        <button
+          type="button"
           class="btn-icon-theme"
           onclick="toggleTheme()"
           title="Mode Gelap / Terang"
@@ -310,9 +331,9 @@
         style="
           font-size: 12px;
           font-weight: 600;
-          background: #ecfdf5;
-          color: #047857;
-          border: 1px solid #a7f3d0;
+          background: #eef3f0;
+          color: #466b57;
+          border: 1px solid #c2d6ca;
           display: inline-flex;
           align-items: center;
           gap: 6px;
@@ -337,7 +358,7 @@
           id="badgeNotifikasiHonor"
           class="badge"
           style="
-            background: #047857;
+            background: #466b57;
             color: #fff;
             font-size: 11px;
             padding: 2px 7px;
@@ -373,7 +394,7 @@
             height: 40px;
             border-radius: 10px;
             background: #fef3c7;
-            color: #d97706;
+            color: #b57c3c;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -418,7 +439,7 @@
             <span
               class="badge"
               style="
-                background: #d97706;
+                background: #b57c3c;
                 color: #fff;
                 font-size: 11px;
                 padding: 2px 8px;
@@ -451,8 +472,8 @@
               font-weight: 600;
               padding: 7px 14px;
               border-radius: 8px;
-              background: #d97706;
-              border-color: #d97706;
+              background: #b57c3c;
+              border-color: #b57c3c;
               color: #fff;
               cursor: pointer;
             "
@@ -493,9 +514,9 @@
       class="mobile-only-note hidden"
       style="
         margin-bottom: 12px;
-        background: #ecfdf5;
-        border: 1px solid #a7f3d0;
-        color: #047857;
+        background: #eef3f0;
+        border: 1px solid #c2d6ca;
+        color: #466b57;
         padding: 12px 16px;
         border-radius: 14px;
       "
@@ -671,7 +692,7 @@
             fill="none"
             stroke="currentColor"
             stroke-width="2"
-            style="width: 18px; height: 18px; color: #047857"
+            style="width: 18px; height: 18px; color: #466b57"
           >
             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
             <polyline points="22 4 12 14.01 9 11.01"></polyline>
@@ -858,7 +879,7 @@
             fill="none"
             stroke="currentColor"
             stroke-width="2"
-            style="width: 20px; height: 20px; color: #047857"
+            style="width: 20px; height: 20px; color: #466b57"
           >
             <rect x="2" y="6" width="20" height="12" rx="2"></rect>
             <circle cx="12" cy="12" r="2"></circle>
@@ -883,7 +904,7 @@
               width: 44px;
               height: 44px;
               margin: 0 auto 10px;
-              color: #cbd5e1;
+              color: #d5d2c8;
             "
           >
             <path
@@ -896,7 +917,7 @@
           <p style="font-weight: 600; color: var(--slate)">
             Belum Ada Rekap Honor
           </p>
-          <p style="font-size: 12px; color: #64748b; margin-top: 4px">
+          <p style="font-size: 12px; color: #6e6a61; margin-top: 4px">
             Honor bulanan yang telah diverifikasi dan dikirim admin akan muncul
             di sini.
           </p>
@@ -929,7 +950,7 @@
             fill="none"
             stroke="currentColor"
             stroke-width="2"
-            style="width: 20px; height: 20px; color: #047857"
+            style="width: 20px; height: 20px; color: #466b57"
           >
             <path d="M9 11l3 3L22 4"></path>
             <path
@@ -1167,6 +1188,23 @@
         </div>
       </div>
       <div class="topbar-actions">
+        <button
+          type="button"
+          class="btn-icon-theme astryx-cmd-trigger"
+          onclick="window.openAstryxCommandPalette && window.openAstryxCommandPalette()"
+          title="Navigasi Cepat (Ctrl+K)"
+          aria-label="Navigasi Cepat (Ctrl+K)"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </button>
         <button
           type="button"
           class="btn-icon-theme"
@@ -1743,8 +1781,8 @@
                 >
                   <span
                     style="
-                      background: #ecfdf5;
-                      color: #047857;
+                      background: #eef3f0;
+                      color: #466b57;
                       padding: 5px;
                       border-radius: 8px;
                       display: inline-flex;
@@ -1797,14 +1835,14 @@
                     display: inline-flex;
                     align-items: center;
                     gap: 4px;
-                    color: #047857;
+                    color: #466b57;
                   "
                   ><span
                     style="
                       width: 8px;
                       height: 8px;
                       border-radius: 50%;
-                      background: #10b981;
+                      background: #5e8770;
                     "
                   ></span
                   >Tepat Waktu</span
@@ -1814,7 +1852,7 @@
                     display: inline-flex;
                     align-items: center;
                     gap: 4px;
-                    color: #d97706;
+                    color: #b57c3c;
                   "
                   ><span
                     style="
@@ -1859,8 +1897,8 @@
               >
                 <span
                   style="
-                    background: #f0fdf4;
-                    color: #16a34a;
+                    background: #f1f5f2;
+                    color: #547d66;
                     padding: 5px;
                     border-radius: 8px;
                     display: inline-flex;
@@ -1925,7 +1963,7 @@
                 <span
                   style="
                     background: #e0f2fe;
-                    color: #0284c7;
+                    color: #4d7ea1;
                     padding: 5px;
                     border-radius: 8px;
                     display: inline-flex;
@@ -1990,8 +2028,8 @@
               >
                 <span
                   style="
-                    background: #ecfdf5;
-                    color: #047857;
+                    background: #eef3f0;
+                    color: #466b57;
                     padding: 5px;
                     border-radius: 8px;
                     display: inline-flex;
@@ -2045,7 +2083,7 @@
                 fill="none"
                 stroke="currentColor"
                 stroke-width="2"
-                style="width: 20px; height: 20px; color: #047857"
+                style="width: 20px; height: 20px; color: #466b57"
               >
                 <circle cx="12" cy="12" r="10"></circle>
                 <polyline points="12 6 12 12 16 14"></polyline>
@@ -2071,7 +2109,7 @@
             <div
               id="adminProgHadir"
               class="progress-bar-segment"
-              style="width: 0%; background: #10b981"
+              style="width: 0%; background: #5e8770"
             ></div>
             <div
               id="adminProgIzin"
@@ -2125,8 +2163,8 @@
             >
               <span
                 style="
-                  background: rgba(16, 185, 129, 0.1);
-                  color: #047857;
+                  background: rgba(94, 135, 112, 0.1);
+                  color: #466b57;
                   padding: 4px 6px;
                   border-radius: 6px;
                   display: inline-flex;
@@ -2179,7 +2217,7 @@
                   display: inline-flex;
                   align-items: center;
                   gap: 5px;
-                  color: #d97706;
+                  color: #b57c3c;
                   font-weight: 600;
                 "
               >
@@ -2198,9 +2236,9 @@
                 id="adminLineRataRataBadge"
                 class="badge-role"
                 style="
-                  background: #ecfdf5;
-                  color: #047857;
-                  border-color: #a7f3d0;
+                  background: #eef3f0;
+                  color: #466b57;
+                  border-color: #c2d6ca;
                   font-weight: 700;
                 "
                 >Rata-rata: 0%</span
@@ -2236,8 +2274,8 @@
             >
               <span
                 style="
-                  background: #eef2ff;
-                  color: #4338ca;
+                  background: #e0ebe4;
+                  color: #385746;
                   padding: 5px;
                   border-radius: 8px;
                   display: inline-flex;
@@ -2282,9 +2320,9 @@
               id="adminSiswaPersenBadge"
               class="badge-role"
               style="
-                background: #ecfdf5;
-                color: #047857;
-                border-color: #a7f3d0;
+                background: #eef3f0;
+                color: #466b57;
+                border-color: #c2d6ca;
                 font-weight: 700;
               "
               >0% Hadir</span
@@ -2311,7 +2349,7 @@
                 fill="none"
                 stroke="currentColor"
                 stroke-width="2"
-                style="width: 20px; height: 20px; color: #047857"
+                style="width: 20px; height: 20px; color: #466b57"
               >
                 <circle cx="12" cy="12" r="10"></circle>
                 <line x1="12" y1="16" x2="12" y2="12"></line>
@@ -2416,7 +2454,7 @@
                   fill="none"
                   stroke="currentColor"
                   stroke-width="2"
-                  style="width: 20px; height: 20px; color: #047857"
+                  style="width: 20px; height: 20px; color: #466b57"
                 >
                   <circle cx="12" cy="12" r="10"></circle>
                   <polyline points="12 6 12 12 16 14"></polyline>
@@ -2429,7 +2467,7 @@
                 type="button"
                 class="btn-link"
                 onclick="gantiTab('admin-absensi')"
-                style="font-size: 12.5px; font-weight: 600; color: #047857"
+                style="font-size: 12.5px; font-weight: 600; color: #466b57"
               >
                 Lihat Semua &rarr;
               </button>
@@ -2454,7 +2492,7 @@
                       style="
                         padding: 36px 0;
                         text-align: center;
-                        color: #64748b;
+                        color: #6e6a61;
                       "
                     >
                       Belum ada aktivitas presensi masuk hari ini.
@@ -2687,8 +2725,8 @@
                   class="btn btn-outline"
                   onclick="bukaModalManual()"
                   style="
-                    border-color: #10b981;
-                    color: #047857;
+                    border-color: #5e8770;
+                    color: #466b57;
                     font-weight: 700;
                   "
                 >
@@ -2727,7 +2765,7 @@
               <div
                 id="adminAbsensiBodyEmpty"
                 class="empty-state hidden"
-                style="padding: 40px 0; text-align: center; color: #64748b"
+                style="padding: 40px 0; text-align: center; color: #6e6a61"
               >
                 Tidak ada data absensi untuk kriteria yang dipilih.
               </div>
@@ -2860,14 +2898,14 @@
               <div
                 id="adminRekapBodyEmpty"
                 class="empty-state hidden"
-                style="padding: 40px 0; text-align: center; color: #64748b"
+                style="padding: 40px 0; text-align: center; color: #6e6a61"
               >
                 Belum ada data rekapitulasi.
               </div>
               <div
                 id="adminRekapCariKosong"
                 class="empty-state hidden"
-                style="padding: 40px 0; text-align: center; color: #64748b"
+                style="padding: 40px 0; text-align: center; color: #6e6a61"
               >
                 Data guru tidak ditemukan.
               </div>
@@ -2966,7 +3004,7 @@
                 top: 12px;
                 width: 18px;
                 height: 18px;
-                color: #64748b;
+                color: #6e6a61;
               "
             >
               <circle cx="11" cy="11" r="8"></circle>
@@ -3002,7 +3040,7 @@
             <div
               id="usersBodyEmpty"
               class="empty-state hidden"
-              style="padding: 40px 0; text-align: center; color: #64748b"
+              style="padding: 40px 0; text-align: center; color: #6e6a61"
             >
               Belum ada data guru/staf.
             </div>
@@ -3180,7 +3218,7 @@
             <div
               id="jadwalBodyEmpty"
               class="empty-state hidden"
-              style="padding: 40px 0; text-align: center; color: #64748b"
+              style="padding: 40px 0; text-align: center; color: #6e6a61"
             >
               Belum ada jadwal pelajaran yang dimasukkan.
             </div>
@@ -3243,7 +3281,7 @@
             <div
               id="liburBodyEmpty"
               class="empty-state hidden"
-              style="padding: 40px 0; text-align: center; color: #64748b"
+              style="padding: 40px 0; text-align: center; color: #6e6a61"
             >
               Belum ada catatan hari libur.
             </div>
@@ -3278,7 +3316,7 @@
               fill="none"
               stroke="currentColor"
               stroke-width="2"
-              style="width: 22px; height: 22px; color: #047857"
+              style="width: 22px; height: 22px; color: #466b57"
             >
               <circle cx="12" cy="12" r="3"></circle>
               <path
@@ -3467,8 +3505,8 @@
                     grid-template-columns: 1fr;
                     gap: 14px;
                     padding: 14px 16px;
-                    background: var(--bg-card, #f8fafc);
-                    border: 1px solid var(--line, #e2e8f0);
+                    background: var(--bg-card, #f6f5f1);
+                    border: 1px solid var(--line, #e4e2da);
                     border-radius: 12px;
                   "
                 >
@@ -3488,7 +3526,7 @@
                         style="
                           font-size: 13px;
                           font-weight: 700;
-                          color: var(--ink, #1e293b);
+                          color: var(--ink, #292724);
                           display: block;
                           margin-bottom: 3px;
                         "
@@ -3554,7 +3592,7 @@
                   fill="none"
                   stroke="currentColor"
                   stroke-width="2"
-                  style="width: 18px; height: 18px; color: #047857"
+                  style="width: 18px; height: 18px; color: #466b57"
                 >
                   <path
                     d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"
@@ -3564,7 +3602,7 @@
                 <h3 style="font-size: 13.5px; font-weight: 700">
                   Peta Interaktif Geofence
                 </h3>
-                <span style="font-size: 12px; color: #64748b"
+                <span style="font-size: 12px; color: #6e6a61"
                   >(Geser marker lokasi)</span
                 >
               </div>
@@ -3595,7 +3633,7 @@
                       width: 8px;
                       height: 8px;
                       border-radius: 50%;
-                      background: #10b981;
+                      background: #5e8770;
                     "
                   ></span>
                   Area dalam radius
@@ -3678,7 +3716,7 @@
           <div
             id="mapelBodyKosong"
             class="empty-state hidden"
-            style="padding: 40px 0; text-align: center; color: #64748b"
+            style="padding: 40px 0; text-align: center; color: #6e6a61"
           >
             Belum ada data mata pelajaran.
           </div>
@@ -3832,6 +3870,23 @@
       <div class="topbar-actions">
         <button
           type="button"
+          class="btn-icon-theme astryx-cmd-trigger"
+          onclick="window.openAstryxCommandPalette && window.openAstryxCommandPalette()"
+          title="Navigasi Cepat (Ctrl+K)"
+          aria-label="Navigasi Cepat (Ctrl+K)"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </button>
+        <button
+          type="button"
           class="btn-icon-theme"
           onclick="toggleTheme()"
           title="Mode Gelap / Terang"
@@ -3859,7 +3914,7 @@
           >
             <div
               class="avatar-square js-user-avatar"
-              style="background: #047857"
+              style="background: #466b57"
             >
               D
             </div>
@@ -4335,7 +4390,7 @@
             <div
               id="honorBodyEmpty"
               class="empty-state hidden"
-              style="padding: 40px 0; text-align: center; color: #64748b"
+              style="padding: 40px 0; text-align: center; color: #6e6a61"
             >
               Belum ada data honor untuk bulan ini. Klik tombol "Hitung
               Otomatis" di atas.
@@ -4343,7 +4398,7 @@
             <div
               id="honorCariKosong"
               class="empty-state hidden"
-              style="padding: 40px 0; text-align: center; color: #64748b"
+              style="padding: 40px 0; text-align: center; color: #6e6a61"
             >
               Data honor guru tidak ditemukan.
             </div>
@@ -4587,8 +4642,8 @@
                 >
                   <span
                     style="
-                      background: #ecfdf5;
-                      color: #047857;
+                      background: #eef3f0;
+                      color: #466b57;
                       padding: 5px;
                       border-radius: 8px;
                       display: inline-flex;
@@ -4641,14 +4696,14 @@
                     display: inline-flex;
                     align-items: center;
                     gap: 4px;
-                    color: #047857;
+                    color: #466b57;
                   "
                   ><span
                     style="
                       width: 8px;
                       height: 8px;
                       border-radius: 50%;
-                      background: #10b981;
+                      background: #5e8770;
                     "
                   ></span
                   >Tepat Waktu</span
@@ -4658,7 +4713,7 @@
                     display: inline-flex;
                     align-items: center;
                     gap: 4px;
-                    color: #d97706;
+                    color: #b57c3c;
                   "
                   ><span
                     style="
@@ -4703,8 +4758,8 @@
               >
                 <span
                   style="
-                    background: #f0fdf4;
-                    color: #16a34a;
+                    background: #f1f5f2;
+                    color: #547d66;
                     padding: 5px;
                     border-radius: 8px;
                     display: inline-flex;
@@ -4769,7 +4824,7 @@
                 <span
                   style="
                     background: #e0f2fe;
-                    color: #0284c7;
+                    color: #4d7ea1;
                     padding: 5px;
                     border-radius: 8px;
                     display: inline-flex;
@@ -4834,8 +4889,8 @@
               >
                 <span
                   style="
-                    background: #ecfdf5;
-                    color: #047857;
+                    background: #eef3f0;
+                    color: #466b57;
                     padding: 5px;
                     border-radius: 8px;
                     display: inline-flex;
@@ -4889,7 +4944,7 @@
                 fill="none"
                 stroke="currentColor"
                 stroke-width="2"
-                style="width: 20px; height: 20px; color: #047857"
+                style="width: 20px; height: 20px; color: #466b57"
               >
                 <circle cx="12" cy="12" r="10"></circle>
                 <polyline points="12 6 12 12 16 14"></polyline>
@@ -4915,7 +4970,7 @@
             <div
               id="progHadir"
               class="progress-bar-segment"
-              style="width: 0%; background: #10b981"
+              style="width: 0%; background: #5e8770"
             ></div>
             <div
               id="progIzin"
@@ -4966,8 +5021,8 @@
             >
               <span
                 style="
-                  background: rgba(16, 185, 129, 0.1);
-                  color: #047857;
+                  background: rgba(94, 135, 112, 0.1);
+                  color: #466b57;
                   padding: 4px 6px;
                   border-radius: 6px;
                   display: inline-flex;
@@ -5020,7 +5075,7 @@
                   display: inline-flex;
                   align-items: center;
                   gap: 5px;
-                  color: #d97706;
+                  color: #b57c3c;
                   font-weight: 600;
                 "
               >
@@ -5039,9 +5094,9 @@
                 id="kepalaLineRataRataBadge"
                 class="badge-role"
                 style="
-                  background: #ecfdf5;
-                  color: #047857;
-                  border-color: #a7f3d0;
+                  background: #eef3f0;
+                  color: #466b57;
+                  border-color: #c2d6ca;
                   font-weight: 700;
                 "
                 >Rata-rata: 0%</span
@@ -5077,8 +5132,8 @@
             >
               <span
                 style="
-                  background: #eef2ff;
-                  color: #4338ca;
+                  background: #e0ebe4;
+                  color: #385746;
                   padding: 5px;
                   border-radius: 8px;
                   display: inline-flex;
@@ -5123,9 +5178,9 @@
               id="kepalaSiswaPersenBadge"
               class="badge-role"
               style="
-                background: #ecfdf5;
-                color: #047857;
-                border-color: #a7f3d0;
+                background: #eef3f0;
+                color: #466b57;
+                border-color: #c2d6ca;
                 font-weight: 700;
               "
               >0% Hadir</span
@@ -5156,7 +5211,7 @@
                   fill="none"
                   stroke="currentColor"
                   stroke-width="2"
-                  style="width: 18px; height: 18px; color: #047857"
+                  style="width: 18px; height: 18px; color: #466b57"
                 >
                   <polygon
                     points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"
@@ -5175,7 +5230,7 @@
                 type="button"
                 class="btn-link"
                 onclick="gantiTab('kepala-absensi')"
-                style="font-size: 12.5px; font-weight: 600; color: #047857"
+                style="font-size: 12.5px; font-weight: 600; color: #466b57"
               >
                 Lihat Semua &rarr;
               </button>
@@ -5199,7 +5254,7 @@
                       style="
                         padding: 40px 0;
                         text-align: center;
-                        color: #64748b;
+                        color: #6e6a61;
                       "
                     >
                       <svg
@@ -5211,7 +5266,7 @@
                           width: 40px;
                           height: 40px;
                           margin: 0 auto 8px;
-                          color: #cbd5e1;
+                          color: #d5d2c8;
                         "
                       >
                         <path
@@ -5256,7 +5311,7 @@
                     fill="none"
                     stroke="currentColor"
                     stroke-width="2"
-                    style="width: 18px; height: 18px; color: #d97706"
+                    style="width: 18px; height: 18px; color: #b57c3c"
                   >
                     <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
                     <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
@@ -5304,7 +5359,7 @@
                   type="button"
                   class="btn-link"
                   onclick="gantiTab('kepala-rekap')"
-                  style="font-size: 12px; font-weight: 600; color: #047857"
+                  style="font-size: 12px; font-weight: 600; color: #466b57"
                 >
                   Buka Rekapitulasi Lengkap &rarr;
                 </button>
@@ -5369,7 +5424,7 @@
                 fill="none"
                 stroke="currentColor"
                 stroke-width="2"
-                style="width: 18px; height: 18px; color: #047857"
+                style="width: 18px; height: 18px; color: #466b57"
               >
                 <polygon
                   points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"
@@ -5561,7 +5616,7 @@
               <div
                 id="kepalaAbsensiBodyEmpty"
                 class="empty-state hidden"
-                style="padding: 40px 0; text-align: center; color: #64748b"
+                style="padding: 40px 0; text-align: center; color: #6e6a61"
               >
                 <svg
                   viewBox="0 0 24 24"
@@ -5572,7 +5627,7 @@
                     width: 44px;
                     height: 44px;
                     margin: 0 auto 10px;
-                    color: #cbd5e1;
+                    color: #d5d2c8;
                   "
                 >
                   <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
@@ -5732,7 +5787,7 @@
               <div
                 id="kepalaRekapBodyEmpty"
                 class="empty-state hidden"
-                style="padding: 40px 0; text-align: center; color: #64748b"
+                style="padding: 40px 0; text-align: center; color: #6e6a61"
               >
                 Belum ada data rekapitulasi kehadiran.
               </div>
@@ -5764,7 +5819,7 @@
                   fill="none"
                   stroke="currentColor"
                   stroke-width="2"
-                  style="width: 20px; height: 20px; color: #047857"
+                  style="width: 20px; height: 20px; color: #466b57"
                 >
                   <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
                   <path
@@ -5914,7 +5969,7 @@
                   fill="none"
                   stroke="currentColor"
                   stroke-width="2"
-                  style="width: 16px; height: 16px; color: #047857"
+                  style="width: 16px; height: 16px; color: #466b57"
                 >
                   <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                   <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -5943,7 +5998,7 @@
                   fill="none"
                   stroke="currentColor"
                   stroke-width="2"
-                  style="width: 16px; height: 16px; color: #047857"
+                  style="width: 16px; height: 16px; color: #466b57"
                 >
                   <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                   <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -5972,7 +6027,7 @@
                   fill="none"
                   stroke="currentColor"
                   stroke-width="2"
-                  style="width: 16px; height: 16px; color: #047857"
+                  style="width: 16px; height: 16px; color: #466b57"
                 >
                   <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                   <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -6001,7 +6056,7 @@
                   fill="none"
                   stroke="currentColor"
                   stroke-width="2"
-                  style="width: 16px; height: 16px; color: #047857"
+                  style="width: 16px; height: 16px; color: #466b57"
                 >
                   <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                   <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -6030,7 +6085,7 @@
                   fill="none"
                   stroke="currentColor"
                   stroke-width="2"
-                  style="width: 16px; height: 16px; color: #047857"
+                  style="width: 16px; height: 16px; color: #466b57"
                 >
                   <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                   <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -6059,7 +6114,7 @@
                   fill="none"
                   stroke="currentColor"
                   stroke-width="2"
-                  style="width: 16px; height: 16px; color: #047857"
+                  style="width: 16px; height: 16px; color: #466b57"
                 >
                   <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                   <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -6131,7 +6186,7 @@
           <div
             id="izinApprovalKosong"
             class="empty-state hidden"
-            style="padding: 40px 0; text-align: center; color: #64748b"
+            style="padding: 40px 0; text-align: center; color: #6e6a61"
           >
             Tidak ada pengajuan izin yang menunggu persetujuan.
           </div>
@@ -6221,7 +6276,7 @@
           <div
             id="monitoringIzinKosong"
             class="empty-state hidden"
-            style="padding: 32px 0; text-align: center; color: #64748b"
+            style="padding: 32px 0; text-align: center; color: #6e6a61"
           >
             Tidak ada izin disetujui pada periode ini.
           </div>
@@ -6276,7 +6331,7 @@
           <div
             id="sesiMengajarKosong"
             class="empty-state hidden"
-            style="padding: 32px 0; text-align: center; color: #64748b"
+            style="padding: 32px 0; text-align: center; color: #6e6a61"
           >
             Tidak ada sesi mengajar pada tanggal ini.
           </div>
@@ -6498,7 +6553,7 @@
             opacity: 0.85;
             margin: 0 0 12px;
             max-width: 250px;
-            color: #cbd5e1;
+            color: #d5d2c8;
           "
         >
           Izin kamera diblokir browser atau perangkat tidak memiliki webcam.
@@ -6606,13 +6661,13 @@
     <div
       id="izinTargetInfo"
       style="
-        background: #f0fdf4;
-        border: 1px solid #bbf7d0;
+        background: #f1f5f2;
+        border: 1px solid #c8dbd0;
         border-radius: 12px;
         padding: 10px 14px;
         margin-bottom: 14px;
         font-size: 12.5px;
-        color: #166534;
+        color: #3f634f;
       "
     >
       <div

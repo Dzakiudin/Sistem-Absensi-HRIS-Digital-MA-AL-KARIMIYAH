@@ -2,15 +2,18 @@
    AUTENTIKASI
    ============================================================= */
 async function handleLogin(e) {
-  e.preventDefault();
+  if (e && e.preventDefault) e.preventDefault();
+  const btn = document.getElementById("loginSubmitBtn");
+  if (btn && btn.disabled) return false;
   const username = document.getElementById("loginUsername").value.trim();
   const password = document.getElementById("loginPassword").value;
   const errBox = document.getElementById("loginError");
   errBox.classList.add("hidden");
 
-  const btn = document.getElementById("loginSubmitBtn");
-  btn.disabled = true;
-  btn.textContent = "Memeriksa...";
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = "Memeriksa...";
+  }
   try {
     const res = await runServer("login", username, password);
     if (res.success) {
