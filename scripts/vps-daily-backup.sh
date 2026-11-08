@@ -21,10 +21,22 @@ PROJECT_DIR="${PROJECT_DIR:-/opt/paspapan}"
 cd "$PROJECT_DIR"
 
 if [ -f "$PROJECT_DIR/.env" ]; then
-  set -a
-  # shellcheck disable=SC1091
-  . "$PROJECT_DIR/.env"
-  set +a
+  while IFS= read -r line || [ -n "$line" ]; do
+    line="${line%$'\r'}"
+    case "$line" in
+      ""|\#*) continue ;;
+      *=*)
+        key="${line%%=*}"
+        val="${line#*=}"
+        # Strip surrounding quotes if present
+        val="${val#\"}"
+        val="${val%\"}"
+        val="${val#\'}"
+        val="${val%\'}"
+        export "$key=$val"
+        ;;
+    esac
+  done < "$PROJECT_DIR/.env"
 fi
 
 POSTGRES_DB="${POSTGRES_DB:-paspapan}"
