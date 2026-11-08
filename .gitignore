@@ -19,6 +19,7 @@ frontend/.env*.local
 # Isinya di-ignore per-file, bukan per-folder, supaya .gitkeep-nya tetap ke-track.
 /backups/*
 !/backups/.gitkeep
+/vps-backups/
 /nginx/certbot/conf/*
 !/nginx/certbot/conf/.gitkeep
 /nginx/certbot/www/*
