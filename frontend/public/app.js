@@ -10532,7 +10532,6 @@ function __htmlQuickPeriodeRekapSiswa(
     '<div id="' +
     groupWrapId +
     '" class="rekap-quick-period-bar" role="group" aria-label="Filter cepat periode rekap">' +
-    '<span class="rekap-quick-period-label">Periode Cepat:</span>' +
     modes
       .map(function (m) {
         var isAct = (activeMode || "bulanan") === m.id;
