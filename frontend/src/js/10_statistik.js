@@ -1107,16 +1107,20 @@ function bukaRekapSiswaDashboard(prefix) {
 }
 
 function renderPieStatistikSiswa(ring) {
+  const hadirVal = Math.max(
+    0,
+    (Number(ring.hadir) || 0) + (Number(ring.telat) || 0),
+  );
+  const izinVal = Math.max(
+    0,
+    (Number(ring.izin) || 0) + (Number(ring.sakit) || 0),
+  );
+  const alpaVal = Math.max(0, Number(ring.alpa) || 0);
   const statuses = [
-    { label: "Hadir", key: "hadir", color: "#4d755f" },
-    { label: "Terlambat", key: "telat", color: "#7c65a3" },
-    { label: "Izin", key: "izin", color: "#b57c3c" },
-    { label: "Sakit", key: "sakit", color: "#4d7ea1" },
-    { label: "Alpa", key: "alpa", color: "#b85656" },
-  ].map((status) => ({
-    ...status,
-    value: Math.max(0, Number(ring[status.key]) || 0),
-  }));
+    { label: "Hadir", key: "hadir", color: "#4d755f", value: hadirVal },
+    { label: "Izin", key: "izin", color: "#b57c3c", value: izinVal },
+    { label: "Alfa", key: "alpa", color: "#b85656", value: alpaVal },
+  ];
   const total = statuses.reduce((sum, status) => sum + status.value, 0);
   let accumulated = 0;
   const slices = statuses.map((status) => {
@@ -1126,9 +1130,7 @@ function renderPieStatistikSiswa(ring) {
   });
   const legend = statuses
     .map((status) => {
-      const percent = total
-        ? Math.round((status.value / total) * 100)
-        : 0;
+      const percent = total ? Math.round((status.value / total) * 100) : 0;
       return `<div class="kepala-student-pie-row">
         <span class="kepala-student-pie-label">
           <i style="background:${status.color};"></i>
@@ -1139,12 +1141,12 @@ function renderPieStatistikSiswa(ring) {
       </div>`;
     })
     .join("");
-  const percentHadir = Math.max(0, Number(ring.persenHadir) || 0);
+  const percentHadir = total ? Math.round((hadirVal / total) * 100) : 0;
 
-  return `<section class="kepala-student-pie" aria-label="Komposisi status presensi siswa 30 hari terakhir">
+  return `<section class="kepala-student-pie" aria-label="Komposisi status presensi siswa hari ini">
     <div class="kepala-student-trend-heading">
       <strong>Komposisi Status Presensi</strong>
-      <span>${total.toLocaleString("id-ID")} total presensi</span>
+      <span>${total.toLocaleString("id-ID")} total presensi hari ini</span>
     </div>
     <div class="kepala-student-pie-content">
       <div class="kepala-student-pie-chart" role="img" aria-label="${percentHadir}% hadir dari ${total.toLocaleString("id-ID")} total presensi" style="background:${total ? `conic-gradient(${slices.join(",")})` : "#e4e2da"};">
@@ -1158,39 +1160,31 @@ function renderPieStatistikSiswa(ring) {
   </section>`;
 }
 
-function renderGrafikStatistikSiswa(perHari, mulai) {
-  const rowsByDate = new Map(
-    perHari.map((row) => [row.tanggal, row]),
-  );
-  const days = Array.from({ length: 30 }, (_, index) => {
-    const date = new Date(mulai);
-    date.setDate(date.getDate() + index);
-    const tanggal =
-      String(date.getDate()).padStart(2, "0") +
-      "/" +
-      String(date.getMonth() + 1).padStart(2, "0") +
-      "/" +
-      date.getFullYear();
-    const row = rowsByDate.get(tanggal) || {};
+function renderGrafikStatistikSiswa(perKelas, hariIniLabel) {
+  const listKelas = Array.isArray(perKelas) ? perKelas : [];
+  const items = listKelas.map((row) => {
+    const hadirVal = Math.max(
+      0,
+      (Number(row.hadir) || 0) + (Number(row.telat) || 0),
+    );
+    const izinVal = Math.max(
+      0,
+      (Number(row.izin) || 0) + (Number(row.sakit) || 0),
+    );
+    const alpaVal = Math.max(0, Number(row.alpa) || 0);
     return {
-      date,
-      tanggal,
+      label: String(row.label || row.nama || "-"),
       statuses: [
-        { label: "Hadir", key: "hadir", color: "#4d755f" },
-        { label: "Izin", key: "izin", color: "#b57c3c" },
-        { label: "Sakit", key: "sakit", color: "#4d7ea1" },
-        { label: "Alpa", key: "alpa", color: "#b85656" },
-        { label: "Terlambat", key: "telat", color: "#7c65a3" },
-      ].map((status) => ({
-        ...status,
-        value: Math.max(0, Number(row[status.key]) || 0),
-      })),
+        { label: "Hadir", key: "hadir", color: "#4d755f", value: hadirVal },
+        { label: "Izin", key: "izin", color: "#b57c3c", value: izinVal },
+        { label: "Alfa", key: "alpa", color: "#b85656", value: alpaVal },
+      ],
     };
   });
   const maxTotal = Math.max(
     0,
-    ...days.map((day) =>
-      day.statuses.reduce((total, status) => total + status.value, 0),
+    ...items.map((item) =>
+      item.statuses.reduce((total, status) => total + status.value, 0),
     ),
   );
   const step = maxTotal ? Math.ceil(maxTotal / 4) : 1;
@@ -1198,66 +1192,55 @@ function renderGrafikStatistikSiswa(perHari, mulai) {
   const ticks = Array.from({ length: 5 }, (_, index) =>
     (chartMax - step * index).toLocaleString("id-ID"),
   );
-  const dateLabel = (date) =>
-    `${date.getDate()} ${new Intl.DateTimeFormat("id-ID", {
-      month: "short",
-    }).format(date)}`;
-  const dateFullLabel = (date) =>
-    `${new Intl.DateTimeFormat("id-ID", { weekday: "long" }).format(date)}, ${String(date.getDate()).padStart(2, "0")}/${String(date.getMonth() + 1).padStart(2, "0")}/${date.getFullYear()}`;
-  const tickIndexes = [0, 5, 10, 15, 20, 25, 29];
-  const bars = days
-    .map((day) => {
-      const total = day.statuses.reduce(
+  const bars = items
+    .map((item) => {
+      const total = item.statuses.reduce(
         (sum, status) => sum + status.value,
         0,
       );
-      const hadir = day.statuses.find((status) => status.key === "hadir").value;
-      const telat = day.statuses.find((status) => status.key === "telat").value;
-      const totalKehadiran = hadir + telat;
-      const persenKehadiran = total
-        ? Math.round((totalKehadiran / total) * 100)
-        : 0;
-      const detail = day.statuses
-        .map((status) => `${status.label} ${status.value.toLocaleString("id-ID")}`)
+      const hadir = item.statuses.find((status) => status.key === "hadir").value;
+      const persenKehadiran = total ? Math.round((hadir / total) * 100) : 0;
+      const detail = item.statuses
+        .map(
+          (status) => `${status.label} ${status.value.toLocaleString("id-ID")}`,
+        )
         .join(", ");
       const tipData = JSON.stringify({
-        title: dateFullLabel(day.date),
+        title: `Kelas ${item.label} · ${hariIniLabel || "Hari Ini"}`,
         items: [
-          ...day.statuses.map((status) => ({
+          ...item.statuses.map((status) => ({
             label: status.label,
             value: `${status.value.toLocaleString("id-ID")} presensi`,
             color: status.color,
           })),
           {
-            label: "Total Kehadiran",
-            value: `${persenKehadiran}% (${totalKehadiran.toLocaleString("id-ID")}/${total.toLocaleString("id-ID")})`,
+            label: "Tingkat Kehadiran",
+            value: `${persenKehadiran}% (${hadir.toLocaleString("id-ID")}/${total.toLocaleString("id-ID")})`,
             color: "#4d755f",
           },
         ],
       }).replace(/"/g, "&quot;");
-      const segments = day.statuses
+      const segments = item.statuses
         .map(
           (status) =>
             `<span class="kepala-student-chart-segment" style="height:${((status.value / chartMax) * 100).toFixed(2)}%;background:${status.color};"></span>`,
         )
         .join("");
-      return `<div class="kepala-student-chart-bar" role="img" tabindex="0" data-tip="${tipData}" onmouseenter="handleBarHover(event, this)" onmousemove="moveChartTooltip(event)" onmouseleave="hideChartTooltip()" onfocus="handleBarHover(event, this)" ontouchstart="handleBarHover(event, this)" aria-label="${dateLabel(day.date)}, total ${total.toLocaleString("id-ID")} presensi: ${esc(detail)}" title="${dateLabel(day.date)} · ${esc(detail)}">
+      return `<div class="kepala-student-chart-bar" role="img" tabindex="0" data-tip="${tipData}" onmouseenter="handleBarHover(event, this)" onmousemove="moveChartTooltip(event)" onmouseleave="hideChartTooltip()" onfocus="handleBarHover(event, this)" ontouchstart="handleBarHover(event, this)" aria-label="Kelas ${esc(item.label)}, total ${total.toLocaleString("id-ID")} presensi: ${esc(detail)}" title="Kelas ${esc(item.label)} · ${esc(detail)}">
         <div class="kepala-student-chart-stack">${segments}</div>
       </div>`;
     })
     .join("");
-  const dateTicks = tickIndexes
+  const xLabels = items
     .map(
-      (index) =>
-        `<span style="left:${((index / (days.length - 1)) * 100).toFixed(2)}%;">${dateLabel(days[index].date)}</span>`,
+      (item, index) =>
+        `<span style="left:${items.length > 1 ? ((index / (items.length - 1)) * 100).toFixed(2) : "50"}%;">${esc(item.label)}</span>`,
     )
     .join("");
   const legend = [
     { label: "Hadir", color: "#4d755f" },
     { label: "Izin", color: "#b57c3c" },
-    { label: "Sakit", color: "#4d7ea1" },
-    { label: "Alpa", color: "#b85656" },
-    { label: "Terlambat", color: "#7c65a3" },
+    { label: "Alfa", color: "#b85656" },
   ]
     .map(
       (item) =>
@@ -1269,16 +1252,16 @@ function renderGrafikStatistikSiswa(perHari, mulai) {
       ? `<div class="kepala-student-chart-layout">
           <div class="kepala-student-chart-y-axis" aria-hidden="true">${ticks.map((tick) => `<span>${tick}</span>`).join("")}</div>
           <div class="kepala-student-chart-main">
-            <div class="kepala-student-chart-plot" role="group" aria-label="Grafik batang bertumpuk kehadiran siswa per hari">${bars}</div>
-            <div class="kepala-student-chart-x-axis" aria-hidden="true">${dateTicks}</div>
+            <div class="kepala-student-chart-plot" role="group" aria-label="Grafik batang bertumpuk kehadiran siswa per rombel hari ini">${bars}</div>
+            <div class="kepala-student-chart-x-axis" aria-hidden="true">${xLabels}</div>
           </div>
         </div>
         <div class="kepala-student-chart-legend">${legend}</div>`
-      : '<div class="kepala-student-chart-empty">Belum ada data kehadiran pada periode ini.</div>';
-  return `<section class="kepala-student-trend" aria-label="Grafik statistik kehadiran siswa 30 hari terakhir">
+      : '<div class="kepala-student-chart-empty">Belum ada data kehadiran siswa yang dicatat hari ini.</div>';
+  return `<section class="kepala-student-trend" aria-label="Grafik statistik kehadiran siswa hari ini">
     <div class="kepala-student-trend-heading">
-      <strong>Tren Kehadiran Harian</strong>
-      <span>Jumlah presensi per hari</span>
+      <strong>Distribusi Kehadiran Harian</strong>
+      <span>Presensi per rombel · ${esc(hariIniLabel || "Hari ini")}</span>
     </div>
     ${chart}
   </section>`;
@@ -1289,9 +1272,8 @@ async function muatStatistikSiswa(prefix) {
   const body = document.getElementById(bodyId);
   if (!body) return;
   body.innerHTML =
-    '<div style="text-align:center;padding:24px;color:#8c887f;font-size:12.5px;">Memuat statistik kehadiran siswa...</div>';
+    '<div style="text-align:center;padding:24px;color:#8c887f;font-size:12.5px;">Memuat statistik kehadiran siswa hari ini...</div>';
   const d = new Date();
-  const mulai = new Date(d.getTime() - 29 * 86400000);
   // Backend parseTanggalIndo expects DD/MM/YYYY format
   const fmtIndo = (x) =>
     String(x.getDate()).padStart(2, "0") +
@@ -1299,11 +1281,22 @@ async function muatStatistikSiswa(prefix) {
     String(x.getMonth() + 1).padStart(2, "0") +
     "/" +
     x.getFullYear();
+  const hariIniIndo = fmtIndo(d);
+  const hariIniLengkap = new Intl.DateTimeFormat("id-ID", {
+    weekday: "long",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  }).format(d);
+  const subEl = document.getElementById(prefix + "StatSiswaSub");
+  if (subEl) {
+    subEl.textContent = "Rekap kehadiran siswa hari ini · " + hariIniLengkap;
+  }
   let res;
   try {
     res = await runServer("getStatistikKehadiranSiswa", currentUser.username, {
-      tanggalMulai: fmtIndo(mulai),
-      tanggalAkhir: fmtIndo(d),
+      tanggalMulai: hariIniIndo,
+      tanggalAkhir: hariIniIndo,
     });
   } catch (e) {
     body.innerHTML =
@@ -1321,15 +1314,24 @@ async function muatStatistikSiswa(prefix) {
   }
   const data = res.data;
   const ring = data.ringkasan || {};
+  const hadirVal = Math.max(
+    0,
+    (Number(ring.hadir) || 0) + (Number(ring.telat) || 0),
+  );
+  const izinVal = Math.max(
+    0,
+    (Number(ring.izin) || 0) + (Number(ring.sakit) || 0),
+  );
+  const alpaVal = Math.max(0, Number(ring.alpa) || 0);
+  const totalVal = hadirVal + izinVal + alpaVal;
+  const persenHadirVal = totalVal ? Math.round((hadirVal / totalVal) * 100) : 0;
   const badge = document.getElementById(prefix + "SiswaPersenBadge");
-  if (badge) badge.textContent = (ring.persenHadir || 0) + "% Hadir";
+  if (badge) badge.textContent = persenHadirVal + "% Hadir";
   const stat = [
-    { l: "Hadir", v: ring.hadir || 0, c: "#466b57" },
-    { l: "Izin", v: ring.izin || 0, c: "#b57c3c" },
-    { l: "Sakit", v: ring.sakit || 0, c: "#4d7ea1" },
-    { l: "Alpa", v: ring.alpa || 0, c: "#a84c4c" },
-    { l: "Terlambat", v: ring.telat || 0, c: "#7c65a3" },
-    { l: "Total", v: ring.total || 0, c: "var(--ink)" },
+    { l: "Hadir", v: hadirVal, c: "#466b57" },
+    { l: "Izin", v: izinVal, c: "#b57c3c" },
+    { l: "Alfa", v: alpaVal, c: "#a84c4c" },
+    { l: "Total", v: totalVal, c: "var(--ink)" },
   ]
     .map(
       (s) =>
@@ -1346,19 +1348,27 @@ async function muatStatistikSiswa(prefix) {
     .join("");
 
   const perKelas = Array.isArray(data.perKelas) ? data.perKelas : [];
-  const perHari = Array.isArray(data.perHari) ? data.perHari : [];
-  const pie = renderPieStatistikSiswa(ring);
-  const grafik = renderGrafikStatistikSiswa(perHari, mulai);
+  const pie = renderPieStatistikSiswa({
+    hadir: hadirVal,
+    izin: izinVal,
+    alpa: alpaVal,
+    total: totalVal,
+    persenHadir: persenHadirVal,
+  });
+  const grafik = renderGrafikStatistikSiswa(perKelas, hariIniLengkap);
   const classCards = perKelas
     .map((kelas) => {
-      const hadir = Number(kelas.hadir) || 0;
+      const hadir =
+        (Number(kelas.hadir) || 0) + (Number(kelas.telat) || 0);
+      const izin =
+        (Number(kelas.izin) || 0) + (Number(kelas.sakit) || 0);
       const alpa = Number(kelas.alpa) || 0;
-      const total = Number(kelas.total) || 0;
+      const total = hadir + izin + alpa;
       return `<div class="kepala-student-class-row">
         <span class="kepala-student-class-code">${esc(kelas.label || "-")}</span>
         <span class="kepala-student-class-main">
           <strong>${esc(kelas.label || "Kelas")}</strong>
-          <span>Total ${total.toLocaleString("id-ID")} presensi</span>
+          <span>Total ${total.toLocaleString("id-ID")} presensi · ${izin.toLocaleString("id-ID")} Izin</span>
         </span>
         <span class="kepala-student-class-stats">
           <strong>${hadir.toLocaleString("id-ID")} Hadir</strong>
@@ -1374,11 +1384,11 @@ async function muatStatistikSiswa(prefix) {
   body.innerHTML = `<div class="kepala-student-stat-grid">${stat}</div>
     <div class="kepala-student-visuals">${grafik}${pie}</div>
     <div class="kepala-student-class-heading">
-      <strong>Rincian Per Rombel</strong>
-      <span>${perKelas.length} rombel terdata</span>
+      <strong>Rincian Per Rombel Hari Ini</strong>
+      <span>${perKelas.length} rombel tercatat hari ini</span>
     </div>
     <div class="kepala-student-class-list">
-      ${classCards || '<div class="kepala-student-empty">Belum ada rincian kehadiran per rombel.</div>'}
+      ${classCards || '<div class="kepala-student-empty">Belum ada rincian kehadiran rombel yang tercatat hari ini.</div>'}
     </div>`;
 }
 

@@ -394,7 +394,7 @@ function renderSubTabRadarBK() {
     '<div class="guru-bk-card-head">' +
     "<div>" +
     "<h3>Radar Deteksi Dini Presensi Siswa</h3>" +
-    "<p>Mendeteksi siswa dengan frekuensi Alfa, Terlambat, atau Sakit/Izin tinggi lintas rombel.</p>" +
+    "<p>Mendeteksi siswa dengan frekuensi Alfa atau Izin tinggi lintas rombel.</p>" +
     "</div>" +
     '<button type="button" class="btn btn-outline btn-sm" onclick="muatPanelGuruBK(true)">↻ Sinkron</button>' +
     "</div>" +
@@ -571,21 +571,15 @@ function renderDaftarRadarBK() {
           "</div>" +
           '<div class="guru-bk-stat-strip">' +
           '<div class="guru-bk-stat-cell is-h"><small>Hadir</small><strong>' +
-          (s.hadir || 0) +
-          "</strong></div>" +
-          '<div class="guru-bk-stat-cell is-t"><small>Telat</small><strong>' +
-          (s.telat || 0) +
+          ((Number(s.hadir) || 0) + (Number(s.telat) || 0)) +
           "</strong></div>" +
           '<div class="guru-bk-stat-cell is-i"><small>Izin</small><strong>' +
-          (s.izin || 0) +
-          "</strong></div>" +
-          '<div class="guru-bk-stat-cell is-s"><small>Sakit</small><strong>' +
-          (s.sakit || 0) +
+          ((Number(s.izin) || 0) + (Number(s.sakit) || 0)) +
           "</strong></div>" +
           '<div class="guru-bk-stat-cell is-a"><small>Alfa</small><strong>' +
           (s.alpa || 0) +
           "</strong></div>" +
-          '<div class="guru-bk-stat-cell is-pct"><small>Efektif</small><strong>' +
+          '<div class="guru-bk-stat-cell is-pct"><small>% Hadir</small><strong>' +
           (s.persenKehadiran != null ? s.persenKehadiran : 100) +
           "%</strong></div>" +
           "</div>" +
@@ -632,11 +626,19 @@ async function renderSubTabKelasBK() {
 
   area.innerHTML =
     '<div class="card guru-bk-filter-card" style="margin-bottom:14px;">' +
-    '<div class="guru-bk-card-head">' +
+    '<div class="guru-bk-card-head" style="flex-wrap:wrap;gap:10px;">' +
     "<div>" +
     "<h3>Monitoring &amp; Diagram Kehadiran Kelas</h3>" +
-    "<p>Pantau komposisi Hadir, Telat, Izin, Sakit, dan Alfa setiap rombel beserta rincian per siswa.</p>" +
+    "<p>Pantau komposisi Hadir, Izin, dan Alfa setiap rombel beserta rincian per siswa.</p>" +
     "</div>" +
+    __htmlQuickPeriodeRekapSiswa(
+      "bkRekapQuickPeriode",
+      "#bkRekapKelasHasil",
+      "bkRekapKelasSelect",
+      "bkRekapAwal",
+      "bkRekapAkhir",
+      "bulanan",
+    ) +
     "</div>" +
     '<div class="guru-bk-date-bar">' +
     '<div class="guru-bk-date-field">' +
@@ -649,13 +651,13 @@ async function renderSubTabKelasBK() {
     "<label>Tanggal Awal</label>" +
     '<input type="date" id="bkRekapAwal" class="input input-sm" value="' +
     __bulanAwalISO() +
-    '" />' +
+    '" onchange="sinkronQuickPeriodeRekapSiswa(\'bkRekapAwal\',\'bkRekapAkhir\',\'bkRekapQuickPeriode\')" />' +
     "</div>" +
     '<div class="guru-bk-date-field">' +
     "<label>Tanggal Akhir</label>" +
     '<input type="date" id="bkRekapAkhir" class="input input-sm" value="' +
     __bulanAkhirISO() +
-    '" />' +
+    '" onchange="sinkronQuickPeriodeRekapSiswa(\'bkRekapAwal\',\'bkRekapAkhir\',\'bkRekapQuickPeriode\')" />' +
     "</div>" +
     "</div>" +
     '<div class="guru-bk-action-bar" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;">' +
@@ -916,11 +918,11 @@ function renderDaftarDirektoriBK() {
           "</div>" +
           '<div class="guru-bk-student-foot">' +
           '<span class="guru-bk-reason-text">Hadir: <strong>' +
-          (s.hadir || 0) +
+          ((Number(s.hadir) || 0) + (Number(s.telat) || 0)) +
+          "</strong> · Izin: <strong>" +
+          ((Number(s.izin) || 0) + (Number(s.sakit) || 0)) +
           "</strong> · Alfa: <strong>" +
           (s.alpa || 0) +
-          "</strong> · Telat: <strong>" +
-          (s.telat || 0) +
           "</strong></span>" +
           '<div class="guru-bk-student-actions">' +
           '<button type="button" class="btn btn-outline btn-sm" onclick="bukaProfilSiswaBK(' +
@@ -963,8 +965,8 @@ function eksporExcelDataAsuhBK() {
     "Desa",
     "Kecamatan",
     "Hadir",
+    "Izin",
     "Alfa",
-    "Telat",
   ];
   var baris = rowsData.map(function (s, idx) {
     return [
@@ -985,9 +987,9 @@ function eksporExcelDataAsuhBK() {
       s.pekerjaanIbu || "",
       s.desa || "",
       s.kecamatan || "",
-      s.hadir || 0,
+      (Number(s.hadir) || 0) + (Number(s.telat) || 0),
+      (Number(s.izin) || 0) + (Number(s.sakit) || 0),
       s.alpa || 0,
-      s.telat || 0,
     ];
   });
   __eksLapXLS(
@@ -1318,7 +1320,7 @@ async function bukaProfilSiswaBK(siswaId) {
     '<div class="guru-bk-modal-att-badge ' +
     barCls +
     '">' +
-    "<small>Efektif</small><strong>" +
+    "<small>% Hadir</small><strong>" +
     pctEfektif +
     "%</strong>" +
     "</div>" +
@@ -1332,21 +1334,15 @@ async function bukaProfilSiswaBK(siswaId) {
     "</div>" +
     '<div class="guru-bk-stat-strip is-enhanced">' +
     '<div class="guru-bk-stat-cell is-h"><span class="guru-bk-stat-dot"></span><small>Hadir</small><strong>' +
-    (s.hadir || 0) +
-    "</strong></div>" +
-    '<div class="guru-bk-stat-cell is-t"><span class="guru-bk-stat-dot"></span><small>Telat</small><strong>' +
-    (s.telat || 0) +
+    ((Number(s.hadir) || 0) + (Number(s.telat) || 0)) +
     "</strong></div>" +
     '<div class="guru-bk-stat-cell is-i"><span class="guru-bk-stat-dot"></span><small>Izin</small><strong>' +
-    (s.izin || 0) +
-    "</strong></div>" +
-    '<div class="guru-bk-stat-cell is-s"><span class="guru-bk-stat-dot"></span><small>Sakit</small><strong>' +
-    (s.sakit || 0) +
+    ((Number(s.izin) || 0) + (Number(s.sakit) || 0)) +
     "</strong></div>" +
     '<div class="guru-bk-stat-cell is-a"><span class="guru-bk-stat-dot"></span><small>Alfa</small><strong>' +
     (s.alpa || 0) +
     "</strong></div>" +
-    '<div class="guru-bk-stat-cell is-pct"><span class="guru-bk-stat-dot"></span><small>Efektif</small><strong>' +
+    '<div class="guru-bk-stat-cell is-pct"><span class="guru-bk-stat-dot"></span><small>% Hadir</small><strong>' +
     pctEfektif +
     "%</strong></div>" +
     "</div>" +

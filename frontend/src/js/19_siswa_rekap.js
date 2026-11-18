@@ -1,4 +1,106 @@
 /* ---------- REKAP PRESENSI SISWA (admin & kepala) ---------- */
+function __htmlQuickPeriodeRekapSiswa(
+  groupWrapId,
+  containerSel,
+  kelasSelId,
+  awalSelId,
+  akhirSelId,
+  activeMode,
+) {
+  var modes = [
+    { id: "harian", label: "Harian" },
+    { id: "mingguan", label: "Mingguan" },
+    { id: "bulanan", label: "Bulanan" },
+  ];
+  return (
+    '<div id="' +
+    groupWrapId +
+    '" class="rekap-quick-period-bar" role="group" aria-label="Filter cepat periode rekap">' +
+    '<span class="rekap-quick-period-label">Periode Cepat:</span>' +
+    modes
+      .map(function (m) {
+        var isAct = (activeMode || "bulanan") === m.id;
+        return (
+          '<button type="button" class="rekap-quick-period-btn' +
+          (isAct ? " active" : "") +
+          '" data-quick-periode="' +
+          m.id +
+          '" aria-pressed="' +
+          (isAct ? "true" : "false") +
+          '" onclick="pilihPeriodeCepatRekapSiswa(\'' +
+          m.id +
+          "','" +
+          containerSel +
+          "','" +
+          kelasSelId +
+          "','" +
+          awalSelId +
+          "','" +
+          akhirSelId +
+          "','" +
+          groupWrapId +
+          "')\">" +
+          m.label +
+          "</button>"
+        );
+      })
+      .join("") +
+    "</div>"
+  );
+}
+
+function sinkronQuickPeriodeRekapSiswa(awalSelId, akhirSelId, groupWrapId) {
+  var wrap = groupWrapId ? document.getElementById(groupWrapId) : null;
+  if (!wrap) return;
+  var aEl = document.getElementById(awalSelId);
+  var bEl = document.getElementById(akhirSelId);
+  var aVal = (aEl && aEl.value) || "";
+  var bVal = (bEl && bEl.value) || "";
+  var today = __tglTodayISO();
+  var wStart = __mulaiMingguISO();
+  var wEnd = __akhirMingguISO();
+  var mStart = __bulanAwalISO();
+  var mEnd = __bulanAkhirISO();
+  var mode = "";
+  if (aVal === today && bVal === today) {
+    mode = "harian";
+  } else if (aVal === wStart && bVal === wEnd) {
+    mode = "mingguan";
+  } else if (aVal === mStart && bVal === mEnd) {
+    mode = "bulanan";
+  }
+  wrap.querySelectorAll("[data-quick-periode]").forEach(function (btn) {
+    var on = btn.getAttribute("data-quick-periode") === mode;
+    btn.classList.toggle("active", on);
+    btn.setAttribute("aria-pressed", on ? "true" : "false");
+  });
+}
+
+function pilihPeriodeCepatRekapSiswa(
+  mode,
+  containerSel,
+  kelasSelId,
+  awalSelId,
+  akhirSelId,
+  groupWrapId,
+) {
+  var awal = __bulanAwalISO();
+  var akhir = __bulanAkhirISO();
+  if (mode === "harian") {
+    awal = __tglTodayISO();
+    akhir = __tglTodayISO();
+  } else if (mode === "mingguan") {
+    awal = __mulaiMingguISO();
+    akhir = __akhirMingguISO();
+  }
+  var aEl = document.getElementById(awalSelId);
+  var bEl = document.getElementById(akhirSelId);
+  if (aEl) aEl.value = awal;
+  if (bEl) bEl.value = akhir;
+  sinkronQuickPeriodeRekapSiswa(awalSelId, akhirSelId, groupWrapId);
+  tampilRekapSiswa(containerSel, kelasSelId, awalSelId, akhirSelId);
+}
+
 async function muatRekapSiswa() {
   var el = document.getElementById("adminSiswaTabRekap");
   if (!el) return;
@@ -17,7 +119,17 @@ async function muatRekapSiswa() {
   } catch (e) {}
   el.innerHTML =
     '<div class="card" style="padding:18px 20px;margin-bottom:14px;">' +
-    '<h3 style="margin:0 0 14px 0;font-size:16px;font-weight:700;color:var(--ink);">Rekap Presensi Siswa</h3>' +
+    '<div class="rekap-card-top-row">' +
+    '<h3 style="margin:0;font-size:16px;font-weight:700;color:var(--ink);">Rekap Presensi Siswa</h3>' +
+    __htmlQuickPeriodeRekapSiswa(
+      "adminRekapQuickPeriode",
+      "#adminRekapHasil",
+      "adminRekapKelas",
+      "adminRekapAwal",
+      "adminRekapAkhir",
+      "bulanan",
+    ) +
+    "</div>" +
     '<div class="admin-rekap-fields" style="display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;">' +
     '<div class="admin-rekap-field" style="flex:1;min-width:160px;">' +
     __label("Kelas") +
@@ -28,12 +140,12 @@ async function muatRekapSiswa() {
     __label("Tanggal Awal") +
     '<input type="date" id="adminRekapAwal" value="' +
     __bulanAwalISO() +
-    '" style="padding:9px 11px;border:1px solid var(--line);border-radius:10px;font-size:13px;background:var(--parchment-alt);color:var(--ink);"></div>' +
+    '" onchange="sinkronQuickPeriodeRekapSiswa(\'adminRekapAwal\',\'adminRekapAkhir\',\'adminRekapQuickPeriode\')" style="padding:9px 11px;border:1px solid var(--line);border-radius:10px;font-size:13px;background:var(--parchment-alt);color:var(--ink);"></div>' +
     '<div class="admin-rekap-field">' +
     __label("Tanggal Akhir") +
     '<input type="date" id="adminRekapAkhir" value="' +
     __bulanAkhirISO() +
-    '" style="padding:9px 11px;border:1px solid var(--line);border-radius:10px;font-size:13px;background:var(--parchment-alt);color:var(--ink);"></div>' +
+    '" onchange="sinkronQuickPeriodeRekapSiswa(\'adminRekapAwal\',\'adminRekapAkhir\',\'adminRekapQuickPeriode\')" style="padding:9px 11px;border:1px solid var(--line);border-radius:10px;font-size:13px;background:var(--parchment-alt);color:var(--ink);"></div>' +
     '<div class="admin-rekap-actions">' +
     __btnUtama(
       "Tampilkan",
@@ -73,6 +185,13 @@ async function tampilRekapSiswa(
   if (aSel) awal = __tglIndo(aSel.value);
   var bSel = document.getElementById(akhirSelId);
   if (bSel) akhir = __tglIndo(bSel.value);
+  if (awalSelId === "adminRekapAwal") {
+    sinkronQuickPeriodeRekapSiswa(awalSelId, akhirSelId, "adminRekapQuickPeriode");
+  } else if (awalSelId === "kepalaSiswaAwal") {
+    sinkronQuickPeriodeRekapSiswa(awalSelId, akhirSelId, "kepalaSiswaQuickPeriode");
+  } else if (awalSelId === "bkRekapAwal") {
+    sinkronQuickPeriodeRekapSiswa(awalSelId, akhirSelId, "bkRekapQuickPeriode");
+  }
   el.innerHTML = __spinner();
   var groups = [];
   try {
@@ -126,15 +245,18 @@ function toggleRekapDetail(id) {
 }
 function __rekapKelasCard(g) {
   var n = (g.siswa || []).length;
-  var hVal = Math.max(0, Number(g.totalH) || 0);
-  var iVal = Math.max(0, Number(g.totalI) || 0);
-  var sVal = Math.max(0, Number(g.totalS) || 0);
+  var hVal = Math.max(
+    0,
+    (Number(g.totalH) || 0) + (Number(g.totalT) || 0),
+  );
+  var iVal = Math.max(
+    0,
+    (Number(g.totalI) || 0) + (Number(g.totalS) || 0),
+  );
   var aVal = Math.max(0, Number(g.totalA) || 0);
-  var tVal = Math.max(0, Number(g.totalT) || 0);
-  var totalPresensi = hVal + iVal + sVal + aVal + tVal;
-  var pctHadir = totalPresensi > 0 ? Math.round((hVal / totalPresensi) * 100) : 0;
-  var pctEfektif =
-    totalPresensi > 0 ? Math.round(((hVal + tVal) / totalPresensi) * 100) : 0;
+  var totalPresensi = hVal + iVal + aVal;
+  var pctHadir =
+    totalPresensi > 0 ? Math.round((hVal / totalPresensi) * 100) : 0;
 
   var statuses = [
     {
@@ -146,28 +268,12 @@ function __rekapKelasCard(g) {
       textColor: "#466b57",
     },
     {
-      label: "Telat",
-      cls: "late",
-      value: tVal,
-      color: "#7c65a3",
-      bg: "#f5f3ff",
-      textColor: "#6d28d9",
-    },
-    {
       label: "Izin",
       cls: "permission",
       value: iVal,
       color: "#b57c3c",
       bg: "#fffbeb",
       textColor: "#b45309",
-    },
-    {
-      label: "Sakit",
-      cls: "sick",
-      value: sVal,
-      color: "#4d7ea1",
-      bg: "#f0f9ff",
-      textColor: "#0369a1",
     },
     {
       label: "Alfa",
@@ -387,8 +493,8 @@ function __rekapKelasCard(g) {
       '<span class="kepala-class-spectrum-empty"></span>') +
     "</div>" +
     '<div class="kepala-class-spectrum-meta">' +
-    "<span>Kehadiran Efektif (H+T): <strong>" +
-    pctEfektif +
+    "<span>Tingkat Kehadiran: <strong>" +
+    pctHadir +
     "%</strong></span>" +
     "<span>Tanpa Keterangan (Alfa): <strong class=\"" +
     (aVal > 0 ? "is-alert" : "") +
@@ -408,10 +514,14 @@ function __rekapKelasCard(g) {
 function __rekapSiswaTable(siswa) {
   if (!siswa.length) return __kosong("Tidak ada siswa.");
   var head =
-    '<thead><tr><th>No</th><th>NIS</th><th>Nama Siswa</th><th style="text-align:center;">H</th><th style="text-align:center;">T</th><th style="text-align:center;">I</th><th style="text-align:center;">S</th><th style="text-align:center;">A</th><th style="text-align:center;">Total</th><th style="text-align:right;">% Hadir</th></tr></thead>';
+    '<thead><tr><th>No</th><th>NIS</th><th>Nama Siswa</th><th style="text-align:center;">H</th><th style="text-align:center;">I</th><th style="text-align:center;">A</th><th style="text-align:center;">Total</th><th style="text-align:right;">% Hadir</th></tr></thead>';
   var tr = siswa
     .map(function (x, i) {
-      var pct = Number(x.persen) || 0;
+      var hVal = (Number(x.hadir) || 0) + (Number(x.telat) || 0);
+      var iVal = (Number(x.izin) || 0) + (Number(x.sakit) || 0);
+      var aVal = Number(x.alpa) || 0;
+      var totVal = hVal + iVal + aVal;
+      var pct = totVal > 0 ? Math.round((hVal / totVal) * 100) : 0;
       var pctCls =
         pct >= 85 ? "is-good" : pct >= 70 ? "is-warn" : "is-low";
       return (
@@ -426,22 +536,16 @@ function __rekapSiswaTable(siswa) {
         escH(x.nama) +
         "</td>" +
         '<td class="col-stat is-h">' +
-        (x.hadir || 0) +
-        "</td>" +
-        '<td class="col-stat is-t">' +
-        (x.telat || 0) +
+        hVal +
         "</td>" +
         '<td class="col-stat is-i">' +
-        (x.izin || 0) +
-        "</td>" +
-        '<td class="col-stat is-s">' +
-        (x.sakit || 0) +
+        iVal +
         "</td>" +
         '<td class="col-stat is-a">' +
-        (x.alpa || 0) +
+        aVal +
         "</td>" +
         '<td class="col-stat is-tot">' +
-        (x.total || 0) +
+        totVal +
         "</td>" +
         '<td class="col-pct"><span class="rekap-pct-pill ' +
         pctCls +
@@ -583,18 +687,21 @@ function __rekapSiswaBaris() {
   var out = [];
   (window.__rekapCache || []).forEach(function (g) {
     (g.siswa || []).forEach(function (x) {
+      var hVal = (Number(x.hadir) || 0) + (Number(x.telat) || 0);
+      var iVal = (Number(x.izin) || 0) + (Number(x.sakit) || 0);
+      var aVal = Number(x.alpa) || 0;
+      var totVal = hVal + iVal + aVal;
+      var pctVal = totVal > 0 ? Math.round((hVal / totVal) * 100) : 0;
       out.push({
         kode: g.kodeKelas || g.kelas || "-",
         nis: x.nis || "",
         nama: x.nama || "",
         jk: String(x.jk || "") === "Perempuan" ? "P" : "L",
-        hadir: x.hadir || 0,
-        izin: x.izin || 0,
-        sakit: x.sakit || 0,
-        alpa: x.alpa || 0,
-        telat: x.telat || 0,
-        total: x.total || 0,
-        persen: x.persen || 0,
+        hadir: hVal,
+        izin: iVal,
+        alpa: aVal,
+        total: totVal,
+        persen: pctVal,
       });
     });
   });
@@ -630,9 +737,7 @@ function eksporExcelSiswa() {
     "L/P",
     "Hadir",
     "Izin",
-    "Sakit",
-    "Alpa",
-    "Terlambat",
+    "Alfa",
     "Total",
     "% Hadir",
   ];
@@ -645,9 +750,7 @@ function eksporExcelSiswa() {
       x.jk,
       x.hadir,
       x.izin,
-      x.sakit,
       x.alpa,
-      x.telat,
       x.total,
       String(x.persen) + "%",
     ];
@@ -663,7 +766,7 @@ function eksporExcelSiswa() {
     kolom,
     rows,
     "rekap-presensi-siswa.xls",
-    [6, 9, 12, 26, 6, 9, 9, 9, 9, 12, 9, 9],
+    [6, 9, 12, 26, 6, 9, 9, 9, 9, 9],
   );
 }
 function cetakRekapSiswa() {
@@ -699,7 +802,7 @@ function cetakRekapSiswa() {
         '<td style="padding:5px 8px;border:1px solid #d5d2c8;text-align:center;">' +
         x.jk +
         "</td>" +
-        ["hadir", "izin", "sakit", "alpa", "telat", "total"]
+        ["hadir", "izin", "alpa", "total"]
           .map(function (f) {
             return (
               '<td style="padding:5px 8px;border:1px solid #d5d2c8;text-align:center;">' +
@@ -722,9 +825,7 @@ function cetakRekapSiswa() {
     "L/P",
     "Hadir",
     "Izin",
-    "Sakit",
-    "Alpa",
-    "Terlambat",
+    "Alfa",
     "Total",
     "% Hadir",
   ]
@@ -1488,9 +1589,13 @@ async function tampilRiwayatHarian(containerSel, tglInputId) {
 }
 function __tabelRiwayatHarian(rows) {
   var head =
-    '<thead><tr style="background:var(--parchment-alt);color:var(--slate);border-bottom:1px solid var(--line);text-align:left;"><th style="padding:8px;">Kelas</th><th style="padding:8px;">Jam</th><th style="padding:8px;">Mata Pelajaran</th><th style="padding:8px;">Guru</th><th style="padding:8px;">H</th><th style="padding:8px;">I</th><th style="padding:8px;">S</th><th style="padding:8px;">A</th><th style="padding:8px;">T</th><th style="padding:8px;">Jumlah</th></tr></thead>';
+    '<thead><tr style="background:var(--parchment-alt);color:var(--slate);border-bottom:1px solid var(--line);text-align:left;"><th style="padding:8px;">Kelas</th><th style="padding:8px;">Jam</th><th style="padding:8px;">Mata Pelajaran</th><th style="padding:8px;">Guru</th><th style="padding:8px;">H</th><th style="padding:8px;">I</th><th style="padding:8px;">A</th><th style="padding:8px;">Jumlah</th></tr></thead>';
   var tr = rows
     .map(function (x) {
+      var hVal = (Number(x.hadir) || 0) + (Number(x.telat) || 0);
+      var iVal = (Number(x.izin) || 0) + (Number(x.sakit) || 0);
+      var aVal = Number(x.alpa) || 0;
+      var totVal = hVal + iVal + aVal;
       return (
         '<tr style="border-bottom:1px solid var(--line);color:var(--ink);"><td style="padding:8px;font-weight:600;color:var(--ink);">' +
         escH(x.kelas) +
@@ -1502,18 +1607,14 @@ function __tabelRiwayatHarian(rows) {
         escH(x.guru || "-") +
         "</td>" +
         '<td style="padding:8px;color:#466b57;font-weight:700;">' +
-        (x.hadir || 0) +
-        '</td><td style="padding:8px;color:var(--ink);">' +
-        (x.izin || 0) +
-        '</td><td style="padding:8px;color:var(--ink);">' +
-        (x.sakit || 0) +
+        hVal +
+        '</td><td style="padding:8px;color:#b57c3c;font-weight:600;">' +
+        iVal +
         "</td>" +
         '<td style="padding:8px;color:#a84c4c;font-weight:700;">' +
-        (x.alpa || 0) +
+        aVal +
         '</td><td style="padding:8px;color:var(--ink);">' +
-        (x.telat || 0) +
-        '</td><td style="padding:8px;color:var(--ink);">' +
-        (x.total || 0) +
+        totVal +
         "</td></tr>"
       );
     })
@@ -1831,8 +1932,10 @@ async function bukaRosterPresensi(tanggal, kelas, jamKe, jamKeDaftar) {
       hari: res.hari || "",
     };
     __roster = (res.siswa || []).map(function (s) {
-      var st = String(s.status || "");
-      if (st === "<nil>") st = "";
+      var st = String(s.status || "").toUpperCase();
+      if (st === "<NIL>") st = "";
+      if (st === "T") st = "H";
+      if (st === "S") st = "I";
       var ket = String(s.keterangan || "");
       if (ket === "<nil>") ket = "";
       return {
@@ -1840,7 +1943,7 @@ async function bukaRosterPresensi(tanggal, kelas, jamKe, jamKeDaftar) {
         nis: s.nis,
         nama: s.namaLengkap,
         jk: s.jenisKelamin,
-        status: st || "H",
+        status: st === "I" || st === "A" ? st : "H",
         ket: ket,
       };
     });
@@ -1864,7 +1967,7 @@ function renderRoster() {
   }
   var m = __rosterMeta || {};
 
-  // 1. Header Informasi & Petunjuk Ringkas Sesuai Tampilan Asli
+  // 1. Header Informasi & Petunjuk Ringkas (3 Status: Hadir, Izin, Alfa)
   var headerHtml =
     '<div class="presensi-roster-meta">' +
     escH(m.hari || "") +
@@ -1879,10 +1982,10 @@ function renderRoster() {
     ")" +
     "</div>" +
     '<div class="presensi-roster-hint">' +
-    "H=Hadir, I=Izin, S=Sakit, A=Alpa, T=Terlambat. Status default semua Hadir." +
+    "H=Hadir, I=Izin (termasuk izin sakit / keperluan), A=Alfa. Status default semua Hadir." +
     "</div>";
 
-  // 2. Daftar Siswa Luas & Responsif (Baris 1: Nama Penuh 100%, Baris 2: 5 Tombol H I S A T Membentang di Bawah Nama)
+  // 2. Daftar Siswa Luas & Responsif (Baris 1: Nama Penuh 100%, Baris 2: 3 Tombol H I A Membentang di Bawah Nama)
   var listHtml =
     '<div class="no-scrollbar presensi-roster-list">' +
     __roster
@@ -1907,15 +2010,13 @@ function renderRoster() {
           '<div class="roster-btn-grid" id="stCell' +
           i +
           '">' +
-          ["H", "I", "S", "A", "T"]
+          ["H", "I", "A"]
             .map(function (st) {
               var on = s.status === st;
               var statusLabel = {
                 H: "Hadir",
                 I: "Izin",
-                S: "Sakit",
-                A: "Alpa",
-                T: "Terlambat",
+                A: "Alfa",
               }[st];
               return (
                 '<button type="button" class="roster-btn-st ' +
@@ -1929,9 +2030,11 @@ function renderRoster() {
                 '" aria-label="' +
                 statusLabel +
                 '" title="' +
-                st +
+                statusLabel +
                 '">' +
                 st +
+                " · " +
+                statusLabel +
                 "</button>"
               );
             })
@@ -1946,7 +2049,7 @@ function renderRoster() {
           i +
           '" value="' +
           escH(s.ket) +
-          '" placeholder="Tulis alasan/keterangan (opsional)...">' +
+          '" placeholder="Tulis alasan izin / sakit / keterangan (opsional)...">' +
           "</div>" +
           "</div>"
         );
@@ -2009,13 +2112,9 @@ function renderStatusButtons(idx) {
       var inp = noteRow.querySelector(".js-ket");
       if (inp && !inp.value) {
         var pl =
-          currentSt === "S"
-            ? "Alasan sakit (cth. Demam, flu)..."
-            : currentSt === "I"
-              ? "Alasan izin (cth. Acara keluarga, lomba)..."
-              : currentSt === "T"
-                ? "Alasan terlambat (cth. Ban bocor, macet)..."
-                : "Keterangan tambahan...";
+          currentSt === "I"
+            ? "Alasan izin / sakit (cth. Sakit demam, acara keluarga, lomba)..."
+            : "Keterangan tambahan...";
         inp.setAttribute("placeholder", pl);
       }
     }
@@ -2027,7 +2126,7 @@ function renderStatusButtons(idx) {
 function renderSummary() {
   var el = document.getElementById("rosterSummary");
   if (!el) return;
-  var h = { H: 0, I: 0, S: 0, A: 0, T: 0 };
+  var h = { H: 0, I: 0, A: 0 };
   window.__roster.forEach(function (s) {
     if (h[s.status] !== undefined) h[s.status]++;
   });
@@ -2036,12 +2135,8 @@ function renderSummary() {
     h.H +
     " I:" +
     h.I +
-    " S:" +
-    h.S +
     " A:" +
     h.A +
-    " T:" +
-    h.T +
     " (total " +
     window.__roster.length +
     ")";

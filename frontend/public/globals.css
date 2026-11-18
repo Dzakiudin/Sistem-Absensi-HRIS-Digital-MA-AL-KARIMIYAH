@@ -19121,3 +19121,112 @@ textarea.input:focus,
   border-top: 3px solid #5c8a70 !important;
   color: #eceae4 !important;
 }
+
+/* 12. Rekap Presensi Siswa Quick Period Buttons & 4-Stat Grid (Hadir, Izin, Alfa, Total) */
+.roster-btn-grid {
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 8px !important;
+}
+
+.guru-bk-stat-strip,
+.guru-bk-stat-strip.is-enhanced {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+}
+
+#adminSection .kepala-student-stat-grid,
+#kepalaSection .kepala-student-stat-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+}
+
+@media (max-width: 720px) {
+  #adminSection .kepala-student-stat-grid,
+  #kepalaSection .kepala-student-stat-grid,
+  .guru-bk-stat-strip,
+  .guru-bk-stat-strip.is-enhanced {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+.rekap-card-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.rekap-quick-period-bar {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 4px;
+  border-radius: 11px;
+  background: #efede7;
+  border: 1px solid #dcd9cf;
+}
+
+.rekap-quick-period-label {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #6e6a61;
+  padding: 0 6px 0 8px;
+  white-space: nowrap;
+}
+
+.rekap-quick-period-btn {
+  appearance: none;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #4a4740;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 13px;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.rekap-quick-period-btn:hover {
+  background: #fcfbf9;
+  color: #1f1e1c;
+}
+
+.rekap-quick-period-btn.active {
+  background: #466b57 !important;
+  border-color: #385746 !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 6px rgba(56, 87, 70, 0.18);
+}
+
+.dark .rekap-quick-period-bar {
+  background: #22221f;
+  border-color: #33332f;
+}
+
+.dark .rekap-quick-period-label {
+  color: #9e9b93;
+}
+
+.dark .rekap-quick-period-btn {
+  color: #c7c4bc;
+}
+
+.dark .rekap-quick-period-btn:hover {
+  background: #2b2b27;
+  color: #f4f3ef;
+}
+
+.dark .rekap-quick-period-btn.active {
+  background: #4a735c !important;
+  border-color: #639177 !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+}

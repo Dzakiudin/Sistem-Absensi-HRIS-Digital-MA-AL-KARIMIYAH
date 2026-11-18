@@ -193,33 +193,32 @@ func (s *Service) GetDashboardBK(ctx context.Context, requestedBy string, payloa
 		}
 
 		rk := rekapBySiswa[sr.ID]
-		h := rk.H
-		i := rk.I
-		sk := rk.S
+		h := rk.H + rk.T
+		i := rk.I + rk.S
+		sk := int64(0)
 		a := rk.A
-		t := rk.T
+		t := int64(0)
 		tot := rk.Total
 		persen := 100.0
 		if tot > 0 {
-			persen = math.Round(float64(h+t) * 100 / float64(tot))
+			persen = math.Round(float64(h) * 100 / float64(tot))
 		}
 
 		totalAlfaBulanIni += a
-		totalTelatBulanIni += t
 
 		levelRisiko := "aman"
 		alasanParts := []string{}
-		skor := int(a)*30 + int(t)*12 + int(sk+i)*4
+		skor := int(a)*30 + int(i)*4
 
 		if a >= 5 || (tot >= 4 && persen < 70) {
 			levelRisiko = "kritis"
 			siswaKritis++
 			skor += 500
-		} else if a >= 3 || t >= 5 || (tot >= 4 && persen < 80) {
+		} else if a >= 3 || (tot >= 4 && persen < 80) {
 			levelRisiko = "waspada"
 			siswaWaspada++
 			skor += 250
-		} else if a >= 1 || t >= 2 || (sk+i) >= 4 {
+		} else if a >= 1 || i >= 4 {
 			levelRisiko = "pantauan"
 			siswaPantauan++
 			skor += 100
@@ -228,11 +227,8 @@ func (s *Service) GetDashboardBK(ctx context.Context, requestedBy string, payloa
 		if a > 0 {
 			alasanParts = append(alasanParts, fmt.Sprintf("Alfa %dx", a))
 		}
-		if t > 0 {
-			alasanParts = append(alasanParts, fmt.Sprintf("Telat %dx", t))
-		}
-		if (sk + i) >= 3 {
-			alasanParts = append(alasanParts, fmt.Sprintf("Sakit/Izin %dx", sk+i))
+		if i >= 3 {
+			alasanParts = append(alasanParts, fmt.Sprintf("Izin %dx", i))
 		}
 		if tot >= 4 && persen < 80 {
 			alasanParts = append(alasanParts, fmt.Sprintf("Kehadiran %.0f%%", persen))

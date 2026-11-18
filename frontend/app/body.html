@@ -2306,13 +2306,14 @@
                   Statistik Kehadiran Siswa
                 </h2>
                 <p
+                  id="adminStatSiswaSub"
                   style="
                     font-size: 12px;
                     color: var(--slate);
                     margin: 4px 0 0 0;
                   "
                 >
-                  Rekap kehadiran siswa 30 hari terakhir
+                  Rekap kehadiran siswa hari ini
                 </p>
               </div>
             </div>
@@ -4410,9 +4411,46 @@
       <!-- PANEL 0: PRESENSI SISWA (rekap untuk kepala) -->
       <div data-panel="kepala-siswa" class="hidden">
         <div class="card" style="padding: 18px 20px; margin-bottom: 16px">
-          <h3 style="margin: 0 0 14px; font-size: 16px; font-weight: 700; color: var(--ink)">
-            Rekap Presensi Siswa
-          </h3>
+          <div class="rekap-card-top-row">
+            <h3 style="margin: 0; font-size: 16px; font-weight: 700; color: var(--ink)">
+              Rekap Presensi Siswa
+            </h3>
+            <div
+              id="kepalaSiswaQuickPeriode"
+              class="rekap-quick-period-bar"
+              role="group"
+              aria-label="Filter cepat periode rekap"
+            >
+              <span class="rekap-quick-period-label">Periode Cepat:</span>
+              <button
+                type="button"
+                class="rekap-quick-period-btn"
+                data-quick-periode="harian"
+                aria-pressed="false"
+                onclick="pilihPeriodeCepatRekapSiswa('harian','#kepalaSiswaHasil','kepalaSiswaKelas','kepalaSiswaAwal','kepalaSiswaAkhir','kepalaSiswaQuickPeriode')"
+              >
+                Harian
+              </button>
+              <button
+                type="button"
+                class="rekap-quick-period-btn"
+                data-quick-periode="mingguan"
+                aria-pressed="false"
+                onclick="pilihPeriodeCepatRekapSiswa('mingguan','#kepalaSiswaHasil','kepalaSiswaKelas','kepalaSiswaAwal','kepalaSiswaAkhir','kepalaSiswaQuickPeriode')"
+              >
+                Mingguan
+              </button>
+              <button
+                type="button"
+                class="rekap-quick-period-btn active"
+                data-quick-periode="bulanan"
+                aria-pressed="true"
+                onclick="pilihPeriodeCepatRekapSiswa('bulanan','#kepalaSiswaHasil','kepalaSiswaKelas','kepalaSiswaAwal','kepalaSiswaAkhir','kepalaSiswaQuickPeriode')"
+              >
+                Bulanan
+              </button>
+            </div>
+          </div>
           <div
             class="admin-rekap-fields"
             style="
@@ -4445,6 +4483,7 @@
                 type="date"
                 id="kepalaSiswaAwal"
                 aria-label="Tanggal awal"
+                onchange="sinkronQuickPeriodeRekapSiswa('kepalaSiswaAwal','kepalaSiswaAkhir','kepalaSiswaQuickPeriode')"
                 style="
                   padding: 9px 11px;
                   border-radius: 10px;
@@ -4461,6 +4500,7 @@
                 type="date"
                 id="kepalaSiswaAkhir"
                 aria-label="Tanggal akhir"
+                onchange="sinkronQuickPeriodeRekapSiswa('kepalaSiswaAwal','kepalaSiswaAkhir','kepalaSiswaQuickPeriode')"
                 style="
                   padding: 9px 11px;
                   border-radius: 10px;
@@ -5164,13 +5204,14 @@
                   Statistik Kehadiran Siswa
                 </h2>
                 <p
+                  id="kepalaStatSiswaSub"
                   style="
                     font-size: 12px;
                     color: var(--slate);
                     margin: 4px 0 0 0;
                   "
                 >
-                  Rekap kehadiran siswa 30 hari terakhir
+                  Rekap kehadiran siswa hari ini
                 </p>
               </div>
             </div>

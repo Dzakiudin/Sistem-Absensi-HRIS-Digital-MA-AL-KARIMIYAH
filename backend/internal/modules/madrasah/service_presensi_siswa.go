@@ -76,13 +76,19 @@ func (s *Service) GetRosterPresensi(ctx context.Context, username, tanggal, kela
 
 	daftar := []map[string]interface{}{}
 	for _, b := range roster {
+		stNorm := strings.ToUpper(strings.TrimSpace(b.Status))
+		if stNorm == "T" {
+			stNorm = "H"
+		} else if stNorm == "S" {
+			stNorm = "I"
+		}
 		daftar = append(daftar, map[string]interface{}{
 			"id":           b.ID,
 			"nis":          b.NIS,
 			"nisn":         b.NISN,
 			"namaLengkap":  b.NamaLengkap,
 			"jenisKelamin": b.JenisKelamin,
-			"status":       b.Status,
+			"status":       stNorm,
 			"keterangan":   b.Keterangan,
 		})
 	}
@@ -176,6 +182,11 @@ func (s *Service) CatatAbsensiSiswa(ctx context.Context, payload map[string]inte
 			continue
 		}
 		st := strings.ToUpper(strings.TrimSpace(fmt.Sprintf("%v", item["status"])))
+		if st == "T" {
+			st = "H"
+		} else if st == "S" {
+			st = "I"
+		}
 		if st == "" || st == "<nil>" || !statusSiswaValid[st] {
 			st = "H"
 		}
@@ -326,16 +337,18 @@ func (s *Service) GetRekapPresensiSiswa(ctx context.Context, requestedBy string,
 			}
 			perKelas[b.KelasID] = ket
 		}
-		(*ket)["totalH"] = (*ket)["totalH"].(int64) + b.H
-		(*ket)["totalI"] = (*ket)["totalI"].(int64) + b.I
-		(*ket)["totalS"] = (*ket)["totalS"].(int64) + b.S
+		hMerged := b.H + b.T
+		iMerged := b.I + b.S
+		(*ket)["totalH"] = (*ket)["totalH"].(int64) + hMerged
+		(*ket)["totalI"] = (*ket)["totalI"].(int64) + iMerged
+		(*ket)["totalS"] = int64(0)
 		(*ket)["totalA"] = (*ket)["totalA"].(int64) + b.A
-		(*ket)["totalT"] = (*ket)["totalT"].(int64) + b.T
+		(*ket)["totalT"] = int64(0)
 		(*ket)["totalSS"] = (*ket)["totalSS"].(int64) + 1
 
 		persen := 0.0
 		if b.Total > 0 {
-			persen = math.Round(float64(b.H) * 100 / float64(b.Total))
+			persen = math.Round(float64(hMerged) * 100 / float64(b.Total))
 		}
 		daftar := (*ket)["siswa"].([]map[string]interface{})
 		daftar = append(daftar, map[string]interface{}{
@@ -343,11 +356,11 @@ func (s *Service) GetRekapPresensiSiswa(ctx context.Context, requestedBy string,
 			"nis":     b.NIS,
 			"nama":    b.Nama,
 			"jk":      b.JK,
-			"hadir":   b.H,
-			"izin":    b.I,
-			"sakit":   b.S,
+			"hadir":   hMerged,
+			"izin":    iMerged,
+			"sakit":   int64(0),
 			"alpa":    b.A,
-			"telat":   b.T,
+			"telat":   int64(0),
 			"total":   b.Total,
 			"persen":  persen,
 		})
@@ -390,11 +403,11 @@ func (s *Service) GetRiwayatPresensiTanggal(ctx context.Context, requestedBy, ta
 			"jamKe":         b.JamKe,
 			"mataPelajaran": b.MataPelajaran,
 			"guru":          b.Guru,
-			"hadir":         b.H,
-			"izin":          b.I,
-			"sakit":         b.S,
+			"hadir":         b.H + b.T,
+			"izin":          b.I + b.S,
+			"sakit":         int64(0),
 			"alpa":          b.A,
-			"telat":         b.T,
+			"telat":         int64(0),
 			"total":         b.Total,
 		})
 	}
@@ -479,17 +492,17 @@ func (s *Service) GetStatistikKehadiranSiswa(ctx context.Context, requestedBy st
 		if filterMapel != "" && !strings.Contains(strings.ToLower(b.Mapel), strings.ToLower(filterMapel)) {
 			continue
 		}
-		totalH += b.H
-		totalI += b.I
-		totalS += b.S
+		hMerged := b.H + b.T
+		iMerged := b.I + b.S
+		totalH += hMerged
+		totalI += iMerged
 		totalA += b.A
-		totalT += b.T
-		totalAll += b.H + b.I + b.S + b.A + b.T
+		totalAll += hMerged + iMerged + b.A
 
-		tambah(perHari, b.Tanggal.Format("02/01/2006"), b.H, b.I, b.S, b.A, b.T)
-		tambah(perKelas, b.KodeKelas, b.H, b.I, b.S, b.A, b.T)
-		tambah(perMapel, b.Mapel, b.H, b.I, b.S, b.A, b.T)
-		tambah(perGuru, b.Guru, b.H, b.I, b.S, b.A, b.T)
+		tambah(perHari, b.Tanggal.Format("02/01/2006"), hMerged, iMerged, 0, b.A, 0)
+		tambah(perKelas, b.KodeKelas, hMerged, iMerged, 0, b.A, 0)
+		tambah(perMapel, b.Mapel, hMerged, iMerged, 0, b.A, 0)
+		tambah(perGuru, b.Guru, hMerged, iMerged, 0, b.A, 0)
 	}
 
 	hariman := map[string]interface{}{}

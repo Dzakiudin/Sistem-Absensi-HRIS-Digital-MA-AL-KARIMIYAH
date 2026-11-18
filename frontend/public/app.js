@@ -4530,16 +4530,20 @@ function bukaRekapSiswaDashboard(prefix) {
 }
 
 function renderPieStatistikSiswa(ring) {
+  const hadirVal = Math.max(
+    0,
+    (Number(ring.hadir) || 0) + (Number(ring.telat) || 0),
+  );
+  const izinVal = Math.max(
+    0,
+    (Number(ring.izin) || 0) + (Number(ring.sakit) || 0),
+  );
+  const alpaVal = Math.max(0, Number(ring.alpa) || 0);
   const statuses = [
-    { label: "Hadir", key: "hadir", color: "#4d755f" },
-    { label: "Terlambat", key: "telat", color: "#7c65a3" },
-    { label: "Izin", key: "izin", color: "#b57c3c" },
-    { label: "Sakit", key: "sakit", color: "#4d7ea1" },
-    { label: "Alpa", key: "alpa", color: "#b85656" },
-  ].map((status) => ({
-    ...status,
-    value: Math.max(0, Number(ring[status.key]) || 0),
-  }));
+    { label: "Hadir", key: "hadir", color: "#4d755f", value: hadirVal },
+    { label: "Izin", key: "izin", color: "#b57c3c", value: izinVal },
+    { label: "Alfa", key: "alpa", color: "#b85656", value: alpaVal },
+  ];
   const total = statuses.reduce((sum, status) => sum + status.value, 0);
   let accumulated = 0;
   const slices = statuses.map((status) => {
@@ -4549,9 +4553,7 @@ function renderPieStatistikSiswa(ring) {
   });
   const legend = statuses
     .map((status) => {
-      const percent = total
-        ? Math.round((status.value / total) * 100)
-        : 0;
+      const percent = total ? Math.round((status.value / total) * 100) : 0;
       return `<div class="kepala-student-pie-row">
         <span class="kepala-student-pie-label">
           <i style="background:${status.color};"></i>
@@ -4562,12 +4564,12 @@ function renderPieStatistikSiswa(ring) {
       </div>`;
     })
     .join("");
-  const percentHadir = Math.max(0, Number(ring.persenHadir) || 0);
+  const percentHadir = total ? Math.round((hadirVal / total) * 100) : 0;
 
-  return `<section class="kepala-student-pie" aria-label="Komposisi status presensi siswa 30 hari terakhir">
+  return `<section class="kepala-student-pie" aria-label="Komposisi status presensi siswa hari ini">
     <div class="kepala-student-trend-heading">
       <strong>Komposisi Status Presensi</strong>
-      <span>${total.toLocaleString("id-ID")} total presensi</span>
+      <span>${total.toLocaleString("id-ID")} total presensi hari ini</span>
     </div>
     <div class="kepala-student-pie-content">
       <div class="kepala-student-pie-chart" role="img" aria-label="${percentHadir}% hadir dari ${total.toLocaleString("id-ID")} total presensi" style="background:${total ? `conic-gradient(${slices.join(",")})` : "#e4e2da"};">
@@ -4581,39 +4583,31 @@ function renderPieStatistikSiswa(ring) {
   </section>`;
 }
 
-function renderGrafikStatistikSiswa(perHari, mulai) {
-  const rowsByDate = new Map(
-    perHari.map((row) => [row.tanggal, row]),
-  );
-  const days = Array.from({ length: 30 }, (_, index) => {
-    const date = new Date(mulai);
-    date.setDate(date.getDate() + index);
-    const tanggal =
-      String(date.getDate()).padStart(2, "0") +
-      "/" +
-      String(date.getMonth() + 1).padStart(2, "0") +
-      "/" +
-      date.getFullYear();
-    const row = rowsByDate.get(tanggal) || {};
+function renderGrafikStatistikSiswa(perKelas, hariIniLabel) {
+  const listKelas = Array.isArray(perKelas) ? perKelas : [];
+  const items = listKelas.map((row) => {
+    const hadirVal = Math.max(
+      0,
+      (Number(row.hadir) || 0) + (Number(row.telat) || 0),
+    );
+    const izinVal = Math.max(
+      0,
+      (Number(row.izin) || 0) + (Number(row.sakit) || 0),
+    );
+    const alpaVal = Math.max(0, Number(row.alpa) || 0);
     return {
-      date,
-      tanggal,
+      label: String(row.label || row.nama || "-"),
       statuses: [
-        { label: "Hadir", key: "hadir", color: "#4d755f" },
-        { label: "Izin", key: "izin", color: "#b57c3c" },
-        { label: "Sakit", key: "sakit", color: "#4d7ea1" },
-        { label: "Alpa", key: "alpa", color: "#b85656" },
-        { label: "Terlambat", key: "telat", color: "#7c65a3" },
-      ].map((status) => ({
-        ...status,
-        value: Math.max(0, Number(row[status.key]) || 0),
-      })),
+        { label: "Hadir", key: "hadir", color: "#4d755f", value: hadirVal },
+        { label: "Izin", key: "izin", color: "#b57c3c", value: izinVal },
+        { label: "Alfa", key: "alpa", color: "#b85656", value: alpaVal },
+      ],
     };
   });
   const maxTotal = Math.max(
     0,
-    ...days.map((day) =>
-      day.statuses.reduce((total, status) => total + status.value, 0),
+    ...items.map((item) =>
+      item.statuses.reduce((total, status) => total + status.value, 0),
     ),
   );
   const step = maxTotal ? Math.ceil(maxTotal / 4) : 1;
@@ -4621,66 +4615,55 @@ function renderGrafikStatistikSiswa(perHari, mulai) {
   const ticks = Array.from({ length: 5 }, (_, index) =>
     (chartMax - step * index).toLocaleString("id-ID"),
   );
-  const dateLabel = (date) =>
-    `${date.getDate()} ${new Intl.DateTimeFormat("id-ID", {
-      month: "short",
-    }).format(date)}`;
-  const dateFullLabel = (date) =>
-    `${new Intl.DateTimeFormat("id-ID", { weekday: "long" }).format(date)}, ${String(date.getDate()).padStart(2, "0")}/${String(date.getMonth() + 1).padStart(2, "0")}/${date.getFullYear()}`;
-  const tickIndexes = [0, 5, 10, 15, 20, 25, 29];
-  const bars = days
-    .map((day) => {
-      const total = day.statuses.reduce(
+  const bars = items
+    .map((item) => {
+      const total = item.statuses.reduce(
         (sum, status) => sum + status.value,
         0,
       );
-      const hadir = day.statuses.find((status) => status.key === "hadir").value;
-      const telat = day.statuses.find((status) => status.key === "telat").value;
-      const totalKehadiran = hadir + telat;
-      const persenKehadiran = total
-        ? Math.round((totalKehadiran / total) * 100)
-        : 0;
-      const detail = day.statuses
-        .map((status) => `${status.label} ${status.value.toLocaleString("id-ID")}`)
+      const hadir = item.statuses.find((status) => status.key === "hadir").value;
+      const persenKehadiran = total ? Math.round((hadir / total) * 100) : 0;
+      const detail = item.statuses
+        .map(
+          (status) => `${status.label} ${status.value.toLocaleString("id-ID")}`,
+        )
         .join(", ");
       const tipData = JSON.stringify({
-        title: dateFullLabel(day.date),
+        title: `Kelas ${item.label} · ${hariIniLabel || "Hari Ini"}`,
         items: [
-          ...day.statuses.map((status) => ({
+          ...item.statuses.map((status) => ({
             label: status.label,
             value: `${status.value.toLocaleString("id-ID")} presensi`,
             color: status.color,
           })),
           {
-            label: "Total Kehadiran",
-            value: `${persenKehadiran}% (${totalKehadiran.toLocaleString("id-ID")}/${total.toLocaleString("id-ID")})`,
+            label: "Tingkat Kehadiran",
+            value: `${persenKehadiran}% (${hadir.toLocaleString("id-ID")}/${total.toLocaleString("id-ID")})`,
             color: "#4d755f",
           },
         ],
       }).replace(/"/g, "&quot;");
-      const segments = day.statuses
+      const segments = item.statuses
         .map(
           (status) =>
             `<span class="kepala-student-chart-segment" style="height:${((status.value / chartMax) * 100).toFixed(2)}%;background:${status.color};"></span>`,
         )
         .join("");
-      return `<div class="kepala-student-chart-bar" role="img" tabindex="0" data-tip="${tipData}" onmouseenter="handleBarHover(event, this)" onmousemove="moveChartTooltip(event)" onmouseleave="hideChartTooltip()" onfocus="handleBarHover(event, this)" ontouchstart="handleBarHover(event, this)" aria-label="${dateLabel(day.date)}, total ${total.toLocaleString("id-ID")} presensi: ${esc(detail)}" title="${dateLabel(day.date)} · ${esc(detail)}">
+      return `<div class="kepala-student-chart-bar" role="img" tabindex="0" data-tip="${tipData}" onmouseenter="handleBarHover(event, this)" onmousemove="moveChartTooltip(event)" onmouseleave="hideChartTooltip()" onfocus="handleBarHover(event, this)" ontouchstart="handleBarHover(event, this)" aria-label="Kelas ${esc(item.label)}, total ${total.toLocaleString("id-ID")} presensi: ${esc(detail)}" title="Kelas ${esc(item.label)} · ${esc(detail)}">
         <div class="kepala-student-chart-stack">${segments}</div>
       </div>`;
     })
     .join("");
-  const dateTicks = tickIndexes
+  const xLabels = items
     .map(
-      (index) =>
-        `<span style="left:${((index / (days.length - 1)) * 100).toFixed(2)}%;">${dateLabel(days[index].date)}</span>`,
+      (item, index) =>
+        `<span style="left:${items.length > 1 ? ((index / (items.length - 1)) * 100).toFixed(2) : "50"}%;">${esc(item.label)}</span>`,
     )
     .join("");
   const legend = [
     { label: "Hadir", color: "#4d755f" },
     { label: "Izin", color: "#b57c3c" },
-    { label: "Sakit", color: "#4d7ea1" },
-    { label: "Alpa", color: "#b85656" },
-    { label: "Terlambat", color: "#7c65a3" },
+    { label: "Alfa", color: "#b85656" },
   ]
     .map(
       (item) =>
@@ -4692,16 +4675,16 @@ function renderGrafikStatistikSiswa(perHari, mulai) {
       ? `<div class="kepala-student-chart-layout">
           <div class="kepala-student-chart-y-axis" aria-hidden="true">${ticks.map((tick) => `<span>${tick}</span>`).join("")}</div>
           <div class="kepala-student-chart-main">
-            <div class="kepala-student-chart-plot" role="group" aria-label="Grafik batang bertumpuk kehadiran siswa per hari">${bars}</div>
-            <div class="kepala-student-chart-x-axis" aria-hidden="true">${dateTicks}</div>
+            <div class="kepala-student-chart-plot" role="group" aria-label="Grafik batang bertumpuk kehadiran siswa per rombel hari ini">${bars}</div>
+            <div class="kepala-student-chart-x-axis" aria-hidden="true">${xLabels}</div>
           </div>
         </div>
         <div class="kepala-student-chart-legend">${legend}</div>`
-      : '<div class="kepala-student-chart-empty">Belum ada data kehadiran pada periode ini.</div>';
-  return `<section class="kepala-student-trend" aria-label="Grafik statistik kehadiran siswa 30 hari terakhir">
+      : '<div class="kepala-student-chart-empty">Belum ada data kehadiran siswa yang dicatat hari ini.</div>';
+  return `<section class="kepala-student-trend" aria-label="Grafik statistik kehadiran siswa hari ini">
     <div class="kepala-student-trend-heading">
-      <strong>Tren Kehadiran Harian</strong>
-      <span>Jumlah presensi per hari</span>
+      <strong>Distribusi Kehadiran Harian</strong>
+      <span>Presensi per rombel · ${esc(hariIniLabel || "Hari ini")}</span>
     </div>
     ${chart}
   </section>`;
@@ -4712,9 +4695,8 @@ async function muatStatistikSiswa(prefix) {
   const body = document.getElementById(bodyId);
   if (!body) return;
   body.innerHTML =
-    '<div style="text-align:center;padding:24px;color:#8c887f;font-size:12.5px;">Memuat statistik kehadiran siswa...</div>';
+    '<div style="text-align:center;padding:24px;color:#8c887f;font-size:12.5px;">Memuat statistik kehadiran siswa hari ini...</div>';
   const d = new Date();
-  const mulai = new Date(d.getTime() - 29 * 86400000);
   // Backend parseTanggalIndo expects DD/MM/YYYY format
   const fmtIndo = (x) =>
     String(x.getDate()).padStart(2, "0") +
@@ -4722,11 +4704,22 @@ async function muatStatistikSiswa(prefix) {
     String(x.getMonth() + 1).padStart(2, "0") +
     "/" +
     x.getFullYear();
+  const hariIniIndo = fmtIndo(d);
+  const hariIniLengkap = new Intl.DateTimeFormat("id-ID", {
+    weekday: "long",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  }).format(d);
+  const subEl = document.getElementById(prefix + "StatSiswaSub");
+  if (subEl) {
+    subEl.textContent = "Rekap kehadiran siswa hari ini · " + hariIniLengkap;
+  }
   let res;
   try {
     res = await runServer("getStatistikKehadiranSiswa", currentUser.username, {
-      tanggalMulai: fmtIndo(mulai),
-      tanggalAkhir: fmtIndo(d),
+      tanggalMulai: hariIniIndo,
+      tanggalAkhir: hariIniIndo,
     });
   } catch (e) {
     body.innerHTML =
@@ -4744,15 +4737,24 @@ async function muatStatistikSiswa(prefix) {
   }
   const data = res.data;
   const ring = data.ringkasan || {};
+  const hadirVal = Math.max(
+    0,
+    (Number(ring.hadir) || 0) + (Number(ring.telat) || 0),
+  );
+  const izinVal = Math.max(
+    0,
+    (Number(ring.izin) || 0) + (Number(ring.sakit) || 0),
+  );
+  const alpaVal = Math.max(0, Number(ring.alpa) || 0);
+  const totalVal = hadirVal + izinVal + alpaVal;
+  const persenHadirVal = totalVal ? Math.round((hadirVal / totalVal) * 100) : 0;
   const badge = document.getElementById(prefix + "SiswaPersenBadge");
-  if (badge) badge.textContent = (ring.persenHadir || 0) + "% Hadir";
+  if (badge) badge.textContent = persenHadirVal + "% Hadir";
   const stat = [
-    { l: "Hadir", v: ring.hadir || 0, c: "#466b57" },
-    { l: "Izin", v: ring.izin || 0, c: "#b57c3c" },
-    { l: "Sakit", v: ring.sakit || 0, c: "#4d7ea1" },
-    { l: "Alpa", v: ring.alpa || 0, c: "#a84c4c" },
-    { l: "Terlambat", v: ring.telat || 0, c: "#7c65a3" },
-    { l: "Total", v: ring.total || 0, c: "var(--ink)" },
+    { l: "Hadir", v: hadirVal, c: "#466b57" },
+    { l: "Izin", v: izinVal, c: "#b57c3c" },
+    { l: "Alfa", v: alpaVal, c: "#a84c4c" },
+    { l: "Total", v: totalVal, c: "var(--ink)" },
   ]
     .map(
       (s) =>
@@ -4769,19 +4771,27 @@ async function muatStatistikSiswa(prefix) {
     .join("");
 
   const perKelas = Array.isArray(data.perKelas) ? data.perKelas : [];
-  const perHari = Array.isArray(data.perHari) ? data.perHari : [];
-  const pie = renderPieStatistikSiswa(ring);
-  const grafik = renderGrafikStatistikSiswa(perHari, mulai);
+  const pie = renderPieStatistikSiswa({
+    hadir: hadirVal,
+    izin: izinVal,
+    alpa: alpaVal,
+    total: totalVal,
+    persenHadir: persenHadirVal,
+  });
+  const grafik = renderGrafikStatistikSiswa(perKelas, hariIniLengkap);
   const classCards = perKelas
     .map((kelas) => {
-      const hadir = Number(kelas.hadir) || 0;
+      const hadir =
+        (Number(kelas.hadir) || 0) + (Number(kelas.telat) || 0);
+      const izin =
+        (Number(kelas.izin) || 0) + (Number(kelas.sakit) || 0);
       const alpa = Number(kelas.alpa) || 0;
-      const total = Number(kelas.total) || 0;
+      const total = hadir + izin + alpa;
       return `<div class="kepala-student-class-row">
         <span class="kepala-student-class-code">${esc(kelas.label || "-")}</span>
         <span class="kepala-student-class-main">
           <strong>${esc(kelas.label || "Kelas")}</strong>
-          <span>Total ${total.toLocaleString("id-ID")} presensi</span>
+          <span>Total ${total.toLocaleString("id-ID")} presensi · ${izin.toLocaleString("id-ID")} Izin</span>
         </span>
         <span class="kepala-student-class-stats">
           <strong>${hadir.toLocaleString("id-ID")} Hadir</strong>
@@ -4797,11 +4807,11 @@ async function muatStatistikSiswa(prefix) {
   body.innerHTML = `<div class="kepala-student-stat-grid">${stat}</div>
     <div class="kepala-student-visuals">${grafik}${pie}</div>
     <div class="kepala-student-class-heading">
-      <strong>Rincian Per Rombel</strong>
-      <span>${perKelas.length} rombel terdata</span>
+      <strong>Rincian Per Rombel Hari Ini</strong>
+      <span>${perKelas.length} rombel tercatat hari ini</span>
     </div>
     <div class="kepala-student-class-list">
-      ${classCards || '<div class="kepala-student-empty">Belum ada rincian kehadiran per rombel.</div>'}
+      ${classCards || '<div class="kepala-student-empty">Belum ada rincian kehadiran rombel yang tercatat hari ini.</div>'}
     </div>`;
 }
 
@@ -10505,6 +10515,108 @@ async function assignLepas() {
   }
 }
 /* ---------- REKAP PRESENSI SISWA (admin & kepala) ---------- */
+function __htmlQuickPeriodeRekapSiswa(
+  groupWrapId,
+  containerSel,
+  kelasSelId,
+  awalSelId,
+  akhirSelId,
+  activeMode,
+) {
+  var modes = [
+    { id: "harian", label: "Harian" },
+    { id: "mingguan", label: "Mingguan" },
+    { id: "bulanan", label: "Bulanan" },
+  ];
+  return (
+    '<div id="' +
+    groupWrapId +
+    '" class="rekap-quick-period-bar" role="group" aria-label="Filter cepat periode rekap">' +
+    '<span class="rekap-quick-period-label">Periode Cepat:</span>' +
+    modes
+      .map(function (m) {
+        var isAct = (activeMode || "bulanan") === m.id;
+        return (
+          '<button type="button" class="rekap-quick-period-btn' +
+          (isAct ? " active" : "") +
+          '" data-quick-periode="' +
+          m.id +
+          '" aria-pressed="' +
+          (isAct ? "true" : "false") +
+          '" onclick="pilihPeriodeCepatRekapSiswa(\'' +
+          m.id +
+          "','" +
+          containerSel +
+          "','" +
+          kelasSelId +
+          "','" +
+          awalSelId +
+          "','" +
+          akhirSelId +
+          "','" +
+          groupWrapId +
+          "')\">" +
+          m.label +
+          "</button>"
+        );
+      })
+      .join("") +
+    "</div>"
+  );
+}
+
+function sinkronQuickPeriodeRekapSiswa(awalSelId, akhirSelId, groupWrapId) {
+  var wrap = groupWrapId ? document.getElementById(groupWrapId) : null;
+  if (!wrap) return;
+  var aEl = document.getElementById(awalSelId);
+  var bEl = document.getElementById(akhirSelId);
+  var aVal = (aEl && aEl.value) || "";
+  var bVal = (bEl && bEl.value) || "";
+  var today = __tglTodayISO();
+  var wStart = __mulaiMingguISO();
+  var wEnd = __akhirMingguISO();
+  var mStart = __bulanAwalISO();
+  var mEnd = __bulanAkhirISO();
+  var mode = "";
+  if (aVal === today && bVal === today) {
+    mode = "harian";
+  } else if (aVal === wStart && bVal === wEnd) {
+    mode = "mingguan";
+  } else if (aVal === mStart && bVal === mEnd) {
+    mode = "bulanan";
+  }
+  wrap.querySelectorAll("[data-quick-periode]").forEach(function (btn) {
+    var on = btn.getAttribute("data-quick-periode") === mode;
+    btn.classList.toggle("active", on);
+    btn.setAttribute("aria-pressed", on ? "true" : "false");
+  });
+}
+
+function pilihPeriodeCepatRekapSiswa(
+  mode,
+  containerSel,
+  kelasSelId,
+  awalSelId,
+  akhirSelId,
+  groupWrapId,
+) {
+  var awal = __bulanAwalISO();
+  var akhir = __bulanAkhirISO();
+  if (mode === "harian") {
+    awal = __tglTodayISO();
+    akhir = __tglTodayISO();
+  } else if (mode === "mingguan") {
+    awal = __mulaiMingguISO();
+    akhir = __akhirMingguISO();
+  }
+  var aEl = document.getElementById(awalSelId);
+  var bEl = document.getElementById(akhirSelId);
+  if (aEl) aEl.value = awal;
+  if (bEl) bEl.value = akhir;
+  sinkronQuickPeriodeRekapSiswa(awalSelId, akhirSelId, groupWrapId);
+  tampilRekapSiswa(containerSel, kelasSelId, awalSelId, akhirSelId);
+}
+
 async function muatRekapSiswa() {
   var el = document.getElementById("adminSiswaTabRekap");
   if (!el) return;
@@ -10523,7 +10635,17 @@ async function muatRekapSiswa() {
   } catch (e) {}
   el.innerHTML =
     '<div class="card" style="padding:18px 20px;margin-bottom:14px;">' +
-    '<h3 style="margin:0 0 14px 0;font-size:16px;font-weight:700;color:var(--ink);">Rekap Presensi Siswa</h3>' +
+    '<div class="rekap-card-top-row">' +
+    '<h3 style="margin:0;font-size:16px;font-weight:700;color:var(--ink);">Rekap Presensi Siswa</h3>' +
+    __htmlQuickPeriodeRekapSiswa(
+      "adminRekapQuickPeriode",
+      "#adminRekapHasil",
+      "adminRekapKelas",
+      "adminRekapAwal",
+      "adminRekapAkhir",
+      "bulanan",
+    ) +
+    "</div>" +
     '<div class="admin-rekap-fields" style="display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;">' +
     '<div class="admin-rekap-field" style="flex:1;min-width:160px;">' +
     __label("Kelas") +
@@ -10534,12 +10656,12 @@ async function muatRekapSiswa() {
     __label("Tanggal Awal") +
     '<input type="date" id="adminRekapAwal" value="' +
     __bulanAwalISO() +
-    '" style="padding:9px 11px;border:1px solid var(--line);border-radius:10px;font-size:13px;background:var(--parchment-alt);color:var(--ink);"></div>' +
+    '" onchange="sinkronQuickPeriodeRekapSiswa(\'adminRekapAwal\',\'adminRekapAkhir\',\'adminRekapQuickPeriode\')" style="padding:9px 11px;border:1px solid var(--line);border-radius:10px;font-size:13px;background:var(--parchment-alt);color:var(--ink);"></div>' +
     '<div class="admin-rekap-field">' +
     __label("Tanggal Akhir") +
     '<input type="date" id="adminRekapAkhir" value="' +
     __bulanAkhirISO() +
-    '" style="padding:9px 11px;border:1px solid var(--line);border-radius:10px;font-size:13px;background:var(--parchment-alt);color:var(--ink);"></div>' +
+    '" onchange="sinkronQuickPeriodeRekapSiswa(\'adminRekapAwal\',\'adminRekapAkhir\',\'adminRekapQuickPeriode\')" style="padding:9px 11px;border:1px solid var(--line);border-radius:10px;font-size:13px;background:var(--parchment-alt);color:var(--ink);"></div>' +
     '<div class="admin-rekap-actions">' +
     __btnUtama(
       "Tampilkan",
@@ -10579,6 +10701,13 @@ async function tampilRekapSiswa(
   if (aSel) awal = __tglIndo(aSel.value);
   var bSel = document.getElementById(akhirSelId);
   if (bSel) akhir = __tglIndo(bSel.value);
+  if (awalSelId === "adminRekapAwal") {
+    sinkronQuickPeriodeRekapSiswa(awalSelId, akhirSelId, "adminRekapQuickPeriode");
+  } else if (awalSelId === "kepalaSiswaAwal") {
+    sinkronQuickPeriodeRekapSiswa(awalSelId, akhirSelId, "kepalaSiswaQuickPeriode");
+  } else if (awalSelId === "bkRekapAwal") {
+    sinkronQuickPeriodeRekapSiswa(awalSelId, akhirSelId, "bkRekapQuickPeriode");
+  }
   el.innerHTML = __spinner();
   var groups = [];
   try {
@@ -10632,15 +10761,18 @@ function toggleRekapDetail(id) {
 }
 function __rekapKelasCard(g) {
   var n = (g.siswa || []).length;
-  var hVal = Math.max(0, Number(g.totalH) || 0);
-  var iVal = Math.max(0, Number(g.totalI) || 0);
-  var sVal = Math.max(0, Number(g.totalS) || 0);
+  var hVal = Math.max(
+    0,
+    (Number(g.totalH) || 0) + (Number(g.totalT) || 0),
+  );
+  var iVal = Math.max(
+    0,
+    (Number(g.totalI) || 0) + (Number(g.totalS) || 0),
+  );
   var aVal = Math.max(0, Number(g.totalA) || 0);
-  var tVal = Math.max(0, Number(g.totalT) || 0);
-  var totalPresensi = hVal + iVal + sVal + aVal + tVal;
-  var pctHadir = totalPresensi > 0 ? Math.round((hVal / totalPresensi) * 100) : 0;
-  var pctEfektif =
-    totalPresensi > 0 ? Math.round(((hVal + tVal) / totalPresensi) * 100) : 0;
+  var totalPresensi = hVal + iVal + aVal;
+  var pctHadir =
+    totalPresensi > 0 ? Math.round((hVal / totalPresensi) * 100) : 0;
 
   var statuses = [
     {
@@ -10652,28 +10784,12 @@ function __rekapKelasCard(g) {
       textColor: "#466b57",
     },
     {
-      label: "Telat",
-      cls: "late",
-      value: tVal,
-      color: "#7c65a3",
-      bg: "#f5f3ff",
-      textColor: "#6d28d9",
-    },
-    {
       label: "Izin",
       cls: "permission",
       value: iVal,
       color: "#b57c3c",
       bg: "#fffbeb",
       textColor: "#b45309",
-    },
-    {
-      label: "Sakit",
-      cls: "sick",
-      value: sVal,
-      color: "#4d7ea1",
-      bg: "#f0f9ff",
-      textColor: "#0369a1",
     },
     {
       label: "Alfa",
@@ -10893,8 +11009,8 @@ function __rekapKelasCard(g) {
       '<span class="kepala-class-spectrum-empty"></span>') +
     "</div>" +
     '<div class="kepala-class-spectrum-meta">' +
-    "<span>Kehadiran Efektif (H+T): <strong>" +
-    pctEfektif +
+    "<span>Tingkat Kehadiran: <strong>" +
+    pctHadir +
     "%</strong></span>" +
     "<span>Tanpa Keterangan (Alfa): <strong class=\"" +
     (aVal > 0 ? "is-alert" : "") +
@@ -10914,10 +11030,14 @@ function __rekapKelasCard(g) {
 function __rekapSiswaTable(siswa) {
   if (!siswa.length) return __kosong("Tidak ada siswa.");
   var head =
-    '<thead><tr><th>No</th><th>NIS</th><th>Nama Siswa</th><th style="text-align:center;">H</th><th style="text-align:center;">T</th><th style="text-align:center;">I</th><th style="text-align:center;">S</th><th style="text-align:center;">A</th><th style="text-align:center;">Total</th><th style="text-align:right;">% Hadir</th></tr></thead>';
+    '<thead><tr><th>No</th><th>NIS</th><th>Nama Siswa</th><th style="text-align:center;">H</th><th style="text-align:center;">I</th><th style="text-align:center;">A</th><th style="text-align:center;">Total</th><th style="text-align:right;">% Hadir</th></tr></thead>';
   var tr = siswa
     .map(function (x, i) {
-      var pct = Number(x.persen) || 0;
+      var hVal = (Number(x.hadir) || 0) + (Number(x.telat) || 0);
+      var iVal = (Number(x.izin) || 0) + (Number(x.sakit) || 0);
+      var aVal = Number(x.alpa) || 0;
+      var totVal = hVal + iVal + aVal;
+      var pct = totVal > 0 ? Math.round((hVal / totVal) * 100) : 0;
       var pctCls =
         pct >= 85 ? "is-good" : pct >= 70 ? "is-warn" : "is-low";
       return (
@@ -10932,22 +11052,16 @@ function __rekapSiswaTable(siswa) {
         escH(x.nama) +
         "</td>" +
         '<td class="col-stat is-h">' +
-        (x.hadir || 0) +
-        "</td>" +
-        '<td class="col-stat is-t">' +
-        (x.telat || 0) +
+        hVal +
         "</td>" +
         '<td class="col-stat is-i">' +
-        (x.izin || 0) +
-        "</td>" +
-        '<td class="col-stat is-s">' +
-        (x.sakit || 0) +
+        iVal +
         "</td>" +
         '<td class="col-stat is-a">' +
-        (x.alpa || 0) +
+        aVal +
         "</td>" +
         '<td class="col-stat is-tot">' +
-        (x.total || 0) +
+        totVal +
         "</td>" +
         '<td class="col-pct"><span class="rekap-pct-pill ' +
         pctCls +
@@ -11089,18 +11203,21 @@ function __rekapSiswaBaris() {
   var out = [];
   (window.__rekapCache || []).forEach(function (g) {
     (g.siswa || []).forEach(function (x) {
+      var hVal = (Number(x.hadir) || 0) + (Number(x.telat) || 0);
+      var iVal = (Number(x.izin) || 0) + (Number(x.sakit) || 0);
+      var aVal = Number(x.alpa) || 0;
+      var totVal = hVal + iVal + aVal;
+      var pctVal = totVal > 0 ? Math.round((hVal / totVal) * 100) : 0;
       out.push({
         kode: g.kodeKelas || g.kelas || "-",
         nis: x.nis || "",
         nama: x.nama || "",
         jk: String(x.jk || "") === "Perempuan" ? "P" : "L",
-        hadir: x.hadir || 0,
-        izin: x.izin || 0,
-        sakit: x.sakit || 0,
-        alpa: x.alpa || 0,
-        telat: x.telat || 0,
-        total: x.total || 0,
-        persen: x.persen || 0,
+        hadir: hVal,
+        izin: iVal,
+        alpa: aVal,
+        total: totVal,
+        persen: pctVal,
       });
     });
   });
@@ -11136,9 +11253,7 @@ function eksporExcelSiswa() {
     "L/P",
     "Hadir",
     "Izin",
-    "Sakit",
-    "Alpa",
-    "Terlambat",
+    "Alfa",
     "Total",
     "% Hadir",
   ];
@@ -11151,9 +11266,7 @@ function eksporExcelSiswa() {
       x.jk,
       x.hadir,
       x.izin,
-      x.sakit,
       x.alpa,
-      x.telat,
       x.total,
       String(x.persen) + "%",
     ];
@@ -11169,7 +11282,7 @@ function eksporExcelSiswa() {
     kolom,
     rows,
     "rekap-presensi-siswa.xls",
-    [6, 9, 12, 26, 6, 9, 9, 9, 9, 12, 9, 9],
+    [6, 9, 12, 26, 6, 9, 9, 9, 9, 9],
   );
 }
 function cetakRekapSiswa() {
@@ -11205,7 +11318,7 @@ function cetakRekapSiswa() {
         '<td style="padding:5px 8px;border:1px solid #d5d2c8;text-align:center;">' +
         x.jk +
         "</td>" +
-        ["hadir", "izin", "sakit", "alpa", "telat", "total"]
+        ["hadir", "izin", "alpa", "total"]
           .map(function (f) {
             return (
               '<td style="padding:5px 8px;border:1px solid #d5d2c8;text-align:center;">' +
@@ -11228,9 +11341,7 @@ function cetakRekapSiswa() {
     "L/P",
     "Hadir",
     "Izin",
-    "Sakit",
-    "Alpa",
-    "Terlambat",
+    "Alfa",
     "Total",
     "% Hadir",
   ]
@@ -11994,9 +12105,13 @@ async function tampilRiwayatHarian(containerSel, tglInputId) {
 }
 function __tabelRiwayatHarian(rows) {
   var head =
-    '<thead><tr style="background:var(--parchment-alt);color:var(--slate);border-bottom:1px solid var(--line);text-align:left;"><th style="padding:8px;">Kelas</th><th style="padding:8px;">Jam</th><th style="padding:8px;">Mata Pelajaran</th><th style="padding:8px;">Guru</th><th style="padding:8px;">H</th><th style="padding:8px;">I</th><th style="padding:8px;">S</th><th style="padding:8px;">A</th><th style="padding:8px;">T</th><th style="padding:8px;">Jumlah</th></tr></thead>';
+    '<thead><tr style="background:var(--parchment-alt);color:var(--slate);border-bottom:1px solid var(--line);text-align:left;"><th style="padding:8px;">Kelas</th><th style="padding:8px;">Jam</th><th style="padding:8px;">Mata Pelajaran</th><th style="padding:8px;">Guru</th><th style="padding:8px;">H</th><th style="padding:8px;">I</th><th style="padding:8px;">A</th><th style="padding:8px;">Jumlah</th></tr></thead>';
   var tr = rows
     .map(function (x) {
+      var hVal = (Number(x.hadir) || 0) + (Number(x.telat) || 0);
+      var iVal = (Number(x.izin) || 0) + (Number(x.sakit) || 0);
+      var aVal = Number(x.alpa) || 0;
+      var totVal = hVal + iVal + aVal;
       return (
         '<tr style="border-bottom:1px solid var(--line);color:var(--ink);"><td style="padding:8px;font-weight:600;color:var(--ink);">' +
         escH(x.kelas) +
@@ -12008,18 +12123,14 @@ function __tabelRiwayatHarian(rows) {
         escH(x.guru || "-") +
         "</td>" +
         '<td style="padding:8px;color:#466b57;font-weight:700;">' +
-        (x.hadir || 0) +
-        '</td><td style="padding:8px;color:var(--ink);">' +
-        (x.izin || 0) +
-        '</td><td style="padding:8px;color:var(--ink);">' +
-        (x.sakit || 0) +
+        hVal +
+        '</td><td style="padding:8px;color:#b57c3c;font-weight:600;">' +
+        iVal +
         "</td>" +
         '<td style="padding:8px;color:#a84c4c;font-weight:700;">' +
-        (x.alpa || 0) +
+        aVal +
         '</td><td style="padding:8px;color:var(--ink);">' +
-        (x.telat || 0) +
-        '</td><td style="padding:8px;color:var(--ink);">' +
-        (x.total || 0) +
+        totVal +
         "</td></tr>"
       );
     })
@@ -12337,8 +12448,10 @@ async function bukaRosterPresensi(tanggal, kelas, jamKe, jamKeDaftar) {
       hari: res.hari || "",
     };
     __roster = (res.siswa || []).map(function (s) {
-      var st = String(s.status || "");
-      if (st === "<nil>") st = "";
+      var st = String(s.status || "").toUpperCase();
+      if (st === "<NIL>") st = "";
+      if (st === "T") st = "H";
+      if (st === "S") st = "I";
       var ket = String(s.keterangan || "");
       if (ket === "<nil>") ket = "";
       return {
@@ -12346,7 +12459,7 @@ async function bukaRosterPresensi(tanggal, kelas, jamKe, jamKeDaftar) {
         nis: s.nis,
         nama: s.namaLengkap,
         jk: s.jenisKelamin,
-        status: st || "H",
+        status: st === "I" || st === "A" ? st : "H",
         ket: ket,
       };
     });
@@ -12370,7 +12483,7 @@ function renderRoster() {
   }
   var m = __rosterMeta || {};
 
-  // 1. Header Informasi & Petunjuk Ringkas Sesuai Tampilan Asli
+  // 1. Header Informasi & Petunjuk Ringkas (3 Status: Hadir, Izin, Alfa)
   var headerHtml =
     '<div class="presensi-roster-meta">' +
     escH(m.hari || "") +
@@ -12385,10 +12498,10 @@ function renderRoster() {
     ")" +
     "</div>" +
     '<div class="presensi-roster-hint">' +
-    "H=Hadir, I=Izin, S=Sakit, A=Alpa, T=Terlambat. Status default semua Hadir." +
+    "H=Hadir, I=Izin (termasuk izin sakit / keperluan), A=Alfa. Status default semua Hadir." +
     "</div>";
 
-  // 2. Daftar Siswa Luas & Responsif (Baris 1: Nama Penuh 100%, Baris 2: 5 Tombol H I S A T Membentang di Bawah Nama)
+  // 2. Daftar Siswa Luas & Responsif (Baris 1: Nama Penuh 100%, Baris 2: 3 Tombol H I A Membentang di Bawah Nama)
   var listHtml =
     '<div class="no-scrollbar presensi-roster-list">' +
     __roster
@@ -12413,15 +12526,13 @@ function renderRoster() {
           '<div class="roster-btn-grid" id="stCell' +
           i +
           '">' +
-          ["H", "I", "S", "A", "T"]
+          ["H", "I", "A"]
             .map(function (st) {
               var on = s.status === st;
               var statusLabel = {
                 H: "Hadir",
                 I: "Izin",
-                S: "Sakit",
-                A: "Alpa",
-                T: "Terlambat",
+                A: "Alfa",
               }[st];
               return (
                 '<button type="button" class="roster-btn-st ' +
@@ -12435,9 +12546,11 @@ function renderRoster() {
                 '" aria-label="' +
                 statusLabel +
                 '" title="' +
-                st +
+                statusLabel +
                 '">' +
                 st +
+                " · " +
+                statusLabel +
                 "</button>"
               );
             })
@@ -12452,7 +12565,7 @@ function renderRoster() {
           i +
           '" value="' +
           escH(s.ket) +
-          '" placeholder="Tulis alasan/keterangan (opsional)...">' +
+          '" placeholder="Tulis alasan izin / sakit / keterangan (opsional)...">' +
           "</div>" +
           "</div>"
         );
@@ -12515,13 +12628,9 @@ function renderStatusButtons(idx) {
       var inp = noteRow.querySelector(".js-ket");
       if (inp && !inp.value) {
         var pl =
-          currentSt === "S"
-            ? "Alasan sakit (cth. Demam, flu)..."
-            : currentSt === "I"
-              ? "Alasan izin (cth. Acara keluarga, lomba)..."
-              : currentSt === "T"
-                ? "Alasan terlambat (cth. Ban bocor, macet)..."
-                : "Keterangan tambahan...";
+          currentSt === "I"
+            ? "Alasan izin / sakit (cth. Sakit demam, acara keluarga, lomba)..."
+            : "Keterangan tambahan...";
         inp.setAttribute("placeholder", pl);
       }
     }
@@ -12533,7 +12642,7 @@ function renderStatusButtons(idx) {
 function renderSummary() {
   var el = document.getElementById("rosterSummary");
   if (!el) return;
-  var h = { H: 0, I: 0, S: 0, A: 0, T: 0 };
+  var h = { H: 0, I: 0, A: 0 };
   window.__roster.forEach(function (s) {
     if (h[s.status] !== undefined) h[s.status]++;
   });
@@ -12542,12 +12651,8 @@ function renderSummary() {
     h.H +
     " I:" +
     h.I +
-    " S:" +
-    h.S +
     " A:" +
     h.A +
-    " T:" +
-    h.T +
     " (total " +
     window.__roster.length +
     ")";
@@ -13545,7 +13650,7 @@ function renderSubTabRadarBK() {
     '<div class="guru-bk-card-head">' +
     "<div>" +
     "<h3>Radar Deteksi Dini Presensi Siswa</h3>" +
-    "<p>Mendeteksi siswa dengan frekuensi Alfa, Terlambat, atau Sakit/Izin tinggi lintas rombel.</p>" +
+    "<p>Mendeteksi siswa dengan frekuensi Alfa atau Izin tinggi lintas rombel.</p>" +
     "</div>" +
     '<button type="button" class="btn btn-outline btn-sm" onclick="muatPanelGuruBK(true)">↻ Sinkron</button>' +
     "</div>" +
@@ -13722,21 +13827,15 @@ function renderDaftarRadarBK() {
           "</div>" +
           '<div class="guru-bk-stat-strip">' +
           '<div class="guru-bk-stat-cell is-h"><small>Hadir</small><strong>' +
-          (s.hadir || 0) +
-          "</strong></div>" +
-          '<div class="guru-bk-stat-cell is-t"><small>Telat</small><strong>' +
-          (s.telat || 0) +
+          ((Number(s.hadir) || 0) + (Number(s.telat) || 0)) +
           "</strong></div>" +
           '<div class="guru-bk-stat-cell is-i"><small>Izin</small><strong>' +
-          (s.izin || 0) +
-          "</strong></div>" +
-          '<div class="guru-bk-stat-cell is-s"><small>Sakit</small><strong>' +
-          (s.sakit || 0) +
+          ((Number(s.izin) || 0) + (Number(s.sakit) || 0)) +
           "</strong></div>" +
           '<div class="guru-bk-stat-cell is-a"><small>Alfa</small><strong>' +
           (s.alpa || 0) +
           "</strong></div>" +
-          '<div class="guru-bk-stat-cell is-pct"><small>Efektif</small><strong>' +
+          '<div class="guru-bk-stat-cell is-pct"><small>% Hadir</small><strong>' +
           (s.persenKehadiran != null ? s.persenKehadiran : 100) +
           "%</strong></div>" +
           "</div>" +
@@ -13783,11 +13882,19 @@ async function renderSubTabKelasBK() {
 
   area.innerHTML =
     '<div class="card guru-bk-filter-card" style="margin-bottom:14px;">' +
-    '<div class="guru-bk-card-head">' +
+    '<div class="guru-bk-card-head" style="flex-wrap:wrap;gap:10px;">' +
     "<div>" +
     "<h3>Monitoring &amp; Diagram Kehadiran Kelas</h3>" +
-    "<p>Pantau komposisi Hadir, Telat, Izin, Sakit, dan Alfa setiap rombel beserta rincian per siswa.</p>" +
+    "<p>Pantau komposisi Hadir, Izin, dan Alfa setiap rombel beserta rincian per siswa.</p>" +
     "</div>" +
+    __htmlQuickPeriodeRekapSiswa(
+      "bkRekapQuickPeriode",
+      "#bkRekapKelasHasil",
+      "bkRekapKelasSelect",
+      "bkRekapAwal",
+      "bkRekapAkhir",
+      "bulanan",
+    ) +
     "</div>" +
     '<div class="guru-bk-date-bar">' +
     '<div class="guru-bk-date-field">' +
@@ -13800,13 +13907,13 @@ async function renderSubTabKelasBK() {
     "<label>Tanggal Awal</label>" +
     '<input type="date" id="bkRekapAwal" class="input input-sm" value="' +
     __bulanAwalISO() +
-    '" />' +
+    '" onchange="sinkronQuickPeriodeRekapSiswa(\'bkRekapAwal\',\'bkRekapAkhir\',\'bkRekapQuickPeriode\')" />' +
     "</div>" +
     '<div class="guru-bk-date-field">' +
     "<label>Tanggal Akhir</label>" +
     '<input type="date" id="bkRekapAkhir" class="input input-sm" value="' +
     __bulanAkhirISO() +
-    '" />' +
+    '" onchange="sinkronQuickPeriodeRekapSiswa(\'bkRekapAwal\',\'bkRekapAkhir\',\'bkRekapQuickPeriode\')" />' +
     "</div>" +
     "</div>" +
     '<div class="guru-bk-action-bar" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;">' +
@@ -14067,11 +14174,11 @@ function renderDaftarDirektoriBK() {
           "</div>" +
           '<div class="guru-bk-student-foot">' +
           '<span class="guru-bk-reason-text">Hadir: <strong>' +
-          (s.hadir || 0) +
+          ((Number(s.hadir) || 0) + (Number(s.telat) || 0)) +
+          "</strong> · Izin: <strong>" +
+          ((Number(s.izin) || 0) + (Number(s.sakit) || 0)) +
           "</strong> · Alfa: <strong>" +
           (s.alpa || 0) +
-          "</strong> · Telat: <strong>" +
-          (s.telat || 0) +
           "</strong></span>" +
           '<div class="guru-bk-student-actions">' +
           '<button type="button" class="btn btn-outline btn-sm" onclick="bukaProfilSiswaBK(' +
@@ -14114,8 +14221,8 @@ function eksporExcelDataAsuhBK() {
     "Desa",
     "Kecamatan",
     "Hadir",
+    "Izin",
     "Alfa",
-    "Telat",
   ];
   var baris = rowsData.map(function (s, idx) {
     return [
@@ -14136,9 +14243,9 @@ function eksporExcelDataAsuhBK() {
       s.pekerjaanIbu || "",
       s.desa || "",
       s.kecamatan || "",
-      s.hadir || 0,
+      (Number(s.hadir) || 0) + (Number(s.telat) || 0),
+      (Number(s.izin) || 0) + (Number(s.sakit) || 0),
       s.alpa || 0,
-      s.telat || 0,
     ];
   });
   __eksLapXLS(
@@ -14469,7 +14576,7 @@ async function bukaProfilSiswaBK(siswaId) {
     '<div class="guru-bk-modal-att-badge ' +
     barCls +
     '">' +
-    "<small>Efektif</small><strong>" +
+    "<small>% Hadir</small><strong>" +
     pctEfektif +
     "%</strong>" +
     "</div>" +
@@ -14483,21 +14590,15 @@ async function bukaProfilSiswaBK(siswaId) {
     "</div>" +
     '<div class="guru-bk-stat-strip is-enhanced">' +
     '<div class="guru-bk-stat-cell is-h"><span class="guru-bk-stat-dot"></span><small>Hadir</small><strong>' +
-    (s.hadir || 0) +
-    "</strong></div>" +
-    '<div class="guru-bk-stat-cell is-t"><span class="guru-bk-stat-dot"></span><small>Telat</small><strong>' +
-    (s.telat || 0) +
+    ((Number(s.hadir) || 0) + (Number(s.telat) || 0)) +
     "</strong></div>" +
     '<div class="guru-bk-stat-cell is-i"><span class="guru-bk-stat-dot"></span><small>Izin</small><strong>' +
-    (s.izin || 0) +
-    "</strong></div>" +
-    '<div class="guru-bk-stat-cell is-s"><span class="guru-bk-stat-dot"></span><small>Sakit</small><strong>' +
-    (s.sakit || 0) +
+    ((Number(s.izin) || 0) + (Number(s.sakit) || 0)) +
     "</strong></div>" +
     '<div class="guru-bk-stat-cell is-a"><span class="guru-bk-stat-dot"></span><small>Alfa</small><strong>' +
     (s.alpa || 0) +
     "</strong></div>" +
-    '<div class="guru-bk-stat-cell is-pct"><span class="guru-bk-stat-dot"></span><small>Efektif</small><strong>' +
+    '<div class="guru-bk-stat-cell is-pct"><span class="guru-bk-stat-dot"></span><small>% Hadir</small><strong>' +
     pctEfektif +
     "%</strong></div>" +
     "</div>" +
